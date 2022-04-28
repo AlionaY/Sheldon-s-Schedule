@@ -13,6 +13,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import com.pti.sheldons_schedule.ui.theme.Sheldons_ScheduleTheme
 
 class MainActivity : ComponentActivity() {
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
