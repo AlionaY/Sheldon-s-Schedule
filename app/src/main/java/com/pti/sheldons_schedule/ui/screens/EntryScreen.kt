@@ -1,4 +1,4 @@
-package com.pti.sheldons_schedule.screens
+package com.pti.sheldons_schedule.ui.screens
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.Button
