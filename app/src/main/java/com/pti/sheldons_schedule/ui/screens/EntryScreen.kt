@@ -14,6 +14,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawBehind
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalDensity
@@ -33,14 +34,13 @@ fun EntryScreen(modifier: Modifier = Modifier) {
             }
         }
         val maxRadiusPx = hypot(width, height)
-        
+
         LaunchedEffect(key1 = isClicked) {
             if (isClicked) {
-                animateShape.animateTo(
-                    maxRadiusPx, animationSpec = tween()
-                ) {
+                animateShape.animateTo(maxRadiusPx, animationSpec = tween()) {
                     radius = value
                 }
+                animateShape.snapTo(0f)
             }
             isClicked = false
         }
@@ -51,7 +51,8 @@ fun EntryScreen(modifier: Modifier = Modifier) {
             .drawBehind {
                 drawCircle(
                     color = Sky,
-                    radius = radius
+                    radius = radius,
+                    center = Offset(size.width, size.height)
                 )
             })
 
