@@ -2,7 +2,7 @@ package com.pti.sheldons_schedule
 
 import android.os.Bundle
 import android.view.Surface
-import androidx.activity.ComponentActivity
+import com.pti.sheldons_schedule.ui.theme.Sheldons_ScheduleTheme
 import org.w3c.dom.Text
 
 class MainActivity : ComponentActivity() {

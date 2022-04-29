@@ -4,7 +4,6 @@ plugins {
     id 'dagger.hilt.android.plugin'
     id 'kotlin-kapt'
     id 'kotlinx-serialization'
-    id 'kotlin-dsl'
     id 'version-catalog'
 }
 
@@ -53,9 +52,9 @@ android {
 dependencies {
 
     implementation(libs.bundles.compose)
-//    implementation(libs.bundles.compose)
-//    implementation(libs.coroutines)
-//    implementation(libs.bundles.hilt)
-//    kapt(libs.hilt.compiler)
-//    implementation(libs.bundles.accompanist)
+    implementation(libs.coroutines)
+    implementation(libs.bundles.hilt)
+    implementation(libs.activity)
+    kapt(libs.hilt.compiler)
+    implementation(libs.bundles.accompanist)
 }

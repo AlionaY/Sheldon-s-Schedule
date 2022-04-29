@@ -9,32 +9,31 @@ pluginManagement {
 dependencyResolutionManagement {
     versionCatalogs {
         create("libs") {
-            from(files("../gradle/libs.versions.toml"))
+            version('compose_version', '1.1.1')
+            version('accompanist_version', '0.23.0')
+
+            alias('compose-ui').to('androidx.compose.ui:ui', 'compose_version').versionRef('compose_version')
+            alias('compose-material').to('androidx.compose.material:material', 'compose_version').versionRef('compose_version')
+            alias('compose-preview').to('androidx.compose.ui:ui-tooling-preview', 'compose_version').versionRef('compose_version')
+            alias('compose-activity').to('androidx.activity:activity-compose:2.4.1')
+
+            alias('activity').to('androidx.activity:activity-ktx:1.4.0')
+            alias('lifecycle-ktx').to('androidx.lifecycle:lifecycle-runtime-ktx:2.4.1')
+            alias('coroutines').to('org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.0')
+
+            alias('hilt').to("com.google.dagger:hilt-android:2.40.5")
+            alias('hilt-lifecycle-viewmodel').to("androidx.hilt:hilt-lifecycle-viewmodel:1.0.0-alpha03")
+            alias('hilt-navigation').to("androidx.hilt:hilt-navigation-compose:1.0.0")
+            alias('hilt-compiler').to("com.google.dagger:hilt-compiler:2.40.5")
+
+            alias('accompanist-systemuicontroller').to("com.google.accompanist:accompanist-systemuicontroller", 'accompanist_version').versionRef('accompanist_version')
+            alias('accompanist-navigation').to("com.google.accompanist:accompanist-navigation-animation", 'accompanist_version').versionRef('accompanist_version')
+            alias('accompanist-permissions').to("com.google.accompanist:accompanist-permissions", 'accompanist_version').versionRef('accompanist_version')
+
+            bundle('compose', ['compose-ui', 'compose-material', 'compose-preview', 'compose-activity'])
+            bundle('hilt', ['hilt', 'hilt-lifecycle-viewmodel', 'hilt-navigation'])
+            bundle('accompanist', ['accompanist-systemuicontroller', 'accompanist-navigation', 'accompanist-permissions'])
         }
-////            version('compose_version', '1.1.1')
-////            version('accompanist_version', '0.23.0')
-////
-////            alias('compose-ui').to('androidx.compose.ui:ui', 'compose_version').versionRef('compose_version')
-////            alias('compose-material').to('androidx.compose.material:material', 'compose_version').versionRef('compose_version')
-////            alias('compose-preview').to('androidx.compose.ui:ui-tooling-preview', 'compose_version').versionRef('compose_version')
-////            alias('compose-activity').to('androidx.activity:activity-compose:2.4.1')
-////
-////            alias('lifecycle-ktx').to('androidx.lifecycle:lifecycle-runtime-ktx:2.4.1')
-////            alias('coroutines').to('org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.0')
-////
-////            alias('hilt').to("com.google.dagger:hilt-android:2.40.5")
-////            alias('hilt-lifecycle-viewmodel').to("androidx.hilt:hilt-lifecycle-viewmodel:1.0.0-alpha03")
-////            alias('hilt-navigation').to("androidx.hilt:hilt-navigation-compose:1.0.0")
-////            alias('hilt-compiler').to("com.google.dagger:hilt-compiler:2.40.5")
-////
-////            alias('accompanist-systemuicontroller').to("com.google.accompanist:accompanist-systemuicontroller", 'accompanist_version').versionRef('accompanist_version')
-////            alias('accompanist-navigation').to("com.google.accompanist:accompanist-navigation-animation", 'accompanist_version').versionRef('accompanist_version')
-////            alias('accompanist-permissions').to("com.google.accompanist:accompanist-permissions", 'accompanist_version').versionRef('accompanist_version')
-////
-////            bundle('compose', ['compose-ui', 'compose-material', 'compose-preview', 'compose-activity'])
-////            bundle('hilt', ['hilt', 'hilt-lifecycle-viewmodel', 'hilt-navigation'])
-////            bundle('accompanist', ['accompanist-systemuicontroller', 'accompanist-navigation', 'accompanist-permissions'])
-//        }
     }
 }
 rootProject.name = "Sheldon`s_Schedule"
