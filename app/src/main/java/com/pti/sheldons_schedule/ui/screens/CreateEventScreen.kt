@@ -16,7 +16,11 @@ import com.pti.sheldons_schedule.ui.theme.Sky
 
 @Composable
 fun CreateEventScreen(modifier: Modifier = Modifier) {
-    Box(modifier = modifier.fillMaxSize().background(Sky)) {
+    Box(
+        modifier = modifier
+            .fillMaxSize()
+            .background(Sky)
+    ) {
         Text(
             text = stringResource(id = R.string.create_event),
             modifier = modifier

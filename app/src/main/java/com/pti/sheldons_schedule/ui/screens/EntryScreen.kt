@@ -6,10 +6,8 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.FloatingActionButton
-import androidx.compose.material.Icon
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.Button
+import androidx.compose.material.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -18,9 +16,13 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import com.pti.sheldons_schedule.R
 import com.pti.sheldons_schedule.ui.navigation.Screen
+import com.pti.sheldons_schedule.ui.theme.Black
 import com.pti.sheldons_schedule.ui.theme.Sky
 import kotlin.math.hypot
 
@@ -43,7 +45,6 @@ fun EntryScreen(navController: NavController) {
                     radius = value
                 }
                 navController.navigate(Screen.CreateEventScreen.route)
-//                animateShape.snapTo(0f)
             }
             isClicked = false
         }
@@ -55,17 +56,21 @@ fun EntryScreen(navController: NavController) {
                 drawCircle(
                     color = Sky,
                     radius = radius,
-                    center = Offset(size.width, size.height)
+                    center = Offset(size.width / 2f, size.height / 2f)
                 )
             })
 
-        FloatingActionButton(
+        Button(
             onClick = { isClicked = !isClicked },
             modifier = Modifier
                 .padding(start = 10.dp, end = 10.dp, bottom = 15.dp)
-                .align(Alignment.BottomEnd)
+                .align(Alignment.Center)
         ) {
-            Icon(Icons.Filled.Add, "")
+            Text(
+                text = stringResource(id = R.string.create_event),
+                fontSize = 15.sp,
+                color = Black
+            )
         }
     }
 }
