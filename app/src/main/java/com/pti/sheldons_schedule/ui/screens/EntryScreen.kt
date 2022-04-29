@@ -19,12 +19,14 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
+import com.pti.sheldons_schedule.ui.navigation.Screen
 import com.pti.sheldons_schedule.ui.theme.Sky
 import kotlin.math.hypot
 
 @Composable
-fun EntryScreen(modifier: Modifier = Modifier) {
-    Box(modifier = modifier.fillMaxSize()) {
+fun EntryScreen(navController: NavController) {
+    Box(modifier = Modifier.fillMaxSize()) {
         var radius by remember { mutableStateOf(0f) }
         var isClicked by remember { mutableStateOf(false) }
         val animateShape = remember { Animatable(0f) }
@@ -40,7 +42,8 @@ fun EntryScreen(modifier: Modifier = Modifier) {
                 animateShape.animateTo(maxRadiusPx, animationSpec = tween()) {
                     radius = value
                 }
-                animateShape.snapTo(0f)
+                navController.navigate(Screen.CreateEventScreen.route)
+//                animateShape.snapTo(0f)
             }
             isClicked = false
         }
@@ -58,7 +61,7 @@ fun EntryScreen(modifier: Modifier = Modifier) {
 
         FloatingActionButton(
             onClick = { isClicked = !isClicked },
-            modifier = modifier
+            modifier = Modifier
                 .padding(start = 10.dp, end = 10.dp, bottom = 15.dp)
                 .align(Alignment.BottomEnd)
         ) {

@@ -7,7 +7,8 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.ui.Modifier
-import com.pti.sheldons_schedule.ui.screens.EntryScreen
+import androidx.navigation.compose.rememberNavController
+import com.pti.sheldons_schedule.ui.navigation.Navigation
 import com.pti.sheldons_schedule.ui.theme.Sheldons_ScheduleTheme
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -21,7 +22,8 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colors.background
                 ) {
-                    EntryScreen(modifier = Modifier)
+                    val navController = rememberNavController()
+                    Navigation(navHostController = navController)
                 }
             }
         }
