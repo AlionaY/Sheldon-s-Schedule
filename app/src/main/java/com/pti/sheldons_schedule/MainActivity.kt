@@ -21,7 +21,7 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colors.background
                 ) {
-                    EntryScreen(onClick = { /*TODO*/ }, modifier = Modifier)
+                    EntryScreen(modifier = Modifier)
                 }
             }
         }
