@@ -4,6 +4,8 @@ plugins {
     id 'dagger.hilt.android.plugin'
     id 'kotlin-kapt'
     id 'kotlinx-serialization'
+    id 'kotlin-dsl'
+    id 'version-catalog'
 }
 
 android {
@@ -39,7 +41,7 @@ android {
         compose true
     }
     composeOptions {
-        kotlinCompilerExtensionVersion compose_version
+        kotlinCompilerExtensionVersion = libs.versions.compose
     }
     packagingOptions {
         resources {
@@ -50,26 +52,10 @@ android {
 
 dependencies {
 
-    implementation 'androidx.core:core-ktx:1.7.0'
-
-//    compose
-    implementation "androidx.compose.ui:ui:$compose_version"
-    implementation "androidx.compose.material:material:$compose_version"
-    implementation "androidx.compose.ui:ui-tooling-preview:$compose_version"
-    implementation 'androidx.lifecycle:lifecycle-runtime-ktx:2.4.1'
-    implementation 'androidx.activity:activity-compose:1.4.0'
-
-//    coroutines
-    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.0'
-
-//    hilt
-    implementation "com.google.dagger:hilt-android:2.40.5"
-    implementation "androidx.hilt:hilt-lifecycle-viewmodel:1.0.0-alpha03"
-    implementation "androidx.hilt:hilt-navigation-compose:1.0.0"
-    kapt "com.google.dagger:hilt-compiler:2.40.5"
-
-//    accompanist
-    implementation "com.google.accompanist:accompanist-systemuicontroller:$accompanist_version"
-    implementation "com.google.accompanist:accompanist-navigation-animation:$accompanist_version"
-    implementation "com.google.accompanist:accompanist-permissions:$accompanist_version"
+    implementation(libs.bundles.compose)
+//    implementation(libs.bundles.compose)
+//    implementation(libs.coroutines)
+//    implementation(libs.bundles.hilt)
+//    kapt(libs.hilt.compiler)
+//    implementation(libs.bundles.accompanist)
 }
