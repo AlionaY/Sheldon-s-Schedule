@@ -5,7 +5,6 @@ import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
 import androidx.compose.material.FloatingActionButton
 import androidx.compose.material.Icon
 import androidx.compose.material.icons.Icons
@@ -21,7 +20,7 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.dp
 import com.pti.sheldons_schedule.MainViewModel
 import com.pti.sheldons_schedule.ui.theme.Sky
-import com.pti.sheldons_schedule.util.padding
+import com.pti.sheldons_schedule.util.horizontalPadding
 
 //todo: add viewModel to navigation
 
@@ -55,9 +54,9 @@ fun EntryScreen(viewModel: MainViewModel) {
             })
 
         FloatingActionButton(
-            onClick = { viewModel.updateIsClicked() },
+            onClick = { viewModel.toggleClicked() },
             modifier = Modifier
-                .padding(horizontal = 10.dp, bottom = 15.dp)
+                .horizontalPadding(horizontal = 10.dp, bottom = 15.dp)
                 .align(Alignment.BottomEnd)
         ) {
             Icon(Icons.Filled.Add, "")

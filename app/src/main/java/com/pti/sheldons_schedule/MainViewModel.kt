@@ -15,7 +15,7 @@ class MainViewModel @Inject constructor() : ViewModel() {
 
     val animationState = MutableStateFlow(AnimationState())
 
-    fun updateIsClicked() {
+    fun toggleClicked() {
         animationState.update { it.copy(isClicked = !it.isClicked) }
     }
 

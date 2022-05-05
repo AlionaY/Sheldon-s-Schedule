@@ -5,13 +5,18 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 
-fun Modifier.padding(
+fun Modifier.horizontalPadding(
     horizontal: Dp = 0.dp,
-    vertical: Dp = 0.dp,
-    start: Dp = 0.dp,
-    end: Dp = 0.dp,
     top: Dp = 0.dp,
     bottom: Dp = 0.dp
 ) = this
-    .padding(horizontal = horizontal, vertical = vertical)
-    .padding(top = top, bottom = bottom, start = start, end = end)
+    .padding(horizontal = horizontal)
+    .padding(top = top, bottom = bottom)
+
+fun Modifier.verticalPadding(
+    vertical: Dp = 0.dp,
+    start: Dp = 0.dp,
+    end: Dp = 0.dp
+) = this
+    .padding(vertical = vertical)
+    .padding(start = start, end = end)
