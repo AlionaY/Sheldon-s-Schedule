@@ -5,9 +5,10 @@ import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material.Button
-import androidx.compose.material.Text
+import androidx.compose.material.FloatingActionButton
+import androidx.compose.material.Icon
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -16,39 +17,29 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalDensity
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
-import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.navigation.NavController
 import com.pti.sheldons_schedule.MainViewModel
-import com.pti.sheldons_schedule.R
-import com.pti.sheldons_schedule.ui.navigation.Screen
-import com.pti.sheldons_schedule.ui.theme.Black
 import com.pti.sheldons_schedule.ui.theme.Sky
-import kotlin.math.hypot
+import com.pti.sheldons_schedule.util.horizontalPadding
+
+//todo: add viewModel to navigation
 
 @Composable
-fun EntryScreen(navController: NavController, viewModel: MainViewModel = hiltViewModel()) {
-    Box(modifier = Modifier.fillMaxSize()) {
-        var radius by remember { mutableStateOf(0f) }
-        var isClicked by remember { mutableStateOf(false) }
-        val animateShape = remember { Animatable(0f) }
-        val (width, height) = with(LocalConfiguration.current) {
-            with(LocalDensity.current) {
-                screenWidthDp.dp.toPx() to screenHeightDp.dp.toPx()
-            }
-        }
-        val maxRadiusPx = hypot(width, height)
+fun EntryScreen(viewModel: MainViewModel) {
+    val animationState by viewModel.animationState.collectAsState()
 
-        LaunchedEffect(key1 = isClicked) {
-            if (isClicked) {
-                animateShape.animateTo(maxRadiusPx, animationSpec = tween()) {
-                    radius = value
+    Box(modifier = Modifier.fillMaxSize()) {
+        val animateShape = remember { Animatable(animationState.animateShape) }
+        viewModel.getMaxRadiusPx(LocalDensity.current, LocalConfiguration.current)
+
+        LaunchedEffect(key1 = animationState.isClicked) {
+            if (animationState.isClicked) {
+                animateShape.animateTo(animationState.maxRadiusPx, animationSpec = tween()) {
+                    viewModel.updateAnimationRadius(value)
                 }
-                navController.navigate(Screen.CreateEventScreen.route)
+                animateShape.snapTo(0f)
             }
-            isClicked = false
+            viewModel.resetIsClicked()
         }
 
         Box(modifier = Modifier
@@ -57,22 +48,18 @@ fun EntryScreen(navController: NavController, viewModel: MainViewModel = hiltVie
             .drawBehind {
                 drawCircle(
                     color = Sky,
-                    radius = radius,
-                    center = Offset(size.width / 2f, size.height / 2f)
+                    radius = animationState.radius,
+                    center = Offset(size.width, size.height)
                 )
             })
 
-        Button(
-            onClick = { isClicked = !isClicked },
+        FloatingActionButton(
+            onClick = { viewModel.toggleClicked() },
             modifier = Modifier
-                .padding(start = 10.dp, end = 10.dp, bottom = 15.dp)
-                .align(Alignment.Center)
+                .horizontalPadding(horizontal = 10.dp, bottom = 15.dp)
+                .align(Alignment.BottomEnd)
         ) {
-            Text(
-                text = stringResource(id = R.string.create_event),
-                fontSize = 15.sp,
-                color = Black
-            )
+            Icon(Icons.Filled.Add, "")
         }
     }
 }
