@@ -14,6 +14,7 @@ import androidx.compose.ui.unit.sp
 import com.pti.sheldons_schedule.R
 import com.pti.sheldons_schedule.ui.theme.Sky
 
+//todo: make screen
 @Composable
 fun CreateEventScreen(modifier: Modifier = Modifier) {
     Box(

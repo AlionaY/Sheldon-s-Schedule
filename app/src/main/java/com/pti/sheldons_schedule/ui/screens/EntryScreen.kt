@@ -19,7 +19,9 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import com.pti.sheldons_schedule.MainViewModel
 import com.pti.sheldons_schedule.R
 import com.pti.sheldons_schedule.ui.navigation.Screen
 import com.pti.sheldons_schedule.ui.theme.Black
@@ -27,7 +29,7 @@ import com.pti.sheldons_schedule.ui.theme.Sky
 import kotlin.math.hypot
 
 @Composable
-fun EntryScreen(navController: NavController) {
+fun EntryScreen(navController: NavController, viewModel: MainViewModel = hiltViewModel()) {
     Box(modifier = Modifier.fillMaxSize()) {
         var radius by remember { mutableStateOf(0f) }
         var isClicked by remember { mutableStateOf(false) }
