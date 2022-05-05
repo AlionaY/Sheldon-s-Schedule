@@ -41,6 +41,7 @@ fun EntryScreen(navController: NavController, viewModel: MainViewModel) {
                     viewModel.updateAnimationRadius(value)
                 }
                 animateShape.snapTo(0f)
+                navController.navigate(Screen.CreateEventScreen.route)
             }
             viewModel.resetIsClicked()
         }
@@ -61,7 +62,6 @@ fun EntryScreen(navController: NavController, viewModel: MainViewModel) {
             modifier = Modifier
                 .horizontalPadding(horizontal = 10.dp, bottom = 15.dp)
                 .align(Alignment.BottomEnd)
-                .clickable { navController.navigate(Screen.CreateEventScreen.route) }
         ) {
             Icon(Icons.Filled.Add, "")
         }
