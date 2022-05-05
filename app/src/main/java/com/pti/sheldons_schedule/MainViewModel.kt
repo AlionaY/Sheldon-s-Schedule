@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModel
 import com.pti.sheldons_schedule.data.AnimationState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.update
 import javax.inject.Inject
 import kotlin.math.hypot
 

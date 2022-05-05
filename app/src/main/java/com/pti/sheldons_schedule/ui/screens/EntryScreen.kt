@@ -3,6 +3,7 @@ package com.pti.sheldons_schedule.ui.screens
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.FloatingActionButton
@@ -18,14 +19,16 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
 import com.pti.sheldons_schedule.MainViewModel
+import com.pti.sheldons_schedule.ui.navigation.Screen
 import com.pti.sheldons_schedule.ui.theme.Sky
 import com.pti.sheldons_schedule.util.horizontalPadding
 
 //todo: add viewModel to navigation
 
 @Composable
-fun EntryScreen(viewModel: MainViewModel) {
+fun EntryScreen(navController: NavController, viewModel: MainViewModel) {
     val animationState by viewModel.animationState.collectAsState()
 
     Box(modifier = Modifier.fillMaxSize()) {
@@ -58,6 +61,7 @@ fun EntryScreen(viewModel: MainViewModel) {
             modifier = Modifier
                 .horizontalPadding(horizontal = 10.dp, bottom = 15.dp)
                 .align(Alignment.BottomEnd)
+                .clickable { navController.navigate(Screen.CreateEventScreen.route) }
         ) {
             Icon(Icons.Filled.Add, "")
         }
