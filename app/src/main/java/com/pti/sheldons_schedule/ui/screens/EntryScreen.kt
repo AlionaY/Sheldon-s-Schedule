@@ -19,30 +19,28 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.dp
+import com.pti.sheldons_schedule.MainViewModel
 import com.pti.sheldons_schedule.ui.theme.Sky
-import kotlin.math.hypot
+import com.pti.sheldons_schedule.util.padding
+
+//todo: add viewModel to navigation
 
 @Composable
-fun EntryScreen() {
-    Box(modifier = Modifier.fillMaxSize()) {
-        var radius by remember { mutableStateOf(0f) }
-        var isClicked by remember { mutableStateOf(false) }
-        val animateShape = remember { Animatable(0f) }
-        val (width, height) = with(LocalConfiguration.current) {
-            with(LocalDensity.current) {
-                screenWidthDp.dp.toPx() to screenHeightDp.dp.toPx()
-            }
-        }
-        val maxRadiusPx = hypot(width, height)
+fun EntryScreen(viewModel: MainViewModel) {
+    val animationState by viewModel.animationState.collectAsState()
 
-        LaunchedEffect(key1 = isClicked) {
-            if (isClicked) {
-                animateShape.animateTo(maxRadiusPx, animationSpec = tween()) {
-                    radius = value
+    Box(modifier = Modifier.fillMaxSize()) {
+        val animateShape = remember { Animatable(animationState.animateShape) }
+        viewModel.getMaxRadiusPx(LocalDensity.current, LocalConfiguration.current)
+
+        LaunchedEffect(key1 = animationState.isClicked) {
+            if (animationState.isClicked) {
+                animateShape.animateTo(animationState.maxRadiusPx, animationSpec = tween()) {
+                    viewModel.updateAnimationRadius(value)
                 }
                 animateShape.snapTo(0f)
             }
-            isClicked = false
+            viewModel.resetIsClicked()
         }
 
         Box(modifier = Modifier
@@ -51,17 +49,18 @@ fun EntryScreen() {
             .drawBehind {
                 drawCircle(
                     color = Sky,
-                    radius = radius,
+                    radius = animationState.radius,
                     center = Offset(size.width, size.height)
                 )
             })
 
         FloatingActionButton(
-            onClick = { isClicked = !isClicked },
+            onClick = { viewModel.updateIsClicked() },
             modifier = Modifier
-                .padding(start = 10.dp, end = 10.dp, bottom = 15.dp)
+                .padding(horizontal = 10.dp, bottom = 15.dp)
                 .align(Alignment.BottomEnd)
         ) {
             Icon(Icons.Filled.Add, "")
         }
-    }}
+    }
+}
