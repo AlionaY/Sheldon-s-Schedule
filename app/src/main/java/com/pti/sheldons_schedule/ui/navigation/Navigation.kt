@@ -6,10 +6,10 @@ import androidx.lifecycle.viewmodel.compose.LocalViewModelStoreOwner
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
 import com.pti.sheldons_schedule.MainViewModel
 import com.pti.sheldons_schedule.ui.screens.CreateEventScreen
 import com.pti.sheldons_schedule.ui.screens.EntryScreen
-import com.pti.sheldons_schedule.util.addScreen
 
 @Composable
 fun Navigation(navHostController: NavHostController) {
@@ -18,8 +18,8 @@ fun Navigation(navHostController: NavHostController) {
         "No ViewModelStoreOwner was provided via LocalViewModelStoreOwner"
     }
 
-    NavHost(navController = navHostController, startDestination = Screen.EntryScreen.route) {
-        addScreen(Screen.EntryScreen) {
+    NavHost(navController = navHostController, startDestination = NavDestination.EntryScreen.route) {
+        composable(NavDestination.EntryScreen.route) {
             CompositionLocalProvider(
                 LocalViewModelStoreOwner provides viewModelStoreOwner
             ) {
@@ -28,7 +28,7 @@ fun Navigation(navHostController: NavHostController) {
             }
         }
 
-        addScreen(Screen.CreateEventScreen) {
+        composable(NavDestination.CreateEventScreen.route) {
             CreateEventScreen()
         }
     }

@@ -1,30 +1,14 @@
 package com.pti.sheldons_schedule.util
 
-import androidx.compose.runtime.Composable
-import androidx.navigation.NavBackStackEntry
-import androidx.navigation.NavGraphBuilder
-import androidx.navigation.compose.ComposeNavigator
-import androidx.navigation.get
-import com.pti.sheldons_schedule.ui.navigation.Screen
 import androidx.compose.foundation.layout.padding
+import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-
-
-fun NavGraphBuilder.addScreen(
-    screen: Screen,
-    content: @Composable (NavBackStackEntry) -> Unit
-) {
-    addDestination(
-        ComposeNavigator.Destination(provider[ComposeNavigator::class], content).apply {
-            this.route = screen.route
-            arguments.forEach { (argumentName, argument) ->
-                addArgument(argumentName, argument)
-            }
-        }
-    )
-}
+import androidx.core.net.toUri
+import androidx.navigation.*
+import androidx.navigation.compose.ComposeNavigator
+import com.pti.sheldons_schedule.ui.navigation.NavDestination
 
 fun Modifier.horizontalPadding(
     horizontal: Dp = 0.dp,
@@ -41,3 +25,7 @@ fun Modifier.verticalPadding(
 ) = this
     .padding(vertical = vertical)
     .padding(start = start, end = end)
+
+fun NavController.navigate(destination: NavDestination) {
+    navigate(destination.route)
+}
