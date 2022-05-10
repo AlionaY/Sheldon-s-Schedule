@@ -2,33 +2,44 @@ package com.pti.sheldons_schedule.ui.screens
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.wrapContentHeight
-import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
+import com.pti.sheldons_schedule.MainViewModel
 import com.pti.sheldons_schedule.R
-import com.pti.sheldons_schedule.ui.theme.Sky
+import com.pti.sheldons_schedule.ui.screens.create_event_screen.DatePicker
+import com.pti.sheldons_schedule.ui.screens.create_event_screen.SaveOrCloseCreatingEvent
+import com.pti.sheldons_schedule.ui.screens.create_event_screen.SpacerItem
+import com.pti.sheldons_schedule.ui.screens.create_event_screen.TextFieldItem
+import com.pti.sheldons_schedule.ui.theme.LightSky
 
-//todo: make screen
 @Composable
-fun CreateEventScreen() {
+fun CreateEventScreen(viewModel: MainViewModel = hiltViewModel()) {
+
+    val date by viewModel.date.collectAsState()
+
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(Sky)
+            .background(LightSky)
     ) {
-        Text(
-            text = stringResource(id = R.string.create_event),
-            modifier = Modifier
-                .fillMaxWidth()
-                .wrapContentHeight(),
-            fontSize = 20.sp,
-            fontWeight = FontWeight.Bold
-        )
+        Column(modifier = Modifier.fillMaxSize()) {
+            SaveOrCloseCreatingEvent()
+            SpacerItem()
+            TextFieldItem(value = "", onValueChanged = {}, labelRes = R.string.title)
+            SpacerItem()
+            TextFieldItem(value = "", onValueChanged = {}, labelRes = R.string.description)
+            SpacerItem()
+            DatePicker(
+                date = date,
+                onPickedDate = { year, month, day ->
+                    viewModel.onPickedDate(year, month, day)
+                }
+            )
+        }
     }
 }

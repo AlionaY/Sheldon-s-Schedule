@@ -12,14 +12,13 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.compose.rememberNavController
 import com.google.accompanist.navigation.animation.rememberAnimatedNavController
 import com.pti.sheldons_schedule.ui.navigation.Navigation
+import com.pti.sheldons_schedule.ui.screens.CreateEventScreen
 import com.pti.sheldons_schedule.ui.theme.Sheldons_ScheduleTheme
 import dagger.hilt.android.AndroidEntryPoint
 
 @OptIn(ExperimentalAnimationApi::class)
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
-
-    private val viewModel : MainViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -29,8 +28,9 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colors.background
                 ) {
-                    val navController = rememberAnimatedNavController()
-                    Navigation(navHostController = navController)
+//                    val navController = rememberAnimatedNavController()
+//                    Navigation(navHostController = navController)
+                    CreateEventScreen()
                 }
             }
         }
