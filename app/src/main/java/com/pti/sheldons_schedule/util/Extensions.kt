@@ -1,14 +1,9 @@
 package com.pti.sheldons_schedule.util
 
 import androidx.compose.foundation.layout.padding
-import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import androidx.core.net.toUri
-import androidx.navigation.*
-import androidx.navigation.compose.ComposeNavigator
-import com.pti.sheldons_schedule.ui.navigation.NavDestination
 
 fun Modifier.horizontalPadding(
     horizontal: Dp = 0.dp,
@@ -25,7 +20,3 @@ fun Modifier.verticalPadding(
 ) = this
     .padding(vertical = vertical)
     .padding(start = start, end = end)
-
-fun NavController.navigate(destination: NavDestination) {
-    navigate(destination.route)
-}
