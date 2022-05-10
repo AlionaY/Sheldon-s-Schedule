@@ -184,6 +184,9 @@ fabric.properties
 ### AndroidStudio Patch ###
 
 !/gradle/wrapper/gradle-wrapper.jar
+gradlew.bat
+gradlew
+gradle/wrapper/gradle-wrapper.properties
 
 gradlew.bat
 gradlew
