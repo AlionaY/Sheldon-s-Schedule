@@ -2,4 +2,8 @@
     <string name="app_name">Sheldon`s_Schedule</string>
 
     <string name="create_event">Create event</string>
+    <string name="support">Support</string>
+    <string name="title">Title</string>
+    <string name="description">Description</string>
+    <string name="calendar_title">Select date</string>
 </resources>
