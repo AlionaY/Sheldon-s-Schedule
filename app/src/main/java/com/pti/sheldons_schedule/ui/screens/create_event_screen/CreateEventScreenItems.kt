@@ -1,6 +1,5 @@
 package com.pti.sheldons_schedule.ui.screens.create_event_screen
 
-import androidx.annotation.StringRes
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.Icon
@@ -12,15 +11,16 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.pti.sheldons_schedule.R
 import com.pti.sheldons_schedule.ui.theme.Red
 
 @Composable
-fun DefaultSpacer(modifier: Modifier = Modifier, height: Int = 20) {
+fun HeightSpacer(height: Dp = 20.dp) {
     Spacer(
-        modifier = modifier
-            .height(height.dp)
+        modifier = Modifier
+            .height(height)
             .fillMaxWidth()
     )
 }
@@ -29,25 +29,25 @@ fun DefaultSpacer(modifier: Modifier = Modifier, height: Int = 20) {
 fun DefaultTextField(
     value: String,
     onValueChanged: (String) -> Unit,
-    @StringRes labelRes: Int,
+    label: String,
     modifier: Modifier = Modifier
 ) {
     OutlinedTextField(
         value = value,
         onValueChange = { onValueChanged(it) },
-        label = { Text(stringResource(id = labelRes)) },
-        modifier = modifier
-            .padding(horizontal = 15.dp)
-            .fillMaxWidth()
+        label = { Text(label) },
+        modifier = modifier.fillMaxWidth()
     )
 }
 
 @Composable
-fun SaveOrCloseCreatingEvent(modifier: Modifier = Modifier) {
+fun SaveOrCloseCreatingEvent(
+    onCloseIconClicked: () -> Unit,
+    onSaveIconClicked: () -> Unit,
+    modifier: Modifier = Modifier
+) {
     Row(
-        modifier = modifier
-            .height(58.dp)
-            .fillMaxWidth(),
+        modifier = modifier,
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
@@ -59,16 +59,16 @@ fun SaveOrCloseCreatingEvent(modifier: Modifier = Modifier) {
             Icon(
                 painter = painterResource(id = R.drawable.ic_close),
                 contentDescription = null,
-                modifier = modifier
+                modifier = Modifier
                     .padding(start = 15.dp)
                     .wrapContentSize()
-                    .clickable {  },
+                    .clickable { onCloseIconClicked() },
                 tint = Red
             )
 
             Text(
                 text = stringResource(id = R.string.support),
-                modifier = modifier
+                modifier = Modifier
                     .wrapContentSize()
                     .padding(start = 25.dp),
                 style = MaterialTheme.typography.h6
@@ -78,10 +78,10 @@ fun SaveOrCloseCreatingEvent(modifier: Modifier = Modifier) {
         Icon(
             painter = painterResource(id = R.drawable.ic_done),
             contentDescription = null,
-            modifier = modifier
+            modifier = Modifier
                 .wrapContentHeight()
                 .padding(end = 15.dp)
-                .clickable {  },
+                .clickable { onSaveIconClicked() },
             tint = Red
         )
     }

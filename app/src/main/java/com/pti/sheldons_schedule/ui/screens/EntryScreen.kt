@@ -11,13 +11,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import com.pti.sheldons_schedule.MainViewModel
 import com.pti.sheldons_schedule.ui.navigation.NavDestination
-import com.pti.sheldons_schedule.util.horizontalPadding
 import com.pti.sheldons_schedule.ui.navigation.navigate
+import com.pti.sheldons_schedule.util.horizontalPadding
 
 @Composable
-fun EntryScreen(navController: NavController, viewModel: MainViewModel) {
+fun EntryScreen(navController: NavController) {
     Box(modifier = Modifier.fillMaxSize()) {
         FloatingActionButton(
             onClick = { navController.navigate(NavDestination.CreateEventScreen) },
