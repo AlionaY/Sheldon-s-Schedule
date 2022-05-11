@@ -1,7 +1,6 @@
 package com.pti.sheldons_schedule.ui.screens.create_event_screen
 
-import android.app.DatePickerDialog
-import android.widget.DatePicker
+import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -11,21 +10,23 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.pti.sheldons_schedule.data.Date
+import com.google.android.material.datepicker.MaterialDatePicker
+import com.pti.sheldons_schedule.R
 
 @Composable
 fun DatePicker(
-    date: Date?,
-    onPickedDate: (year: Int, month: Int, day: Int) -> Unit,
+    activity: AppCompatActivity,
+    pickedDate: String?,
+    onPickedDate: (Long) -> Unit,
     modifier: Modifier = Modifier
 ) {
-    var isClicked by remember { mutableStateOf(false)}
+    var isClicked by remember { mutableStateOf(false) }
 
     if (isClicked) {
-        DatePickerDialog(date, onPickedDate)
+        DatePickerDialog(activity, onPickedDate)
         isClicked = false
     }
 
@@ -42,7 +43,7 @@ fun DatePicker(
             .clickable { isClicked = true }
     ) {
         Text(
-            text = date?.formattedDate.orEmpty(),
+            text = pickedDate.orEmpty(),
             fontSize = 16.sp,
             modifier = Modifier
                 .padding(horizontal = 15.dp)
@@ -55,20 +56,15 @@ fun DatePicker(
 
 @Composable
 private fun DatePickerDialog(
-    datePicked: Date?,
-    onPickedDate: (year: Int, month: Int, day: Int) -> Unit
+    activity: AppCompatActivity,
+    onPickedDate: (Long) -> Unit
 ) {
-    val context = LocalContext.current
-
-    datePicked?.let {
-        DatePickerDialog(
-            context,
-            { _: DatePicker, year: Int, month: Int, dayOfMonth: Int ->
-                onPickedDate(year, month, dayOfMonth)
-            },
-            it.year,
-            it.month,
-            it.day
-        ).show()
-    }
+    MaterialDatePicker.Builder.datePicker()
+        .setTitleText(stringResource(id = R.string.calendar_title))
+        .build().apply {
+            show(activity.supportFragmentManager, this.toString())
+            addOnPositiveButtonClickListener {
+                onPickedDate(it)
+            }
+        }
 }

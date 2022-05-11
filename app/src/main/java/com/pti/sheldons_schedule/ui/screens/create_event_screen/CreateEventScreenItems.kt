@@ -17,16 +17,16 @@ import com.pti.sheldons_schedule.R
 import com.pti.sheldons_schedule.ui.theme.Red
 
 @Composable
-fun SpacerItem(modifier: Modifier = Modifier) {
+fun DefaultSpacer(modifier: Modifier = Modifier, height: Int = 20) {
     Spacer(
         modifier = modifier
-            .height(20.dp)
+            .height(height.dp)
             .fillMaxWidth()
     )
 }
 
 @Composable
-fun TextFieldItem(
+fun DefaultTextField(
     value: String,
     onValueChanged: (String) -> Unit,
     @StringRes labelRes: Int,
@@ -52,51 +52,37 @@ fun SaveOrCloseCreatingEvent(modifier: Modifier = Modifier) {
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
         Row(
-            modifier = modifier.wrapContentSize(),
+            modifier = Modifier.wrapContentSize(),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceAround
         ) {
-            CloseIcon()
-            SupportText()
+            Icon(
+                painter = painterResource(id = R.drawable.ic_close),
+                contentDescription = null,
+                modifier = modifier
+                    .padding(start = 15.dp)
+                    .wrapContentSize()
+                    .clickable {  },
+                tint = Red
+            )
+
+            Text(
+                text = stringResource(id = R.string.support),
+                modifier = modifier
+                    .wrapContentSize()
+                    .padding(start = 25.dp),
+                style = MaterialTheme.typography.h6
+            )
         }
 
-        SaveEventIcon()
+        Icon(
+            painter = painterResource(id = R.drawable.ic_done),
+            contentDescription = null,
+            modifier = modifier
+                .wrapContentHeight()
+                .padding(end = 15.dp)
+                .clickable {  },
+            tint = Red
+        )
     }
-}
-
-@Composable
-fun CloseIcon(modifier: Modifier = Modifier) {
-    Icon(
-        painter = painterResource(id = R.drawable.ic_close),
-        contentDescription = null,
-        modifier = modifier
-            .padding(start = 15.dp)
-            .wrapContentSize()
-            .clickable { },
-        tint = Red
-    )
-}
-
-@Composable
-fun SupportText(modifier: Modifier = Modifier) {
-    Text(
-        text = stringResource(id = R.string.support),
-        modifier = modifier
-            .wrapContentSize()
-            .padding(start = 25.dp),
-        style = MaterialTheme.typography.h6
-    )
-}
-
-@Composable
-fun SaveEventIcon(modifier: Modifier = Modifier) {
-    Icon(
-        painter = painterResource(id = R.drawable.ic_done),
-        contentDescription = null,
-        modifier = modifier
-            .wrapContentHeight()
-            .padding(end = 15.dp)
-            .clickable { },
-        tint = Red
-    )
 }

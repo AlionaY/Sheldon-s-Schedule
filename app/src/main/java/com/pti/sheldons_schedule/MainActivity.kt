@@ -4,6 +4,7 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
+import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.MaterialTheme
@@ -16,9 +17,8 @@ import com.pti.sheldons_schedule.ui.screens.CreateEventScreen
 import com.pti.sheldons_schedule.ui.theme.Sheldons_ScheduleTheme
 import dagger.hilt.android.AndroidEntryPoint
 
-@OptIn(ExperimentalAnimationApi::class)
 @AndroidEntryPoint
-class MainActivity : ComponentActivity() {
+class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

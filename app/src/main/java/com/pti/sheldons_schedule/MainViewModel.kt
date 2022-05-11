@@ -1,55 +1,38 @@
 package com.pti.sheldons_schedule
 
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
-import com.pti.sheldons_schedule.data.Date
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.filterNotNull
-import kotlinx.coroutines.flow.update
-import kotlinx.coroutines.launch
+import java.text.SimpleDateFormat
 import java.util.*
 import javax.inject.Inject
 
 @HiltViewModel
 class MainViewModel @Inject constructor() : ViewModel() {
 
-    val date = MutableStateFlow<Date?>(null)
-
-
-    init {
-        getCurrentDate()
-        formatPickedDate()
+    companion object {
+        const val DATE_FORMAT = "dd/MM/yyyy"
     }
 
-    private fun getCurrentDate() {
-        if (date.value == null) {
-            val calendar = getCalendar()
-            date.value = Date(
-                calendar.get(Calendar.YEAR),
-                calendar.get(Calendar.MONTH),
-                calendar.get(Calendar.DAY_OF_MONTH)
-            )
+    val date = MutableStateFlow(getCurrentDate())
+
+
+    private fun getCurrentDate(): String? {
+        val calendar = Calendar.getInstance()
+        return formatDate(calendar.timeInMillis)
+    }
+
+    fun onDatePicked(millis: Long) {
+        date.value = formatDate(millis)
+    }
+
+    private fun formatDate(milliseconds: Long?): String? {
+        milliseconds?.let {
+            val formatter = SimpleDateFormat(DATE_FORMAT, Locale.US)
+            val calendar: Calendar = Calendar.getInstance()
+            calendar.timeInMillis = it
+            return formatter.format(calendar.time)
         }
-    }
-
-    private fun getCalendar(): Calendar {
-        return Calendar.getInstance()
-    }
-
-    fun onPickedDate(year: Int, month: Int, day: Int) {
-        date.update {
-            it?.copy(
-                year = year,
-                month = month,
-                day = day,
-            )
-        }
-    }
-
-    private fun formatPickedDate() = viewModelScope.launch {
-        date.filterNotNull().collect {
-            date.update { it?.copy(formattedDate = it.toFormat()) }
-        }
+        return null
     }
 }

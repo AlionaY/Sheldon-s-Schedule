@@ -1,7 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <style name="Theme.Sheldons_Schedule" parent="android:Theme.Material.Light.NoActionBar">
+    <style name="Theme.Sheldons_Schedule" parent="Theme.AppCompat.DayNight.NoActionBar">
         <item name="android:statusBarColor">@color/purple_700</item>
+
+        <item name="materialCalendarStyle">@style/Widget.MaterialComponents.MaterialCalendar</item>
+        <item name="materialCalendarFullscreenTheme">@style/ThemeOverlay.MaterialComponents.MaterialCalendar.Fullscreen</item>
+        <item name="materialCalendarTheme">@style/Theme.MaterialComponents.DayNight</item>
     </style>
 </resources>
