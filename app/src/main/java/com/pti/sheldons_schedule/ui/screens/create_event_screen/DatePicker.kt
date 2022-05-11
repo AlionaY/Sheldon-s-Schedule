@@ -10,6 +10,7 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -18,7 +19,6 @@ import com.pti.sheldons_schedule.R
 
 @Composable
 fun DatePicker(
-    activity: AppCompatActivity,
     pickedDate: String?,
     onPickedDate: (Long) -> Unit,
     modifier: Modifier = Modifier
@@ -26,7 +26,7 @@ fun DatePicker(
     var isClicked by remember { mutableStateOf(false) }
 
     if (isClicked) {
-        DatePickerDialog(activity, onPickedDate)
+        DatePickerDialog(onPickedDate)
         isClicked = false
     }
 
@@ -55,14 +55,13 @@ fun DatePicker(
 }
 
 @Composable
-private fun DatePickerDialog(
-    activity: AppCompatActivity,
-    onPickedDate: (Long) -> Unit
-) {
+private fun DatePickerDialog(onPickedDate: (Long) -> Unit) {
+    val activity = LocalContext.current as? AppCompatActivity
+
     MaterialDatePicker.Builder.datePicker()
         .setTitleText(stringResource(id = R.string.calendar_title))
         .build().apply {
-            show(activity.supportFragmentManager, this.toString())
+            activity?.supportFragmentManager?.let { show(it, this.toString()) }
             addOnPositiveButtonClickListener {
                 onPickedDate(it)
             }
