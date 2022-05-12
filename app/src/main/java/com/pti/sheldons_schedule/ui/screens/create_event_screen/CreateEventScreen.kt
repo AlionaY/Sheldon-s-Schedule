@@ -40,9 +40,7 @@ fun CreateEventScreen(viewModel: CreateEventViewModel = hiltViewModel()) {
                     .height(58.dp)
                     .fillMaxWidth()
             )
-
             HeightSpacer()
-
             DefaultTextField(
                 value = "",
                 onValueChanged = {},
