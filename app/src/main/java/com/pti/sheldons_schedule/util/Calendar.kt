@@ -9,4 +9,4 @@ fun Calendar.formatDate(format: String): String {
     return formatter.format(this.time)
 }
 
-fun TimeState.formatTime(format: String) = String.format(format, hour, minutes)
+//fun Calendar.formatTime(format: String) = String.format(format, hour, minutes)

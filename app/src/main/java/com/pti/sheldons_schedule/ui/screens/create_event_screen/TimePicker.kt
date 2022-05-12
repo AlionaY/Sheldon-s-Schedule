@@ -21,11 +21,12 @@ import com.google.android.material.timepicker.TimeFormat
 import com.pti.sheldons_schedule.R
 import com.pti.sheldons_schedule.ui.theme.Black
 import com.pti.sheldons_schedule.ui.theme.Steel
+import java.util.*
 
 @Composable
 fun TimePickerField(
     currentTime: String,
-    onTimePicked: (hour: Int, minutes: Int) -> Unit,
+    onTimePicked: (Calendar) -> Unit,
     modifier: Modifier = Modifier,
     textPadding : Int = 10
 ) {
@@ -33,7 +34,7 @@ fun TimePickerField(
     var isClicked by remember { mutableStateOf(false) }
 
     if (isClicked) {
-        TimePicker { hour, minutes -> onTimePicked(hour, minutes) }
+        TimePicker { onTimePicked(it) }
         isClicked = false
     }
 
@@ -60,7 +61,7 @@ fun TimePickerField(
 }
 
 @Composable
-fun TimePicker(onTimePicked: (hour: Int, minutes: Int) -> Unit) {
+fun TimePicker(onTimePicked: (Calendar) -> Unit) {
     val activity = LocalContext.current as? AppCompatActivity
 
     MaterialTimePicker.Builder()
@@ -70,7 +71,11 @@ fun TimePicker(onTimePicked: (hour: Int, minutes: Int) -> Unit) {
         .apply {
             activity?.supportFragmentManager?.let { show(it, this.toString()) }
             addOnPositiveButtonClickListener {
-                onTimePicked(hour, minute)
+                Calendar.getInstance().apply {
+                    set(Calendar.HOUR_OF_DAY, hour)
+                    set(Calendar.MINUTE, minute)
+                    onTimePicked(this)
+                }
             }
         }
 }
