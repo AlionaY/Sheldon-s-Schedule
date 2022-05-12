@@ -1,4 +1,4 @@
-package com.pti.sheldons_schedule.ui.screens
+package com.pti.sheldons_schedule.ui.screens.create_event_screen
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -11,22 +11,22 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.pti.sheldons_schedule.CreateEventViewModel
 import com.pti.sheldons_schedule.R
-import com.pti.sheldons_schedule.ui.screens.create_event_screen.DatePickerField
-import com.pti.sheldons_schedule.ui.screens.create_event_screen.DefaultTextField
-import com.pti.sheldons_schedule.ui.screens.create_event_screen.HeightSpacer
-import com.pti.sheldons_schedule.ui.screens.create_event_screen.SaveOrCloseCreatingEvent
 import com.pti.sheldons_schedule.ui.theme.LightSky
+
+private const val PADDING_WIDTH_SUM = 60
+private const val FIELD_COUNT = 2
 
 @Composable
 fun CreateEventScreen(viewModel: CreateEventViewModel = hiltViewModel()) {
 
     val createEventScreenState by viewModel.createEventScreenState.collectAsState()
 
-    Box(
+    BoxWithConstraints(
         modifier = Modifier
             .fillMaxSize()
             .background(LightSky)
     ) {
+        val halfFieldWidth = (this.maxWidth.value.toInt() - PADDING_WIDTH_SUM) / FIELD_COUNT
 
         Column(modifier = Modifier.fillMaxSize()) {
             SaveOrCloseCreatingEvent(
@@ -52,17 +52,30 @@ fun CreateEventScreen(viewModel: CreateEventViewModel = hiltViewModel()) {
                 label = stringResource(id = R.string.description),
                 modifier = Modifier.padding(horizontal = 15.dp)
             )
-            HeightSpacer()
-            DatePickerField(
-                pickedDate = createEventScreenState.formattedStartDate,
-                onPickedDate = { calendar ->
-                    calendar?.let { it -> viewModel.onDatePicked(it) }
-                },
-                modifier = Modifier
-                    .padding(15.dp)
-                    .fillMaxWidth()
-                    .height(50.dp)
-            )
+            HeightSpacer(height = 15.dp)
+            Row(modifier = Modifier.fillMaxWidth()) {
+                DatePickerField(
+                    pickedDate = createEventScreenState.formattedStartDate,
+                    onPickedDate = { calendar ->
+                        calendar?.let { it -> viewModel.onStartDatePicked(it) }
+                    },
+                    modifier = Modifier
+                        .padding(start = 15.dp)
+                        .width(halfFieldWidth.dp)
+                        .height(50.dp)
+                )
+                Spacer(modifier = Modifier.width(30.dp))
+                DatePickerField(
+                    pickedDate = createEventScreenState.formattedEndDate,
+                    onPickedDate = { calendar ->
+                        calendar?.let { it -> viewModel.onEndDatePicked(it) }
+                    },
+                    modifier = Modifier
+                        .padding(end = 15.dp)
+                        .width(halfFieldWidth.dp)
+                        .height(50.dp)
+                )
+            }
         }
     }
 }

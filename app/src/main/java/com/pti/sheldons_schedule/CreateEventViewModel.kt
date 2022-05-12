@@ -13,11 +13,16 @@ class CreateEventViewModel @Inject constructor() : ViewModel() {
 
     val createEventScreenState = MutableStateFlow(
         CreateEventScreenState(
-            startDate = Calendar.getInstance()
+            startDate = Calendar.getInstance(),
+            endDate = Calendar.getInstance()
         )
     )
 
-    fun onDatePicked(calendar: Calendar) {
+    fun onStartDatePicked(calendar: Calendar) {
         createEventScreenState.update { it.copy(startDate = calendar) }
+    }
+
+    fun onEndDatePicked(calendar: Calendar) {
+        createEventScreenState.update { it.copy(endDate = calendar) }
     }
 }
