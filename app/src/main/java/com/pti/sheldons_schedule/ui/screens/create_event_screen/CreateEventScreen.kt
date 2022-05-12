@@ -111,7 +111,7 @@ fun CreateEventScreen(viewModel: CreateEventViewModel = hiltViewModel()) {
 
                 TimePickerField(
                     currentTime = state.formattedEndTime,
-                    onTimePicked = { viewModel.onTimeStartPicked(it) },
+                    onTimePicked = { viewModel.onTimeEndPicked(it) },
                     modifier = Modifier
                         .padding(end = 15.dp)
                         .width(halfFieldWidth.dp)
