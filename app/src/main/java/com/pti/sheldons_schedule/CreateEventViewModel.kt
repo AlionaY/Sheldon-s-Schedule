@@ -1,6 +1,5 @@
 package com.pti.sheldons_schedule
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import com.pti.sheldons_schedule.data.CreateEventScreenState
 import com.pti.sheldons_schedule.data.TimeState

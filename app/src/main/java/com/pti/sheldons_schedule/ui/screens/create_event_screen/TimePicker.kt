@@ -19,6 +19,7 @@ import androidx.compose.ui.unit.sp
 import com.google.android.material.timepicker.MaterialTimePicker
 import com.google.android.material.timepicker.TimeFormat
 import com.pti.sheldons_schedule.R
+import com.pti.sheldons_schedule.ui.theme.Black
 import com.pti.sheldons_schedule.ui.theme.Steel
 
 @Composable
@@ -52,7 +53,7 @@ fun TimePickerField(
                 .padding(horizontal = textPadding.dp)
                 .fillMaxSize()
                 .align(Alignment.CenterStart),
-            color = Steel,
+            color = Black,
             textAlign = TextAlign.Start
         )
     }
