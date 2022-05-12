@@ -14,8 +14,10 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.pti.sheldons_schedule.CreateEventViewModel
 import com.pti.sheldons_schedule.R
+import com.pti.sheldons_schedule.data.CreateEventScreenState
 import com.pti.sheldons_schedule.ui.theme.LightSky
 import com.pti.sheldons_schedule.ui.theme.Steel
+import java.util.*
 
 private const val PADDING_WIDTH_SUM = 60
 private const val FIELD_COUNT = 2
@@ -23,7 +25,12 @@ private const val FIELD_COUNT = 2
 @Composable
 fun CreateEventScreen(viewModel: CreateEventViewModel = hiltViewModel()) {
 
-    val createEventScreenState by viewModel.createEventScreenState.collectAsState()
+    val state by viewModel.createEventScreenState.collectAsState(
+        CreateEventScreenState(
+            startDate = Calendar.getInstance(),
+            endDate = Calendar.getInstance()
+        )
+    )
 
     BoxWithConstraints(
         modifier = Modifier
@@ -80,7 +87,7 @@ fun CreateEventScreen(viewModel: CreateEventViewModel = hiltViewModel()) {
             HeightSpacer(height = 2.dp)
             Row(modifier = Modifier.fillMaxWidth()) {
                 DatePickerField(
-                    pickedDate = createEventScreenState.formattedStartDate,
+                    pickedDate = state.formattedStartDate,
                     onPickedDate = { calendar ->
                         calendar?.let { it -> viewModel.onStartDatePicked(it) }
                     },
@@ -91,7 +98,7 @@ fun CreateEventScreen(viewModel: CreateEventViewModel = hiltViewModel()) {
                 )
                 Spacer(modifier = Modifier.width(30.dp))
                 DatePickerField(
-                    pickedDate = createEventScreenState.formattedEndDate,
+                    pickedDate = state.formattedEndDate,
                     onPickedDate = { calendar ->
                         calendar?.let { it -> viewModel.onEndDatePicked(it) }
                     },
