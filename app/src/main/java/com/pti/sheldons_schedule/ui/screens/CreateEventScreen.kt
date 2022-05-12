@@ -68,7 +68,7 @@ fun CreateEventScreen(viewModel: CreateEventViewModel = hiltViewModel()) {
             )
             HeightSpacer()
             Row(modifier = Modifier.fillMaxWidth()) {
-                TimePicker(
+                TimePickerField(
                     currentTime = createEventScreenState.formattedStartTime,
                     onTimePicked = { hour, minutes ->
                         viewModel.onTimeStartPicked(hour, minutes)
@@ -85,7 +85,7 @@ fun CreateEventScreen(viewModel: CreateEventViewModel = hiltViewModel()) {
                         .fillMaxHeight()
                 )
 
-                TimePicker(
+                TimePickerField(
                     currentTime = createEventScreenState.formattedEndTime,
                     onTimePicked = { hour, minutes ->
                         viewModel.onTimeEndPicked(hour, minutes)

@@ -3,9 +3,10 @@ package com.pti.sheldons_schedule.ui.screens.create_event_screen
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -21,7 +22,7 @@ import com.pti.sheldons_schedule.R
 import com.pti.sheldons_schedule.ui.theme.Steel
 
 @Composable
-fun TimePicker(
+fun TimePickerField(
     currentTime: String,
     onTimePicked: (hour: Int, minutes: Int) -> Unit,
     modifier: Modifier = Modifier,
@@ -31,7 +32,7 @@ fun TimePicker(
     var isClicked by remember { mutableStateOf(false) }
 
     if (isClicked) {
-        TimePickerDialog { hour, minutes -> onTimePicked(hour, minutes) }
+        TimePicker { hour, minutes -> onTimePicked(hour, minutes) }
         isClicked = false
     }
 
@@ -58,7 +59,7 @@ fun TimePicker(
 }
 
 @Composable
-fun TimePickerDialog(onTimePicked: (hour: Int, minutes: Int) -> Unit) {
+fun TimePicker(onTimePicked: (hour: Int, minutes: Int) -> Unit) {
     val activity = LocalContext.current as? AppCompatActivity
 
     MaterialTimePicker.Builder()
