@@ -1,6 +1,5 @@
 package com.pti.sheldons_schedule
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import com.pti.sheldons_schedule.data.CreateEventScreenState
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -23,11 +22,10 @@ class CreateEventViewModel @Inject constructor() : ViewModel() {
 
     fun onDatePicked(calendar: Calendar) {
         createEventScreenState.update {
-            Log.d("###", "onDatePicked day ${calendar.get(Calendar.DAY_OF_MONTH)}")
             it.copy(startDate = it.startDate.apply {
-                this.set(Calendar.YEAR, calendar.get(Calendar.YEAR))
-                this.set(Calendar.MONTH, calendar.get(Calendar.MONTH))
-                this.set(Calendar.DAY_OF_MONTH, calendar.get(Calendar.DAY_OF_MONTH))
+                set(Calendar.YEAR, calendar.get(Calendar.YEAR))
+                set(Calendar.MONTH, calendar.get(Calendar.MONTH))
+                set(Calendar.DAY_OF_MONTH, calendar.get(Calendar.DAY_OF_MONTH))
             })
         }
     }
@@ -35,12 +33,18 @@ class CreateEventViewModel @Inject constructor() : ViewModel() {
     fun onTimeStartPicked(calendar: Calendar) {
         createEventScreenState.update {
             it.copy(startTime = it.startTime.apply {
-                this.set(Calendar.HOUR_OF_DAY, calendar.get(Calendar.HOUR_OF_DAY))
+                set(Calendar.HOUR_OF_DAY, calendar.get(Calendar.HOUR_OF_DAY))
+                set(Calendar.MINUTE, calendar.get(Calendar.MINUTE))
             })
         }
     }
 
     fun onTimeEndPicked(calendar: Calendar) {
-//        createEventScreenState.update { it.copy(endTime = ) }
+        createEventScreenState.update {
+            it.copy(endTime = it.endTime.apply {
+                set(Calendar.HOUR_OF_DAY, calendar.get(Calendar.HOUR_OF_DAY))
+                set(Calendar.MINUTE, calendar.get(Calendar.MINUTE))
+            })
+        }
     }
 }

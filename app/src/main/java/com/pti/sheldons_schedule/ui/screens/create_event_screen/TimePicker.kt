@@ -72,8 +72,6 @@ fun TimePicker(onTimePicked: (Calendar) -> Unit) {
             activity?.supportFragmentManager?.let { show(it, this.toString()) }
             addOnPositiveButtonClickListener {
                 Calendar.getInstance().apply {
-                    set(Calendar.HOUR_OF_DAY, hour)
-                    set(Calendar.MINUTE, minute)
                     onTimePicked(this)
                 }
             }

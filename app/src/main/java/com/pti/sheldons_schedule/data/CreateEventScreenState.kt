@@ -12,5 +12,5 @@ data class CreateEventScreenState(
 ) {
     val formattedStartDate: String = startDate.formatDate(DATE_FORMAT)
     val formattedStartTime: String = startTime.formatDate(TIME_FORMAT)
-//    val formattedEndTime: String = endTime.formatTime(TIME_FORMAT)
+    val formattedEndTime: String = endTime.formatDate(TIME_FORMAT)
 }

@@ -9,7 +9,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.android.InternalPlatformTextApi
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -26,7 +25,7 @@ private const val TIME_PICKER_FIELD_COUNT = 2
 @Composable
 fun CreateEventScreen(viewModel: CreateEventViewModel = hiltViewModel()) {
 
-    val createEventScreenState by viewModel.createEventScreenState.collectAsState()
+    val state by viewModel.createEventScreenState.collectAsState()
 
     Box(
         modifier = Modifier
@@ -62,7 +61,7 @@ fun CreateEventScreen(viewModel: CreateEventViewModel = hiltViewModel()) {
             )
             HeightSpacer()
             DatePickerField(
-                pickedDate = createEventScreenState.formattedStartDate,
+                pickedDate = state.formattedStartDate,
                 onPickedDate = { calendar ->
                     calendar?.let { it -> viewModel.onDatePicked(it) }
                 },
@@ -100,7 +99,7 @@ fun CreateEventScreen(viewModel: CreateEventViewModel = hiltViewModel()) {
             HeightSpacer(height = 5.dp)
             Row(modifier = Modifier.fillMaxWidth()) {
                 TimePickerField(
-                    currentTime = createEventScreenState.formattedStartTime,
+                    currentTime = state.formattedStartTime,
                     onTimePicked = { viewModel.onTimeStartPicked(it) },
                     modifier = Modifier
                         .padding(start = 15.dp)
@@ -111,7 +110,7 @@ fun CreateEventScreen(viewModel: CreateEventViewModel = hiltViewModel()) {
                 Spacer(modifier = Modifier.width(30.dp))
 
                 TimePickerField(
-                    currentTime = createEventScreenState.formattedStartTime,
+                    currentTime = state.formattedEndTime,
                     onTimePicked = { viewModel.onTimeStartPicked(it) },
                     modifier = Modifier
                         .padding(end = 15.dp)
