@@ -6,6 +6,7 @@ import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -26,10 +27,7 @@ fun CreateEventScreen(viewModel: CreateEventViewModel = hiltViewModel()) {
     val state by viewModel.createEventScreenState.collectAsState(
         CreateEventScreenState(
             startDate = Calendar.getInstance(),
-            endDate = Calendar.getInstance(),
-            repeatOptionsList = RepeatOptions.values().map { stringResource(it.stringRes) },
-            priorityOptionsList = PriorityOptions.values().map { stringResource(it.stringRes) },
-            remindOptionsList = RemindOptions.values().map { stringResource(it.stringRes) }
+            endDate = Calendar.getInstance()
         )
     )
 
@@ -56,6 +54,7 @@ fun CreateEventScreen(viewModel: CreateEventViewModel = hiltViewModel()) {
                 .background(LightSky)
         ) {
             val halfFieldWidth = (this.maxWidth.value.toInt() - PADDING_WIDTH_SUM) / FIELD_COUNT
+            val context = LocalContext.current
 
             Column(modifier = Modifier.fillMaxSize()) {
                 SaveOrCloseCreatingEvent(
@@ -171,15 +170,15 @@ fun CreateEventScreen(viewModel: CreateEventViewModel = hiltViewModel()) {
                 }
                 HeightSpacer()
                 DefaultBottomSheetField(string = stringResource(id = R.string.repeat)) {
-                    viewModel.onRepeatFieldClicked()
+                    viewModel.onRepeatFieldClicked(context)
                 }
                 HeightSpacer()
                 DefaultBottomSheetField(string = stringResource(id = R.string.priority)) {
-                    viewModel.onPriorityFieldClicked()
+                    viewModel.onPriorityFieldClicked(context)
                 }
                 HeightSpacer()
                 DefaultBottomSheetField(string = stringResource(id = R.string.remind)) {
-                    viewModel.onRemindFieldClicked()
+                    viewModel.onRemindFieldClicked(context)
                 }
             }
         }

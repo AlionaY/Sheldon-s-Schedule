@@ -1,11 +1,12 @@
 package com.pti.sheldons_schedule
 
-import android.app.Application
 import android.content.Context
-import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.ViewModel
-import com.pti.sheldons_schedule.data.*
 import com.pti.sheldons_schedule.data.BottomSheetType.*
+import com.pti.sheldons_schedule.data.CreateEventScreenState
+import com.pti.sheldons_schedule.data.PriorityOptions
+import com.pti.sheldons_schedule.data.RemindOptions
+import com.pti.sheldons_schedule.data.RepeatOptions
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.update
@@ -13,17 +14,12 @@ import java.util.*
 import javax.inject.Inject
 
 @HiltViewModel
-class CreateEventViewModel @Inject constructor(
-    application: Application
-) : ViewModel() {
+class CreateEventViewModel @Inject constructor() : ViewModel() {
 
     val createEventScreenState = MutableStateFlow(
         CreateEventScreenState(
             startDate = Calendar.getInstance(),
-            endDate = Calendar.getInstance(),
-            repeatOptionsList = RepeatOptions.values().map { application.getString(it.stringRes) },
-            priorityOptionsList = PriorityOptions.values().map { application.getString(it.stringRes) },
-            remindOptionsList = RemindOptions.values().map { application.getString(it.stringRes) }
+            endDate = Calendar.getInstance()
         )
     )
 
@@ -66,15 +62,30 @@ class CreateEventViewModel @Inject constructor(
         }
     }
 
-    fun onRepeatFieldClicked() {
-        createEventScreenState.update { it.copy(bottomSheetType = Repeat) }
+    fun onRepeatFieldClicked(context: Context) {
+        createEventScreenState.update { state ->
+            state.copy(
+                bottomSheetType = Repeat,
+                optionsList = RepeatOptions.values().map { context.getString(it.stringRes) }
+            )
+        }
     }
 
-    fun onPriorityFieldClicked() {
-        createEventScreenState.update { it.copy(bottomSheetType = Priority) }
+    fun onPriorityFieldClicked(context: Context) {
+        createEventScreenState.update { state ->
+            state.copy(
+                bottomSheetType = Priority,
+                optionsList = PriorityOptions.values().map { context.getString(it.stringRes) }
+            )
+        }
     }
 
-    fun onRemindFieldClicked() {
-        createEventScreenState.update { it.copy(bottomSheetType = Reminder) }
+    fun onRemindFieldClicked(context: Context) {
+        createEventScreenState.update { state ->
+            state.copy(
+                bottomSheetType = Reminder,
+                optionsList = RemindOptions.values().map { context.getString(it.stringRes) }
+            )
+        }
     }
 }

@@ -9,8 +9,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import com.pti.sheldons_schedule.R
-import com.pti.sheldons_schedule.data.*
 import com.pti.sheldons_schedule.data.BottomSheetType.*
+import com.pti.sheldons_schedule.data.CreateEventScreenState
 import com.pti.sheldons_schedule.ui.theme.LightSky
 
 @OptIn(ExperimentalMaterialApi::class)
@@ -29,17 +29,19 @@ fun ModalBottomSheet(
                     .navigationBarsPadding()
                     .background(LightSky)
             ) {
-                when (state.bottomSheetType) {
-                    Repeat -> BottomSheetContent(
-                        items = state.repeatOptionsList, header = stringResource(id = R.string.repeat)
-                    )
-                    Priority -> BottomSheetContent(
-                        items = state.priorityOptionsList, header = stringResource(id = R.string.priority)
-                    )
-                    Reminder -> BottomSheetContent(
-                        items = state.remindOptionsList, header = stringResource(id = R.string.remind)
-                    )
-                    else -> None
+                state.optionsList?.let {
+                    when (state.bottomSheetType) {
+                        Repeat -> BottomSheetContent(
+                            items = it, header = stringResource(id = R.string.repeat)
+                        )
+                        Priority -> BottomSheetContent(
+                            items = it, header = stringResource(id = R.string.priority)
+                        )
+                        Reminder -> BottomSheetContent(
+                            items = it, header = stringResource(id = R.string.remind)
+                        )
+                        else -> None
+                    }
                 }
             }
         },
