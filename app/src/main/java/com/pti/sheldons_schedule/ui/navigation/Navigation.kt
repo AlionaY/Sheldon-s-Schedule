@@ -4,7 +4,7 @@ import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
 import com.google.accompanist.navigation.animation.AnimatedNavHost
-import com.pti.sheldons_schedule.ui.screens.CreateEventScreen
+import com.pti.sheldons_schedule.ui.screens.create_event_screen.CreateEventScreen
 import com.pti.sheldons_schedule.ui.screens.EntryScreen
 
 @ExperimentalAnimationApi

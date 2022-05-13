@@ -13,11 +13,29 @@ class CreateEventViewModel @Inject constructor() : ViewModel() {
 
     val createEventScreenState = MutableStateFlow(
         CreateEventScreenState(
-            startDate = Calendar.getInstance()
+            startDate = Calendar.getInstance(),
+            endDate = Calendar.getInstance()
         )
     )
 
-    fun onDatePicked(calendar: Calendar) {
-        createEventScreenState.update { it.copy(startDate = calendar) }
+
+    fun onStartDatePicked(calendar: Calendar) {
+        createEventScreenState.update {
+            it.copy(startDate = (it.startDate.clone() as Calendar).apply {
+                set(Calendar.YEAR, calendar.get(Calendar.YEAR))
+                set(Calendar.MONTH, calendar.get(Calendar.MONTH))
+                set(Calendar.DAY_OF_MONTH, calendar.get(Calendar.DAY_OF_MONTH))
+            })
+        }
+    }
+
+    fun onEndDatePicked(calendar: Calendar) {
+        createEventScreenState.update {
+            it.copy(endDate = (it.endDate.clone() as Calendar).apply {
+                set(Calendar.YEAR, calendar.get(Calendar.YEAR))
+                set(Calendar.MONTH, calendar.get(Calendar.MONTH))
+                set(Calendar.DAY_OF_MONTH, calendar.get(Calendar.DAY_OF_MONTH))
+            })
+        }
     }
 }
