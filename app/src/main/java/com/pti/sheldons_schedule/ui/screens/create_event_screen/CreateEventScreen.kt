@@ -11,8 +11,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.pti.sheldons_schedule.CreateEventViewModel
 import com.pti.sheldons_schedule.R
-import com.pti.sheldons_schedule.data.BottomSheetType
-import com.pti.sheldons_schedule.data.CreateEventScreenState
+import com.pti.sheldons_schedule.data.*
 import com.pti.sheldons_schedule.ui.theme.LightSky
 import kotlinx.coroutines.launch
 import java.util.*
@@ -27,7 +26,10 @@ fun CreateEventScreen(viewModel: CreateEventViewModel = hiltViewModel()) {
     val state by viewModel.createEventScreenState.collectAsState(
         CreateEventScreenState(
             startDate = Calendar.getInstance(),
-            endDate = Calendar.getInstance()
+            endDate = Calendar.getInstance(),
+            repeatOptionsList = RepeatOptions.values().map { stringResource(it.stringRes) },
+            priorityOptionsList = PriorityOptions.values().map { stringResource(it.stringRes) },
+            remindOptionsList = RemindOptions.values().map { stringResource(it.stringRes) }
         )
     )
 

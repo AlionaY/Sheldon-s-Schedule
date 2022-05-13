@@ -22,22 +22,6 @@ fun ModalBottomSheet(
 ) {
     val sheetState = rememberModalBottomSheetState(initialValue = ModalBottomSheetValue.Hidden)
 
-    val repeatOptionsList = mutableListOf<String>()
-    val priorityOptionsList = mutableListOf<String>()
-    val remindOptionsList = mutableListOf<String>()
-
-    RepeatOptions.values().forEach {
-        repeatOptionsList += stringResource(id = it.stringRes)
-    }
-
-    PriorityOptions.values().forEach {
-        priorityOptionsList += stringResource(id = it.stringRes)
-    }
-
-    RemindOptions.values().forEach {
-        remindOptionsList += stringResource(id = it.stringRes)
-    }
-
     ModalBottomSheetLayout(
         sheetContent = {
             Box(
@@ -47,13 +31,13 @@ fun ModalBottomSheet(
             ) {
                 when (state.bottomSheetType) {
                     Repeat -> BottomSheetContent(
-                        items = repeatOptionsList, header = stringResource(id = R.string.repeat)
+                        items = state.repeatOptionsList, header = stringResource(id = R.string.repeat)
                     )
                     Priority -> BottomSheetContent(
-                        items = priorityOptionsList, header = stringResource(id = R.string.priority)
+                        items = state.priorityOptionsList, header = stringResource(id = R.string.priority)
                     )
                     Reminder -> BottomSheetContent(
-                        items = remindOptionsList, header = stringResource(id = R.string.remind)
+                        items = state.remindOptionsList, header = stringResource(id = R.string.remind)
                     )
                     else -> None
                 }

@@ -1,9 +1,11 @@
 package com.pti.sheldons_schedule
 
+import android.app.Application
+import android.content.Context
+import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.ViewModel
-import com.pti.sheldons_schedule.data.BottomSheetType
+import com.pti.sheldons_schedule.data.*
 import com.pti.sheldons_schedule.data.BottomSheetType.*
-import com.pti.sheldons_schedule.data.CreateEventScreenState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.update
@@ -11,15 +13,19 @@ import java.util.*
 import javax.inject.Inject
 
 @HiltViewModel
-class CreateEventViewModel @Inject constructor() : ViewModel() {
+class CreateEventViewModel @Inject constructor(
+    application: Application
+) : ViewModel() {
 
     val createEventScreenState = MutableStateFlow(
         CreateEventScreenState(
             startDate = Calendar.getInstance(),
-            endDate = Calendar.getInstance()
+            endDate = Calendar.getInstance(),
+            repeatOptionsList = RepeatOptions.values().map { application.getString(it.stringRes) },
+            priorityOptionsList = PriorityOptions.values().map { application.getString(it.stringRes) },
+            remindOptionsList = RemindOptions.values().map { application.getString(it.stringRes) }
         )
     )
-
 
 
     fun onStartDatePicked(calendar: Calendar) {

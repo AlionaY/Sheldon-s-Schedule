@@ -8,7 +8,10 @@ import java.util.*
 data class CreateEventScreenState(
     val startDate: Calendar,
     val endDate: Calendar,
-    val bottomSheetType: BottomSheetType = BottomSheetType.None
+    val bottomSheetType: BottomSheetType = BottomSheetType.None,
+    val repeatOptionsList: List<String>,
+    val priorityOptionsList: List<String>,
+    val remindOptionsList: List<String>
 ) {
     val formattedStartDate: String = startDate.formatDate(DATE_FORMAT)
     val formattedEndDate: String = endDate.formatDate(DATE_FORMAT)
