@@ -10,16 +10,4 @@ data class CreateEventScreenState(
 ) {
     val formattedStartDate: String = startDate.formatDate(DATE_FORMAT)
     val formattedEndDate: String = endDate.formatDate(DATE_FORMAT)
-
-    override fun equals(other: Any?) : Boolean {
-        return false
-    }
-
-    override fun hashCode(): Int {
-        var result = startDate.hashCode()
-        result = 31 * result + endDate.hashCode()
-        result = 31 * result + formattedStartDate.hashCode()
-        result = 31 * result + formattedEndDate.hashCode()
-        return result
-    }
 }

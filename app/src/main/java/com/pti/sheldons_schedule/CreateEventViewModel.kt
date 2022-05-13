@@ -21,7 +21,7 @@ class CreateEventViewModel @Inject constructor() : ViewModel() {
 
     fun onStartDatePicked(calendar: Calendar) {
         createEventScreenState.update {
-            it.copy(startDate = it.startDate.apply {
+            it.copy(startDate = (it.startDate.clone() as Calendar).apply {
                 set(Calendar.YEAR, calendar.get(Calendar.YEAR))
                 set(Calendar.MONTH, calendar.get(Calendar.MONTH))
                 set(Calendar.DAY_OF_MONTH, calendar.get(Calendar.DAY_OF_MONTH))
@@ -31,7 +31,7 @@ class CreateEventViewModel @Inject constructor() : ViewModel() {
 
     fun onEndDatePicked(calendar: Calendar) {
         createEventScreenState.update {
-            it.copy(endDate = it.endDate.apply {
+            it.copy(endDate = (it.endDate.clone() as Calendar).apply {
                 set(Calendar.YEAR, calendar.get(Calendar.YEAR))
                 set(Calendar.MONTH, calendar.get(Calendar.MONTH))
                 set(Calendar.DAY_OF_MONTH, calendar.get(Calendar.DAY_OF_MONTH))
