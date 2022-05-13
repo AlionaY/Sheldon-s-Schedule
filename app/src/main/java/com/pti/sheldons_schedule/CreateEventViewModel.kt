@@ -14,15 +14,25 @@ class CreateEventViewModel @Inject constructor() : ViewModel() {
     val createEventScreenState = MutableStateFlow(
         CreateEventScreenState(
             startDate = Calendar.getInstance(),
-            startTime = Calendar.getInstance(),
-            endTime = Calendar.getInstance()
+            endDate = Calendar.getInstance()
         )
     )
 
 
-    fun onDatePicked(calendar: Calendar) {
+
+    fun onStartDatePicked(calendar: Calendar) {
         createEventScreenState.update {
-            it.copy(startDate = it.startDate.apply {
+            it.copy(startDate = (it.startDate.clone() as Calendar).apply {
+                set(Calendar.YEAR, calendar.get(Calendar.YEAR))
+                set(Calendar.MONTH, calendar.get(Calendar.MONTH))
+                set(Calendar.DAY_OF_MONTH, calendar.get(Calendar.DAY_OF_MONTH))
+            })
+        }
+    }
+
+    fun onEndDatePicked(calendar: Calendar) {
+        createEventScreenState.update {
+            it.copy(endDate = (it.endDate.clone() as Calendar).apply {
                 set(Calendar.YEAR, calendar.get(Calendar.YEAR))
                 set(Calendar.MONTH, calendar.get(Calendar.MONTH))
                 set(Calendar.DAY_OF_MONTH, calendar.get(Calendar.DAY_OF_MONTH))
@@ -32,7 +42,7 @@ class CreateEventViewModel @Inject constructor() : ViewModel() {
 
     fun onTimeStartPicked(calendar: Calendar) {
         createEventScreenState.update {
-            it.copy(startTime = it.startTime.apply {
+            it.copy(startDate = (it.startDate.clone() as Calendar).apply {
                 set(Calendar.HOUR_OF_DAY, calendar.get(Calendar.HOUR_OF_DAY))
                 set(Calendar.MINUTE, calendar.get(Calendar.MINUTE))
             })
@@ -41,7 +51,7 @@ class CreateEventViewModel @Inject constructor() : ViewModel() {
 
     fun onTimeEndPicked(calendar: Calendar) {
         createEventScreenState.update {
-            it.copy(endTime = it.endTime.apply {
+            it.copy(endDate = (it.endDate.clone() as Calendar).apply {
                 set(Calendar.HOUR_OF_DAY, calendar.get(Calendar.HOUR_OF_DAY))
                 set(Calendar.MINUTE, calendar.get(Calendar.MINUTE))
             })

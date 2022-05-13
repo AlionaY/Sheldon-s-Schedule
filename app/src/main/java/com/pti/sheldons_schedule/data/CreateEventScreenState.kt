@@ -7,10 +7,10 @@ import java.util.*
 
 data class CreateEventScreenState(
     val startDate: Calendar,
-    val startTime: Calendar,
-    val endTime: Calendar
+    val endDate: Calendar
 ) {
     val formattedStartDate: String = startDate.formatDate(DATE_FORMAT)
-    val formattedStartTime: String = startTime.formatDate(TIME_FORMAT)
-    val formattedEndTime: String = endTime.formatDate(TIME_FORMAT)
+    val formattedEndDate: String = endDate.formatDate(DATE_FORMAT)
+    val formattedStartTime: String = startDate.formatDate(TIME_FORMAT)
+    val formattedEndTime: String = endDate.formatDate(TIME_FORMAT)
 }

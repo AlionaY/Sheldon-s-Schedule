@@ -17,6 +17,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.google.android.material.datepicker.MaterialDatePicker
 import com.pti.sheldons_schedule.R
+import com.pti.sheldons_schedule.ui.theme.Black
 import com.pti.sheldons_schedule.ui.theme.Steel
 import java.util.*
 
@@ -49,7 +50,7 @@ fun DatePickerField(
                 .padding(horizontal = 15.dp)
                 .fillMaxSize()
                 .align(Alignment.CenterStart),
-            color = Steel
+            color = Black
         )
     }
 }
