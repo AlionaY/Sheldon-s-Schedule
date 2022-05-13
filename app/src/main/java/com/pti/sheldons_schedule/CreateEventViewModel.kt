@@ -2,6 +2,7 @@ package com.pti.sheldons_schedule
 
 import androidx.lifecycle.ViewModel
 import com.pti.sheldons_schedule.data.BottomSheetType
+import com.pti.sheldons_schedule.data.BottomSheetType.*
 import com.pti.sheldons_schedule.data.CreateEventScreenState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -60,14 +61,14 @@ class CreateEventViewModel @Inject constructor() : ViewModel() {
     }
 
     fun onRepeatFieldClicked() {
-        createEventScreenState.update { it.copy(bottomSheetType = BottomSheetType.Repeat) }
+        createEventScreenState.update { it.copy(bottomSheetType = Repeat) }
     }
 
     fun onPriorityFieldClicked() {
-        createEventScreenState.update { it.copy(bottomSheetType = BottomSheetType.Priority) }
+        createEventScreenState.update { it.copy(bottomSheetType = Priority) }
     }
 
     fun onRemindFieldClicked() {
-        createEventScreenState.update { it.copy(bottomSheetType = BottomSheetType.Reminder) }
+        createEventScreenState.update { it.copy(bottomSheetType = Reminder) }
     }
 }

@@ -23,17 +23,6 @@ fun BottomSheetContentText(string: String) {
 }
 
 @Composable
-fun BottomSheetHeader(string: String) {
-    Text(
-        text = string,
-        textAlign = TextAlign.Center,
-        style = MaterialTheme.typography.h5,
-        fontWeight = FontWeight.Bold,
-        modifier = Modifier.fillMaxWidth()
-    )
-}
-
-@Composable
 fun BottomSheetContent(items: List<String>, header: String) {
     LazyColumn(
         modifier = Modifier
@@ -42,7 +31,13 @@ fun BottomSheetContent(items: List<String>, header: String) {
             .padding(10.dp)
     ) {
         item {
-            BottomSheetHeader(string = header)
+            Text(
+                text = header,
+                textAlign = TextAlign.Center,
+                style = MaterialTheme.typography.h5,
+                fontWeight = FontWeight.Bold,
+                modifier = Modifier.fillMaxWidth()
+            )
         }
 
         items.forEach {

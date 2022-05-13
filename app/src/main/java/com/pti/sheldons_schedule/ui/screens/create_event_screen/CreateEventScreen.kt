@@ -35,7 +35,7 @@ fun CreateEventScreen(viewModel: CreateEventViewModel = hiltViewModel()) {
         modifier = Modifier
             .wrapContentHeight()
             .fillMaxWidth(),
-        bottomSheetType = state.bottomSheetType
+        state = state
     ) { sheetState ->
 
         val scope = rememberCoroutineScope()

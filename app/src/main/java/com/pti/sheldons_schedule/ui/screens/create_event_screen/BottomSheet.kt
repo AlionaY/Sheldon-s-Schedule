@@ -9,37 +9,34 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import com.pti.sheldons_schedule.R
-import com.pti.sheldons_schedule.data.BottomSheetType
+import com.pti.sheldons_schedule.data.*
 import com.pti.sheldons_schedule.data.BottomSheetType.*
 import com.pti.sheldons_schedule.ui.theme.LightSky
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun ModalBottomSheet(
-    bottomSheetType: BottomSheetType,
+    state: CreateEventScreenState,
     modifier: Modifier = Modifier,
     content: @Composable (state: ModalBottomSheetState) -> Unit
 ) {
     val sheetState = rememberModalBottomSheetState(initialValue = ModalBottomSheetValue.Hidden)
 
-    val repeatStringList = listOf(
-        stringResource(id = R.string.repeat_daily),
-        stringResource(id = R.string.repeat_week_day),
-        stringResource(id = R.string.repeat_weekly),
-        stringResource(id = R.string.repeat_monthly),
-        stringResource(id = R.string.repeat_annually),
-        stringResource(id = R.string.repeat_custom)
-    )
-    val remindStringList = listOf(
-        stringResource(id = R.string.remind_10_minutes),
-        stringResource(id = R.string.remind_1_hour_before),
-        stringResource(id = R.string.remind_1_day_before)
-    )
-    val priorityStringList = listOf(
-        stringResource(id = R.string.priority_high),
-        stringResource(id = R.string.priority_medium),
-        stringResource(id = R.string.priority_low)
-    )
+    val repeatOptionsList = mutableListOf<String>()
+    val priorityOptionsList = mutableListOf<String>()
+    val remindOptionsList = mutableListOf<String>()
+
+    RepeatOptions.values().forEach {
+        repeatOptionsList += stringResource(id = it.stringRes)
+    }
+
+    PriorityOptions.values().forEach {
+        priorityOptionsList += stringResource(id = it.stringRes)
+    }
+
+    RemindOptions.values().forEach {
+        remindOptionsList += stringResource(id = it.stringRes)
+    }
 
     ModalBottomSheetLayout(
         sheetContent = {
@@ -48,15 +45,15 @@ fun ModalBottomSheet(
                     .navigationBarsPadding()
                     .background(LightSky)
             ) {
-                when (bottomSheetType) {
+                when (state.bottomSheetType) {
                     Repeat -> BottomSheetContent(
-                        items = repeatStringList, header = stringResource(id = R.string.repeat)
+                        items = repeatOptionsList, header = stringResource(id = R.string.repeat)
                     )
                     Priority -> BottomSheetContent(
-                        items = priorityStringList, header = stringResource(id = R.string.priority)
+                        items = priorityOptionsList, header = stringResource(id = R.string.priority)
                     )
                     Reminder -> BottomSheetContent(
-                        items = remindStringList, header = stringResource(id = R.string.remind)
+                        items = remindOptionsList, header = stringResource(id = R.string.remind)
                     )
                     else -> None
                 }
