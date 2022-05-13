@@ -3,13 +3,11 @@ package com.pti.sheldons_schedule.ui.screens.create_event_screen
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Text
 import androidx.compose.runtime.*
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
@@ -21,24 +19,25 @@ import com.google.android.material.timepicker.TimeFormat
 import com.pti.sheldons_schedule.R
 import com.pti.sheldons_schedule.ui.theme.Black
 import com.pti.sheldons_schedule.ui.theme.Steel
-import java.util.*
 
 @Composable
 fun TimePickerField(
     currentTime: String,
-    onTimePicked: (Calendar) -> Unit,
+    onTimePicked: (hour: Int, minutes: Int) -> Unit,
     modifier: Modifier = Modifier,
-    textPadding : Int = 10
+    textPadding: Int = 10
 ) {
 
     var isClicked by remember { mutableStateOf(false) }
 
     if (isClicked) {
-        TimePicker { onTimePicked(it) }
+        TimePicker(onTimePicked)
         isClicked = false
     }
 
-    Box(
+    Text(
+        text = currentTime,
+        fontSize = 16.sp,
         modifier = modifier
             .border(
                 width = 0.5.dp,
@@ -46,22 +45,15 @@ fun TimePickerField(
                 shape = RoundedCornerShape(10)
             )
             .clickable { isClicked = true }
-    ) {
-        Text(
-            text = currentTime,
-            fontSize = 16.sp,
-            modifier = Modifier
-                .padding(horizontal = textPadding.dp)
-                .fillMaxSize()
-                .align(Alignment.CenterStart),
-            color = Black,
-            textAlign = TextAlign.Start
-        )
-    }
+            .padding(horizontal = textPadding.dp)
+            .wrapContentSize(),
+        color = Black,
+        textAlign = TextAlign.Center
+    )
 }
 
 @Composable
-fun TimePicker(onTimePicked: (Calendar) -> Unit) {
+fun TimePicker(onTimePicked: (hour: Int, minute: Int) -> Unit) {
     val activity = LocalContext.current as? AppCompatActivity
 
     MaterialTimePicker.Builder()
@@ -71,9 +63,7 @@ fun TimePicker(onTimePicked: (Calendar) -> Unit) {
         .apply {
             activity?.supportFragmentManager?.let { show(it, this.toString()) }
             addOnPositiveButtonClickListener {
-                Calendar.getInstance().apply {
-                    onTimePicked(this)
-                }
+                onTimePicked(hour, minute)
             }
         }
 }

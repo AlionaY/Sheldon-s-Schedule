@@ -40,20 +40,20 @@ class CreateEventViewModel @Inject constructor() : ViewModel() {
         }
     }
 
-    fun onTimeStartPicked(calendar: Calendar) {
+    fun onTimeStartPicked(hour: Int, minutes: Int) {
         createEventScreenState.update {
             it.copy(startDate = (it.startDate.clone() as Calendar).apply {
-                set(Calendar.HOUR_OF_DAY, calendar.get(Calendar.HOUR_OF_DAY))
-                set(Calendar.MINUTE, calendar.get(Calendar.MINUTE))
+                set(Calendar.HOUR_OF_DAY, hour)
+                set(Calendar.MINUTE, minutes)
             })
         }
     }
 
-    fun onTimeEndPicked(calendar: Calendar) {
+    fun onTimeEndPicked(hour: Int, minutes: Int) {
         createEventScreenState.update {
             it.copy(endDate = (it.endDate.clone() as Calendar).apply {
-                set(Calendar.HOUR_OF_DAY, calendar.get(Calendar.HOUR_OF_DAY))
-                set(Calendar.MINUTE, calendar.get(Calendar.MINUTE))
+                set(Calendar.HOUR_OF_DAY, hour)
+                set(Calendar.MINUTE, minutes)
             })
         }
     }
