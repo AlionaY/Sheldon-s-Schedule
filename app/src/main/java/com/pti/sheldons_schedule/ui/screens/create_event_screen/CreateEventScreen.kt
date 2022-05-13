@@ -84,6 +84,29 @@ fun CreateEventScreen(viewModel: CreateEventViewModel = hiltViewModel()) {
                     textAlign = TextAlign.Start
                 )
             }
+            Row(modifier = Modifier.fillMaxWidth()) {
+                DatePickerField(
+                    pickedDate = state.formattedStartDate,
+                    onPickedDate = { calendar ->
+                        calendar?.let { it -> viewModel.onStartDatePicked(it) }
+                    },
+                    modifier = Modifier
+                        .padding(start = 15.dp)
+                        .width(halfFieldWidth.dp)
+                        .height(50.dp)
+                )
+                Spacer(modifier = Modifier.width(30.dp))
+                DatePickerField(
+                    pickedDate = state.formattedEndDate,
+                    onPickedDate = { calendar ->
+                        calendar?.let { it -> viewModel.onEndDatePicked(it) }
+                    },
+                    modifier = Modifier
+                        .padding(end = 15.dp)
+                        .width(halfFieldWidth.dp)
+                        .height(50.dp)
+                )
+            }
             HeightSpacer()
             Row(
                 modifier = Modifier
@@ -99,9 +122,7 @@ fun CreateEventScreen(viewModel: CreateEventViewModel = hiltViewModel()) {
                     fontSize = 10.sp,
                     color = Steel,
                 )
-
                 Spacer(modifier = Modifier.width(30.dp))
-
                 Text(
                     text = stringResource(id = R.string.end_time).uppercase(Locale.ROOT),
                     modifier = Modifier.width(halfFieldWidth.dp),
