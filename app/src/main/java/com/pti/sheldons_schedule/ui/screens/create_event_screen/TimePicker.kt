@@ -14,27 +14,29 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.google.android.material.datepicker.MaterialDatePicker
+import com.google.android.material.timepicker.MaterialTimePicker
+import com.google.android.material.timepicker.TimeFormat
 import com.pti.sheldons_schedule.R
 import com.pti.sheldons_schedule.ui.theme.Black
 import com.pti.sheldons_schedule.ui.theme.Steel
-import java.util.*
 
 @Composable
-fun DatePickerField(
-    pickedDate: String?,
-    onPickedDate: (Calendar?) -> Unit,
-    modifier: Modifier = Modifier
+fun TimePickerField(
+    currentTime: String,
+    onTimePicked: (hour: Int, minutes: Int) -> Unit,
+    modifier: Modifier = Modifier,
+    textPadding: Int = 10
 ) {
+
     var isClicked by remember { mutableStateOf(false) }
 
     if (isClicked) {
-        DatePicker(onPickedDate)
+        TimePicker(onTimePicked)
         isClicked = false
     }
 
     Text(
-        text = pickedDate.orEmpty(),
+        text = currentTime,
         fontSize = 16.sp,
         modifier = modifier
             .border(
@@ -43,7 +45,7 @@ fun DatePickerField(
                 shape = RoundedCornerShape(10)
             )
             .clickable { isClicked = true }
-            .padding(horizontal = 15.dp)
+            .padding(horizontal = textPadding.dp)
             .wrapContentSize(),
         color = Black,
         textAlign = TextAlign.Center
@@ -51,19 +53,17 @@ fun DatePickerField(
 }
 
 @Composable
-private fun DatePicker(onPickedDate: (Calendar?) -> Unit) {
+fun TimePicker(onTimePicked: (hour: Int, minute: Int) -> Unit) {
     val activity = LocalContext.current as? AppCompatActivity
 
-    MaterialDatePicker.Builder.datePicker()
-        .setTitleText(stringResource(id = R.string.calendar_title))
+    MaterialTimePicker.Builder()
+        .setTimeFormat(TimeFormat.CLOCK_24H)
+        .setTitleText(stringResource(id = R.string.time_picker_title))
         .build()
         .apply {
             activity?.supportFragmentManager?.let { show(it, this.toString()) }
             addOnPositiveButtonClickListener {
-                Calendar.getInstance().apply {
-                    this.timeInMillis = it
-                    onPickedDate(this)
-                }
+                onTimePicked(hour, minute)
             }
         }
 }
