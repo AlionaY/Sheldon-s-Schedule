@@ -57,4 +57,12 @@ class CreateEventViewModel @Inject constructor() : ViewModel() {
             })
         }
     }
+
+    fun onTitleEdited(string: String) {
+        createEventScreenState.update { it.copy(title = string) }
+    }
+
+    fun onDescriptionEdited(string: String) {
+        createEventScreenState.update { it.copy(description = string) }
+    }
 }

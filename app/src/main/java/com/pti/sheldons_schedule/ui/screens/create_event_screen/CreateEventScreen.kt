@@ -46,15 +46,15 @@ fun CreateEventScreen(viewModel: CreateEventViewModel = hiltViewModel()) {
             )
             HeightSpacer()
             DefaultTextField(
-                value = "",
-                onValueChanged = {},
+                value = state.title,
+                onValueChanged = { viewModel.onTitleEdited(it) },
                 label = stringResource(id = R.string.title),
                 modifier = Modifier.padding(horizontal = 15.dp)
             )
             HeightSpacer()
             DefaultTextField(
-                value = "",
-                onValueChanged = {},
+                value = state.description,
+                onValueChanged = { viewModel.onDescriptionEdited(it) },
                 label = stringResource(id = R.string.description),
                 modifier = Modifier.padding(horizontal = 15.dp)
             )
