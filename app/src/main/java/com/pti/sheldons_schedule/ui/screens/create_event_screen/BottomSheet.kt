@@ -10,8 +10,8 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import com.pti.sheldons_schedule.R
-import com.pti.sheldons_schedule.data.BottomSheetType.*
 import com.pti.sheldons_schedule.data.CreateEventScreenState
+import com.pti.sheldons_schedule.data.Options.*
 import com.pti.sheldons_schedule.ui.theme.LightSky
 import kotlinx.coroutines.launch
 
@@ -35,34 +35,32 @@ fun ModalBottomSheet(
                     .navigationBarsPadding()
                     .background(LightSky)
             ) {
-                state.optionsList?.let { options ->
-                    when (state.bottomSheetType) {
-                        Repeat -> BottomSheetContent(
-                            items = options,
-                            header = stringResource(id = R.string.repeat),
-                            onClick = {
-                                onRepeatSelected(it)
-                                scope.launch { sheetState.hide() }
-                            }
-                        )
-                        Priority -> BottomSheetContent(
-                            items = options,
-                            header = stringResource(id = R.string.priority),
-                            onClick = {
-                                onPrioritySelected(it)
-                                scope.launch { sheetState.hide() }
-                            }
-                        )
-                        Reminder -> BottomSheetContent(
-                            items = options,
-                            header = stringResource(id = R.string.remind),
-                            onClick = {
-                                onRemindSelected(it)
-                                scope.launch { sheetState.hide() }
-                            }
-                        )
-                        else -> None
-                    }
+                when (state.options) {
+                   Repeat -> BottomSheetContent(
+                        items = state.options.string.map { stringResource(id = it) },
+                        header = stringResource(id = R.string.repeat),
+                        onClick = {
+                            onRepeatSelected(it)
+                            scope.launch { sheetState.hide() }
+                        }
+                    )
+                    Priority -> BottomSheetContent(
+                        items = state.options.string.map { stringResource(id = it) },
+                        header = stringResource(id = R.string.priority),
+                        onClick = {
+                            onPrioritySelected(it)
+                            scope.launch { sheetState.hide() }
+                        }
+                    )
+                    Reminder -> BottomSheetContent(
+                        items = state.options.string.map { stringResource(id = it) },
+                        header = stringResource(id = R.string.remind),
+                        onClick = {
+                            onRemindSelected(it)
+                            scope.launch { sheetState.hide() }
+                        }
+                    )
+                    else -> None
                 }
             }
         },

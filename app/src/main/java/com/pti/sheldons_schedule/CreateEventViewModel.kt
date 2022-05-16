@@ -2,8 +2,8 @@ package com.pti.sheldons_schedule
 
 import android.content.Context
 import androidx.lifecycle.ViewModel
-import com.pti.sheldons_schedule.data.*
-import com.pti.sheldons_schedule.data.BottomSheetType.*
+import com.pti.sheldons_schedule.data.CreateEventScreenState
+import com.pti.sheldons_schedule.data.Options
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -20,7 +20,7 @@ class CreateEventViewModel @Inject constructor(
         CreateEventScreenState(
             startDate = Calendar.getInstance(),
             endDate = Calendar.getInstance(),
-            selectedPriority = context.getString(PriorityOptions.Low.stringRes)
+            selectedPriority = context.getString(R.string.priority_low)
         )
     )
 
@@ -63,30 +63,21 @@ class CreateEventViewModel @Inject constructor(
         }
     }
 
-    fun onRepeatFieldClicked(context: Context) {
+    fun onRepeatFieldClicked() {
         createEventScreenState.update { state ->
-            state.copy(
-                bottomSheetType = Repeat,
-                optionsList = RepeatOptions.values().map { context.getString(it.stringRes) }
-            )
+            state.copy(options = Options.Repeat)
         }
     }
 
-    fun onPriorityFieldClicked(context: Context) {
+    fun onPriorityFieldClicked() {
         createEventScreenState.update { state ->
-            state.copy(
-                bottomSheetType = Priority,
-                optionsList = PriorityOptions.values().map { context.getString(it.stringRes) }
-            )
+            state.copy(options = Options.Priority)
         }
     }
 
-    fun onRemindFieldClicked(context: Context) {
+    fun onRemindFieldClicked() {
         createEventScreenState.update { state ->
-            state.copy(
-                bottomSheetType = Reminder,
-                optionsList = RemindOptions.values().map { context.getString(it.stringRes) }
-            )
+            state.copy(options = Options.Reminder)
         }
     }
 

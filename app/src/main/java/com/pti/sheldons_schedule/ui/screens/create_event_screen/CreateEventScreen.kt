@@ -12,9 +12,8 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.pti.sheldons_schedule.CreateEventViewModel
 import com.pti.sheldons_schedule.R
-import com.pti.sheldons_schedule.data.BottomSheetType
 import com.pti.sheldons_schedule.data.CreateEventScreenState
-import com.pti.sheldons_schedule.data.PriorityOptions
+import com.pti.sheldons_schedule.data.Options
 import com.pti.sheldons_schedule.ui.theme.LightSky
 import kotlinx.coroutines.launch
 import java.util.*
@@ -30,7 +29,7 @@ fun CreateEventScreen(viewModel: CreateEventViewModel = hiltViewModel()) {
         CreateEventScreenState(
             startDate = Calendar.getInstance(),
             endDate = Calendar.getInstance(),
-            selectedPriority = stringResource(id = PriorityOptions.Low.stringRes)
+            selectedPriority = stringResource(id = R.string.priority_low)
         )
     )
 
@@ -46,8 +45,8 @@ fun CreateEventScreen(viewModel: CreateEventViewModel = hiltViewModel()) {
 
         val scope = rememberCoroutineScope()
 
-        LaunchedEffect(key1 = state.bottomSheetType) {
-            if (state.bottomSheetType != BottomSheetType.None) {
+        LaunchedEffect(key1 = state.options) {
+            if (state.options != Options.None) {
                 scope.launch {
                     sheetState.show()
                 }
@@ -60,7 +59,6 @@ fun CreateEventScreen(viewModel: CreateEventViewModel = hiltViewModel()) {
                 .background(LightSky)
         ) {
             val halfFieldWidth = (this.maxWidth.value.toInt() - PADDING_WIDTH_SUM) / FIELD_COUNT
-            val context = LocalContext.current
 
             Column(modifier = Modifier.fillMaxSize()) {
                 SaveOrCloseCreatingEvent(
@@ -180,11 +178,11 @@ fun CreateEventScreen(viewModel: CreateEventViewModel = hiltViewModel()) {
                         id = R.string.repeat
                     )
                 ) {
-                    viewModel.onRepeatFieldClicked(context)
+                    viewModel.onRepeatFieldClicked()
                 }
                 HeightSpacer()
                 DefaultBottomSheetField(string = state.selectedPriority) {
-                    viewModel.onPriorityFieldClicked(context)
+                    viewModel.onPriorityFieldClicked()
                 }
                 HeightSpacer()
                 DefaultBottomSheetField(
@@ -192,7 +190,7 @@ fun CreateEventScreen(viewModel: CreateEventViewModel = hiltViewModel()) {
                         id = R.string.remind
                     )
                 ) {
-                    viewModel.onRemindFieldClicked(context)
+                    viewModel.onRemindFieldClicked()
                 }
             }
         }
