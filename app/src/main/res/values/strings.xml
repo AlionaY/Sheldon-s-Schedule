@@ -11,4 +11,23 @@
     <string name="end_time">End time</string>
     <string name="start_date">Start date</string>
     <string name="end_date">End date</string>
+
+    <string name="repeat">Repeat</string>
+    <string name="repeat_none">None</string>
+    <string name="repeat_daily">Daily</string>
+    <string name="repeat_week_day">Week day</string>
+    <string name="repeat_weekly">Weekly</string>
+    <string name="repeat_monthly">Monthly</string>
+    <string name="repeat_annually">Annually</string>
+    <string name="repeat_custom">Custom</string>
+
+    <string name="priority">Priority</string>
+    <string name="priority_high">High</string>
+    <string name="priority_medium">Medium</string>
+    <string name="priority_low">Low</string>
+
+    <string name="remind">Remind</string>
+    <string name="remind_10_minutes">10 minutes before</string>
+    <string name="remind_1_hour_before">1 hour before</string>
+    <string name="remind_1_day_before">1 day before</string>
 </resources>

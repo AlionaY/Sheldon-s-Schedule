@@ -1,23 +1,29 @@
 package com.pti.sheldons_schedule
 
+import android.content.Context
 import androidx.lifecycle.ViewModel
 import com.pti.sheldons_schedule.data.CreateEventScreenState
+import com.pti.sheldons_schedule.data.Options
+import com.pti.sheldons_schedule.data.Options.*
 import dagger.hilt.android.lifecycle.HiltViewModel
+import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.update
 import java.util.*
 import javax.inject.Inject
 
 @HiltViewModel
-class CreateEventViewModel @Inject constructor() : ViewModel() {
+class CreateEventViewModel @Inject constructor(
+    @ApplicationContext context: Context
+) : ViewModel() {
 
     val createEventScreenState = MutableStateFlow(
         CreateEventScreenState(
             startDate = Calendar.getInstance(),
-            endDate = Calendar.getInstance()
+            endDate = Calendar.getInstance(),
+            selectedPriority = context.getString(R.string.priority_low)
         )
     )
-
 
 
     fun onStartDatePicked(calendar: Calendar) {
@@ -55,6 +61,33 @@ class CreateEventViewModel @Inject constructor() : ViewModel() {
                 set(Calendar.HOUR_OF_DAY, hour)
                 set(Calendar.MINUTE, minutes)
             })
+        }
+    }
+
+    fun onRepeatFieldClicked() {
+        createEventScreenState.update { state ->
+            state.copy(options = Repeat)
+        }
+    }
+
+    fun onPriorityFieldClicked() {
+        createEventScreenState.update { state ->
+            state.copy(options = Priority)
+        }
+    }
+
+    fun onRemindFieldClicked() {
+        createEventScreenState.update { state ->
+            state.copy(options = Remind)
+        }
+    }
+
+    fun onSelected(options: Options?, string: String) {
+        when (options) {
+            Repeat -> createEventScreenState.update { it.copy(selectedRepeat = string) }
+            Remind -> createEventScreenState.update { it.copy(selectedRemind = string) }
+            Priority -> createEventScreenState.update { it.copy(selectedPriority = string) }
+            else -> { }
         }
     }
 

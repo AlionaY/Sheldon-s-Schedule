@@ -1,7 +1,9 @@
 package com.pti.sheldons_schedule.ui.screens.create_event_screen
 
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.OutlinedTextField
@@ -18,6 +20,26 @@ import androidx.compose.ui.unit.sp
 import com.pti.sheldons_schedule.R
 import com.pti.sheldons_schedule.ui.theme.Red
 import com.pti.sheldons_schedule.ui.theme.Steel
+
+@Composable
+fun DefaultBottomSheetField(string: String, onClick: () -> Unit) {
+    Text(
+        text = string,
+        modifier = Modifier
+            .padding(horizontal = 15.dp)
+            .fillMaxWidth()
+            .height(50.dp)
+            .clickable { onClick() }
+            .border(
+                width = 0.5.dp,
+                color = Steel,
+                shape = RoundedCornerShape(10)
+            )
+            .padding(15.dp),
+        color = Steel,
+        textAlign = TextAlign.Start
+    )
+}
 
 @Composable
 fun DefaultFieldHeader(
