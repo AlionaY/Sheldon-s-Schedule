@@ -12,7 +12,9 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.pti.sheldons_schedule.CreateEventViewModel
 import com.pti.sheldons_schedule.R
-import com.pti.sheldons_schedule.data.*
+import com.pti.sheldons_schedule.data.BottomSheetType
+import com.pti.sheldons_schedule.data.CreateEventScreenState
+import com.pti.sheldons_schedule.data.PriorityOptions
 import com.pti.sheldons_schedule.ui.theme.LightSky
 import kotlinx.coroutines.launch
 import java.util.*
@@ -27,7 +29,8 @@ fun CreateEventScreen(viewModel: CreateEventViewModel = hiltViewModel()) {
     val state by viewModel.createEventScreenState.collectAsState(
         CreateEventScreenState(
             startDate = Calendar.getInstance(),
-            endDate = Calendar.getInstance()
+            endDate = Calendar.getInstance(),
+            selectedPriority = stringResource(id = PriorityOptions.Low.stringRes)
         )
     )
 
@@ -35,7 +38,10 @@ fun CreateEventScreen(viewModel: CreateEventViewModel = hiltViewModel()) {
         modifier = Modifier
             .wrapContentHeight()
             .fillMaxWidth(),
-        state = state
+        state = state,
+        onRemindSelected = { viewModel.onRemindSelected(it) },
+        onRepeatSelected = { viewModel.onRepeatSelected(it) },
+        onPrioritySelected = { viewModel.onPrioritySelected(it) }
     ) { sheetState ->
 
         val scope = rememberCoroutineScope()
@@ -169,15 +175,23 @@ fun CreateEventScreen(viewModel: CreateEventViewModel = hiltViewModel()) {
                     )
                 }
                 HeightSpacer()
-                DefaultBottomSheetField(string = stringResource(id = R.string.repeat)) {
+                DefaultBottomSheetField(
+                    string = state.selectedRepeat ?: stringResource(
+                        id = R.string.repeat
+                    )
+                ) {
                     viewModel.onRepeatFieldClicked(context)
                 }
                 HeightSpacer()
-                DefaultBottomSheetField(string = stringResource(id = R.string.priority)) {
+                DefaultBottomSheetField(string = state.selectedPriority) {
                     viewModel.onPriorityFieldClicked(context)
                 }
                 HeightSpacer()
-                DefaultBottomSheetField(string = stringResource(id = R.string.remind)) {
+                DefaultBottomSheetField(
+                    string = state.selectedRemind ?: stringResource(
+                        id = R.string.remind
+                    )
+                ) {
                     viewModel.onRemindFieldClicked(context)
                 }
             }

@@ -17,6 +17,9 @@ import com.pti.sheldons_schedule.ui.theme.LightSky
 @Composable
 fun ModalBottomSheet(
     state: CreateEventScreenState,
+    onRepeatSelected: (String) -> Unit,
+    onPrioritySelected: (String) -> Unit,
+    onRemindSelected: (String) -> Unit,
     modifier: Modifier = Modifier,
     content: @Composable (state: ModalBottomSheetState) -> Unit
 ) {
@@ -29,16 +32,22 @@ fun ModalBottomSheet(
                     .navigationBarsPadding()
                     .background(LightSky)
             ) {
-                state.optionsList?.let {
+                state.optionsList?.let { options ->
                     when (state.bottomSheetType) {
                         Repeat -> BottomSheetContent(
-                            items = it, header = stringResource(id = R.string.repeat)
+                            items = options,
+                            header = stringResource(id = R.string.repeat),
+                            onClick = { onRepeatSelected(it) }
                         )
                         Priority -> BottomSheetContent(
-                            items = it, header = stringResource(id = R.string.priority)
+                            items = options,
+                            header = stringResource(id = R.string.priority),
+                            onClick = { onPrioritySelected(it) }
                         )
                         Reminder -> BottomSheetContent(
-                            items = it, header = stringResource(id = R.string.remind)
+                            items = options,
+                            header = stringResource(id = R.string.remind),
+                            onClick = { onRemindSelected(it) }
                         )
                         else -> None
                     }

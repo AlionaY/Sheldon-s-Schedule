@@ -8,18 +8,22 @@ import com.pti.sheldons_schedule.data.PriorityOptions
 import com.pti.sheldons_schedule.data.RemindOptions
 import com.pti.sheldons_schedule.data.RepeatOptions
 import dagger.hilt.android.lifecycle.HiltViewModel
+import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.update
 import java.util.*
 import javax.inject.Inject
 
 @HiltViewModel
-class CreateEventViewModel @Inject constructor() : ViewModel() {
+class CreateEventViewModel @Inject constructor(
+    @ApplicationContext context: Context
+) : ViewModel() {
 
     val createEventScreenState = MutableStateFlow(
         CreateEventScreenState(
             startDate = Calendar.getInstance(),
-            endDate = Calendar.getInstance()
+            endDate = Calendar.getInstance(),
+            selectedPriority = context.getString(PriorityOptions.Low.stringRes)
         )
     )
 
@@ -87,5 +91,17 @@ class CreateEventViewModel @Inject constructor() : ViewModel() {
                 optionsList = RemindOptions.values().map { context.getString(it.stringRes) }
             )
         }
+    }
+
+    fun onRepeatSelected(string: String) {
+        createEventScreenState.update { it.copy(selectedRepeat = string) }
+    }
+
+    fun onRemindSelected(string: String) {
+        createEventScreenState.update { it.copy(selectedRemind = string) }
+    }
+
+    fun onPrioritySelected(string: String) {
+        createEventScreenState.update { it.copy(selectedPriority = string) }
     }
 }

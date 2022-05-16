@@ -9,7 +9,10 @@ data class CreateEventScreenState(
     val startDate: Calendar,
     val endDate: Calendar,
     val bottomSheetType: BottomSheetType = BottomSheetType.None,
-    val optionsList: List<String>? = null
+    val optionsList: List<String>? = null,
+    val selectedPriority: String,
+    val selectedRemind: String? = null,
+    val selectedRepeat: String? = null
 ) {
     val formattedStartDate: String = startDate.formatDate(DATE_FORMAT)
     val formattedEndDate: String = endDate.formatDate(DATE_FORMAT)
