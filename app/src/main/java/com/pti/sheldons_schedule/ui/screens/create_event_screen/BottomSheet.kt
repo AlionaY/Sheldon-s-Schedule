@@ -26,12 +26,6 @@ fun ModalBottomSheet(
 ) {
     val sheetState = rememberModalBottomSheetState(initialValue = ModalBottomSheetValue.Hidden)
     val scope = rememberCoroutineScope()
-    val header = when (state.options) {
-        Repeat -> R.string.repeat
-        Remind -> R.string.remind
-        Priority -> R.string.priority
-        else -> null
-    }
 
     ModalBottomSheetLayout(
         sheetContent = {
@@ -41,8 +35,8 @@ fun ModalBottomSheet(
                     .background(LightSky)
             ) {
                 BottomSheetContent(
-                    items = state.options.string.map { stringResource(id = it) },
-                    header = header?.let { stringResource(id = it) }.orEmpty(),
+                    items = state.options.optionsList.map { stringResource(id = it) },
+                    header = state.options.title?.let { stringResource(id = it) }.orEmpty(),
                     onClick = {
                         onSelected(state.options, it)
                         scope.launch { sheetState.hide() }
