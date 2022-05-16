@@ -9,7 +9,7 @@ data class CreateEventScreenState(
     val startDate: Calendar,
     val endDate: Calendar,
     val title : String = "",
-    val description: String = ""
+    val description: String = "",
     val options: Options? = null,
     val selectedPriority: String,
     val selectedRemind: String? = null,
