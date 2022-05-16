@@ -8,5 +8,5 @@ import com.pti.sheldons_schedule.data.Event
 interface EventDao {
 
     @Query("SELECT * FROM event")
-    fun getAllEvents(): List<Event>
+    suspend fun getAllEvents(): List<Event>
 }
