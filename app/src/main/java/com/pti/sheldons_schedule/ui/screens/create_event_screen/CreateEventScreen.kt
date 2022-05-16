@@ -12,7 +12,6 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.pti.sheldons_schedule.CreateEventViewModel
 import com.pti.sheldons_schedule.R
 import com.pti.sheldons_schedule.data.CreateEventScreenState
-import com.pti.sheldons_schedule.data.Options
 import com.pti.sheldons_schedule.ui.theme.LightSky
 import kotlinx.coroutines.launch
 import java.util.*
@@ -69,15 +68,15 @@ fun CreateEventScreen(viewModel: CreateEventViewModel = hiltViewModel()) {
                 )
                 HeightSpacer()
                 DefaultTextField(
-                    value = "",
-                    onValueChanged = {},
+                    value = state.title,
+                    onValueChanged = { viewModel.onTitleEdited(it) },
                     label = stringResource(id = R.string.title),
                     modifier = Modifier.padding(horizontal = 15.dp)
                 )
                 HeightSpacer()
                 DefaultTextField(
-                    value = "",
-                    onValueChanged = {},
+                    value = state.description,
+                    onValueChanged = { viewModel.onDescriptionEdited(it) },
                     label = stringResource(id = R.string.description),
                     modifier = Modifier.padding(horizontal = 15.dp)
                 )
@@ -152,7 +151,10 @@ fun CreateEventScreen(viewModel: CreateEventViewModel = hiltViewModel()) {
                     TimePickerField(
                         currentTime = state.formattedStartTime,
                         onTimePicked = { hour, minutes ->
-                            viewModel.onTimeStartPicked(hour, minutes)
+                            viewModel.onTimeStartPicked(
+                                hour,
+                                minutes
+                            )
                         },
                         modifier = Modifier
                             .padding(start = 15.dp)
@@ -163,7 +165,10 @@ fun CreateEventScreen(viewModel: CreateEventViewModel = hiltViewModel()) {
                     TimePickerField(
                         currentTime = state.formattedEndTime,
                         onTimePicked = { hour, minutes ->
-                            viewModel.onTimeEndPicked(hour, minutes)
+                            viewModel.onTimeEndPicked(
+                                hour,
+                                minutes
+                            )
                         },
                         modifier = Modifier
                             .padding(end = 15.dp)
