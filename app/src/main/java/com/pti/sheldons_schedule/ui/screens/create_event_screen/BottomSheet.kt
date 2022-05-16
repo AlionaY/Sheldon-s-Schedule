@@ -12,6 +12,7 @@ import androidx.compose.ui.res.stringResource
 import com.pti.sheldons_schedule.R
 import com.pti.sheldons_schedule.data.CreateEventScreenState
 import com.pti.sheldons_schedule.data.Options
+import com.pti.sheldons_schedule.data.Options.*
 import com.pti.sheldons_schedule.ui.theme.LightSky
 import kotlinx.coroutines.launch
 
@@ -25,6 +26,12 @@ fun ModalBottomSheet(
 ) {
     val sheetState = rememberModalBottomSheetState(initialValue = ModalBottomSheetValue.Hidden)
     val scope = rememberCoroutineScope()
+    val header = when (state.options) {
+        Repeat -> R.string.repeat
+        Remind -> R.string.remind
+        Priority -> R.string.priority
+        else -> null
+    }
 
     ModalBottomSheetLayout(
         sheetContent = {
@@ -35,7 +42,7 @@ fun ModalBottomSheet(
             ) {
                 BottomSheetContent(
                     items = state.options.string.map { stringResource(id = it) },
-                    header = stringResource(id = R.string.repeat),
+                    header = header?.let { stringResource(id = it) }.orEmpty(),
                     onClick = {
                         onSelected(state.options, it)
                         scope.launch { sheetState.hide() }
