@@ -18,9 +18,10 @@ fun BottomSheetContentText(string: String, onClick: (String) -> Unit) {
         text = string,
         fontSize = 15.sp,
         modifier = Modifier
-            .fillMaxSize()
             .padding(10.dp)
-            .clickable { onClick(string) }
+            .fillMaxSize()
+            .clickable { onClick(string) },
+        textAlign = TextAlign.Start
     )
 }
 

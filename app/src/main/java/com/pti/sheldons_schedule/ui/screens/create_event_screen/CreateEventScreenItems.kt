@@ -26,15 +26,16 @@ fun DefaultBottomSheetField(string: String, onClick: () -> Unit) {
     Text(
         text = string,
         modifier = Modifier
+            .padding(horizontal = 15.dp)
             .fillMaxWidth()
             .height(50.dp)
-            .padding(horizontal = 15.dp)
             .clickable { onClick() }
             .border(
                 width = 0.5.dp,
                 color = Steel,
                 shape = RoundedCornerShape(10)
-            ),
+            )
+            .padding(15.dp),
         color = Steel,
         textAlign = TextAlign.Start
     )
