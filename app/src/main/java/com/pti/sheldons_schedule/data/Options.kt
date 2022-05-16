@@ -21,7 +21,7 @@ enum class Options(val string: List<Int>) {
             R.string.priority_high
         )
     ),
-    Reminder(
+    Remind(
         listOf(
             R.string.remind_10_minutes,
             R.string.remind_1_hour_before,

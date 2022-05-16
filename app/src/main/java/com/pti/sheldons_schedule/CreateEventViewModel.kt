@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.lifecycle.ViewModel
 import com.pti.sheldons_schedule.data.CreateEventScreenState
 import com.pti.sheldons_schedule.data.Options
+import com.pti.sheldons_schedule.data.Options.*
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -65,31 +66,28 @@ class CreateEventViewModel @Inject constructor(
 
     fun onRepeatFieldClicked() {
         createEventScreenState.update { state ->
-            state.copy(options = Options.Repeat)
+            state.copy(options = Repeat)
         }
     }
 
     fun onPriorityFieldClicked() {
         createEventScreenState.update { state ->
-            state.copy(options = Options.Priority)
+            state.copy(options = Priority)
         }
     }
 
     fun onRemindFieldClicked() {
         createEventScreenState.update { state ->
-            state.copy(options = Options.Reminder)
+            state.copy(options = Remind)
         }
     }
 
-    fun onRepeatSelected(string: String) {
-        createEventScreenState.update { it.copy(selectedRepeat = string) }
-    }
-
-    fun onRemindSelected(string: String) {
-        createEventScreenState.update { it.copy(selectedRemind = string) }
-    }
-
-    fun onPrioritySelected(string: String) {
-        createEventScreenState.update { it.copy(selectedPriority = string) }
+    fun onSelected(options: Options, string: String) {
+        when (options) {
+            Repeat -> createEventScreenState.update { it.copy(selectedRepeat = string) }
+            Remind -> createEventScreenState.update { it.copy(selectedRemind = string) }
+            Priority -> createEventScreenState.update { it.copy(selectedPriority = string) }
+            else -> {}
+        }
     }
 }

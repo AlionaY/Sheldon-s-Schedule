@@ -6,7 +6,6 @@ import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -38,9 +37,9 @@ fun CreateEventScreen(viewModel: CreateEventViewModel = hiltViewModel()) {
             .wrapContentHeight()
             .fillMaxWidth(),
         state = state,
-        onRemindSelected = { viewModel.onRemindSelected(it) },
-        onRepeatSelected = { viewModel.onRepeatSelected(it) },
-        onPrioritySelected = { viewModel.onPrioritySelected(it) }
+        onSelected = { options, string ->
+            viewModel.onSelected(options, string)
+        },
     ) { sheetState ->
 
         val scope = rememberCoroutineScope()
