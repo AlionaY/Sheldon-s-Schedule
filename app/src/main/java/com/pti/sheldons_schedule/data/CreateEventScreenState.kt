@@ -8,7 +8,7 @@ import java.util.*
 data class CreateEventScreenState(
     val startDate: Calendar,
     val endDate: Calendar,
-    val options: Options = Options.None,
+    val options: Options? = null,
     val selectedPriority: String,
     val selectedRemind: String? = null,
     val selectedRepeat: String? = null

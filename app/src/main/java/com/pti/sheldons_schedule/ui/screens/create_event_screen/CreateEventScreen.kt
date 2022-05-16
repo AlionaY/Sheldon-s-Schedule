@@ -45,7 +45,7 @@ fun CreateEventScreen(viewModel: CreateEventViewModel = hiltViewModel()) {
         val scope = rememberCoroutineScope()
 
         LaunchedEffect(key1 = state.options) {
-            if (state.options != Options.None) {
+            if (state.options != null) {
                 scope.launch {
                     sheetState.show()
                 }

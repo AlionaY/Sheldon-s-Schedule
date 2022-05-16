@@ -3,10 +3,6 @@ package com.pti.sheldons_schedule.data
 import com.pti.sheldons_schedule.R
 
 enum class Options(val title: Int?, val optionsList: List<Int>) {
-    None(
-        title = null,
-        optionsList = emptyList<Int>()
-    ),
     Repeat(
         title = R.string.repeat,
         optionsList = listOf(

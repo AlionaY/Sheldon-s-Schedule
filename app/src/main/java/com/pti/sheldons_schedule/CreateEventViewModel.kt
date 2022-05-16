@@ -82,12 +82,12 @@ class CreateEventViewModel @Inject constructor(
         }
     }
 
-    fun onSelected(options: Options, string: String) {
+    fun onSelected(options: Options?, string: String) {
         when (options) {
             Repeat -> createEventScreenState.update { it.copy(selectedRepeat = string) }
             Remind -> createEventScreenState.update { it.copy(selectedRemind = string) }
             Priority -> createEventScreenState.update { it.copy(selectedPriority = string) }
-            else -> {}
+            else -> { }
         }
     }
 }
