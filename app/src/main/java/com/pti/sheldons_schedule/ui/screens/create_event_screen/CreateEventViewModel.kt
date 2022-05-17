@@ -1,8 +1,9 @@
-package com.pti.sheldons_schedule
+package com.pti.sheldons_schedule.ui.screens.create_event_screen
 
 import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.pti.sheldons_schedule.R
 import com.pti.sheldons_schedule.data.CreateEventScreenState
 import com.pti.sheldons_schedule.data.Event
 import com.pti.sheldons_schedule.data.Options
