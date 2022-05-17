@@ -26,8 +26,9 @@ enum class Options(val title: Int?, val optionsList: List<Int>) {
         title = R.string.remind,
         optionsList = listOf(
             R.string.remind_10_minutes,
-            R.string.remind_1_hour_before,
-            R.string.remind_1_day_before
+            R.string.remind_15_min_before,
+            R.string.remind_30_min_before,
+            R.string.remind_1_hour_before
         )
     )
 }

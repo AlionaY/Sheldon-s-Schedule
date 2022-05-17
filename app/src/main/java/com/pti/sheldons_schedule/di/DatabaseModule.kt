@@ -1,9 +1,7 @@
 package com.pti.sheldons_schedule.di
 
 import android.content.Context
-import androidx.room.Room
-import com.pti.sheldons_schedule.db.AppDatabase
-import com.pti.sheldons_schedule.db.EventDao
+import com.pti.sheldons_schedule.db.*
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -20,9 +18,9 @@ class DatabaseModule {
 
     @Provides
     @Singleton
-    fun provideAppDatabase(@ApplicationContext appContext: Context) = Room.databaseBuilder(
-        appContext,
-        AppDatabase::class.java,
-        "EventDatabase"
-    ).build()
+    fun provideAppDatabase(@ApplicationContext appContext: Context) = createDatabase(appContext)
+
+    @Provides
+    @Singleton
+    fun provideEventsRepository(eventDao: EventDao): EventRepository = EventRepositoryImpl(eventDao)
 }

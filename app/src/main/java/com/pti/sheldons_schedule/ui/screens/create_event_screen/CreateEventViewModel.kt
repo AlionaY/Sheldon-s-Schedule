@@ -1,20 +1,26 @@
-package com.pti.sheldons_schedule
+package com.pti.sheldons_schedule.ui.screens.create_event_screen
 
 import android.content.Context
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.pti.sheldons_schedule.R
 import com.pti.sheldons_schedule.data.CreateEventScreenState
+import com.pti.sheldons_schedule.data.Event
 import com.pti.sheldons_schedule.data.Options
 import com.pti.sheldons_schedule.data.Options.*
+import com.pti.sheldons_schedule.db.EventRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
 import java.util.*
 import javax.inject.Inject
 
 @HiltViewModel
 class CreateEventViewModel @Inject constructor(
-    @ApplicationContext context: Context
+    @ApplicationContext context: Context,
+    private val repository: EventRepository
 ) : ViewModel() {
 
     val createEventScreenState = MutableStateFlow(
@@ -24,6 +30,8 @@ class CreateEventViewModel @Inject constructor(
             selectedPriority = context.getString(R.string.priority_low)
         )
     )
+
+    val allEvents = MutableStateFlow<List<Event>>(emptyList())
 
 
     fun onStartDatePicked(calendar: Calendar) {
@@ -97,5 +105,13 @@ class CreateEventViewModel @Inject constructor(
 
     fun onDescriptionEdited(string: String) {
         createEventScreenState.update { it.copy(description = string) }
+    }
+
+    fun getAllEvents() = viewModelScope.launch {
+        allEvents.value = repository.getAllEvents()
+    }
+
+    fun saveEvent(event: Event) = viewModelScope.launch {
+        repository.saveEvent(event)
     }
 }
