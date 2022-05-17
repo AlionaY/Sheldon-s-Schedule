@@ -3,7 +3,7 @@ package com.pti.sheldons_schedule.data
 import com.pti.sheldons_schedule.R
 
 enum class Options(val title: Int?, val optionsList: List<Int>) {
-    Repeat(
+    RepeatOptions(
         title = R.string.repeat,
         optionsList = listOf(
             R.string.repeat_daily,
@@ -14,15 +14,15 @@ enum class Options(val title: Int?, val optionsList: List<Int>) {
             R.string.repeat_custom
         )
     ),
-    Priority(
+    PriorityOptions(
         title = R.string.priority,
         optionsList = listOf(
             R.string.priority_low,
             R.string.priority_medium,
             R.string.priority_high
-        )
+        ),
     ),
-    Remind(
+    RemindOptions(
         title = R.string.remind,
         optionsList = listOf(
             R.string.remind_10_minutes,

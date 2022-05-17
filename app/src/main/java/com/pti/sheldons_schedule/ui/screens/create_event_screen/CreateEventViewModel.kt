@@ -9,6 +9,8 @@ import com.pti.sheldons_schedule.data.Event
 import com.pti.sheldons_schedule.data.Options
 import com.pti.sheldons_schedule.data.Options.*
 import com.pti.sheldons_schedule.db.EventRepository
+import com.pti.sheldons_schedule.util.Constants
+import com.pti.sheldons_schedule.util.formatDate
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -32,6 +34,13 @@ class CreateEventViewModel @Inject constructor(
     )
 
     val allEvents = MutableStateFlow<List<Event>>(emptyList())
+    val newEvent = MutableStateFlow(
+        Event(
+            creationDate = Calendar.getInstance().formatDate(Constants.DATE_FORMAT_ISO_8601),
+            startDate = Calendar.getInstance().formatDate(Constants.DATE_FORMAT),
+            endDate = Calendar.getInstance().formatDate(Constants.DATE_FORMAT)
+        )
+    )
 
 
     fun onStartDatePicked(calendar: Calendar) {
@@ -42,6 +51,7 @@ class CreateEventViewModel @Inject constructor(
                 set(Calendar.DAY_OF_MONTH, calendar.get(Calendar.DAY_OF_MONTH))
             })
         }
+        newEvent.update { it.copy(startDate = createEventScreenState.value.formattedStartDate) }
     }
 
     fun onEndDatePicked(calendar: Calendar) {
@@ -52,6 +62,7 @@ class CreateEventViewModel @Inject constructor(
                 set(Calendar.DAY_OF_MONTH, calendar.get(Calendar.DAY_OF_MONTH))
             })
         }
+        newEvent.update { it.copy(endDate = createEventScreenState.value.formattedEndDate) }
     }
 
     fun onTimeStartPicked(hour: Int, minutes: Int) {
@@ -74,37 +85,39 @@ class CreateEventViewModel @Inject constructor(
 
     fun onRepeatFieldClicked() {
         createEventScreenState.update { state ->
-            state.copy(options = Repeat)
+            state.copy(options = RepeatOptions)
         }
     }
 
     fun onPriorityFieldClicked() {
         createEventScreenState.update { state ->
-            state.copy(options = Priority)
+            state.copy(options = PriorityOptions)
         }
     }
 
     fun onRemindFieldClicked() {
         createEventScreenState.update { state ->
-            state.copy(options = Remind)
+            state.copy(options = RemindOptions)
         }
     }
 
     fun onSelected(options: Options?, string: String) {
         when (options) {
-            Repeat -> createEventScreenState.update { it.copy(selectedRepeat = string) }
-            Remind -> createEventScreenState.update { it.copy(selectedRemind = string) }
-            Priority -> createEventScreenState.update { it.copy(selectedPriority = string) }
+            RepeatOptions -> createEventScreenState.update { it.copy(selectedRepeat = string) }
+            RemindOptions -> createEventScreenState.update { it.copy(selectedRemind = string) }
+            PriorityOptions -> createEventScreenState.update { it.copy(selectedPriority = string) }
             else -> { }
         }
     }
 
     fun onTitleEdited(string: String) {
         createEventScreenState.update { it.copy(title = string) }
+        newEvent.update { it.copy(title = string) }
     }
 
     fun onDescriptionEdited(string: String) {
         createEventScreenState.update { it.copy(description = string) }
+        newEvent.update { it.copy(description = string) }
     }
 
     fun getAllEvents() = viewModelScope.launch {

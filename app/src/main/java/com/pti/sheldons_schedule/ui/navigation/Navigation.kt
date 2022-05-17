@@ -20,7 +20,7 @@ fun Navigation(navHostController: NavHostController) {
         }
 
         addScreen(route = NavDestination.CreateEventScreen, withAnimation = true) {
-            CreateEventScreen()
+            CreateEventScreen(navHostController)
         }
     }
 }

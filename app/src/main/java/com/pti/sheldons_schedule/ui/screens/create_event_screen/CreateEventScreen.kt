@@ -9,26 +9,23 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavController
 import com.pti.sheldons_schedule.R
-import com.pti.sheldons_schedule.data.CreateEventScreenState
 import com.pti.sheldons_schedule.ui.theme.LightSky
 import kotlinx.coroutines.launch
-import java.util.*
 
 private const val PADDING_WIDTH_SUM = 60
 private const val FIELD_COUNT = 2
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
-fun CreateEventScreen(viewModel: CreateEventViewModel = hiltViewModel()) {
+fun CreateEventScreen(
+    navController: NavController,
+    viewModel: CreateEventViewModel = hiltViewModel()
+) {
 
-    val state by viewModel.createEventScreenState.collectAsState(
-        CreateEventScreenState(
-            startDate = Calendar.getInstance(),
-            endDate = Calendar.getInstance(),
-            selectedPriority = stringResource(id = R.string.priority_low)
-        )
-    )
+    val state by viewModel.createEventScreenState.collectAsState()
+    val newEvent by viewModel.newEvent.collectAsState()
 
     ModalBottomSheet(
         modifier = Modifier
@@ -59,8 +56,11 @@ fun CreateEventScreen(viewModel: CreateEventViewModel = hiltViewModel()) {
 
             Column(modifier = Modifier.fillMaxSize()) {
                 SaveOrCloseCreatingEvent(
-                    onCloseIconClicked = {},
-                    onSaveIconClicked = {},
+                    onCloseIconClicked = { navController.popBackStack() },
+                    onSaveIconClicked = {
+                        viewModel.saveEvent(newEvent)
+                        navController.popBackStack()
+                    },
                     modifier = Modifier
                         .height(58.dp)
                         .fillMaxWidth()
