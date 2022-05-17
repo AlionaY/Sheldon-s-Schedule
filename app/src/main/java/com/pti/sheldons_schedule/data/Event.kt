@@ -8,14 +8,12 @@ import kotlinx.serialization.Serializable
 @Serializable
 @Entity(tableName = "EventTable")
 data class Event(
-    @PrimaryKey(autoGenerate = true)
-    val id: Int = 0,
+    @PrimaryKey(autoGenerate = false)
+    val creationDate: String,
     @ColumnInfo(name = "title")
     val title: String = "",
     @ColumnInfo(name = "description")
     val description: String = "",
-    @ColumnInfo(name = "creationDate")
-    val creationDate: String,
     @ColumnInfo(name = "startDate")
     val startDate: String,
     @ColumnInfo(name = "endDate")

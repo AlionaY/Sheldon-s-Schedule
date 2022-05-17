@@ -111,7 +111,7 @@ class CreateEventViewModel @Inject constructor(
         allEvents.value = repository.getAllEvents()
     }
 
-    fun setEvent(event: Event) = viewModelScope.launch {
-        repository.setEvent(event)
+    fun saveEvent(event: Event) = viewModelScope.launch {
+        repository.saveEvent(event)
     }
 }

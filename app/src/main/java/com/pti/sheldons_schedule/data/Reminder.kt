@@ -5,6 +5,7 @@ import kotlinx.serialization.Serializable
 @Serializable
 enum class Reminder(val millis: Long) {
     Remind10Min(600000),
-    Remind1Hour(3600000),
-    Remind1Day(86400000)
+    Remind15Min(900000),
+    Remind30Min(1800000),
+    Remind1Hour(3600000)
 }

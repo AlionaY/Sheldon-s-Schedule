@@ -22,5 +22,5 @@ class DatabaseModule {
 
     @Provides
     @Singleton
-    fun provideRepository(eventDao: EventDao): EventRepository = EventRepositoryImpl(eventDao)
+    fun provideEventsRepository(eventDao: EventDao): EventRepository = EventRepositoryImpl(eventDao)
 }

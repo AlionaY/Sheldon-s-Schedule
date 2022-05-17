@@ -28,6 +28,7 @@
 
     <string name="remind">Remind</string>
     <string name="remind_10_minutes">10 minutes before</string>
+    <string name="remind_15_min_before">15 minutes before</string>
+    <string name="remind_30_min_before">30 minutes before</string>
     <string name="remind_1_hour_before">1 hour before</string>
-    <string name="remind_1_day_before">1 day before</string>
 </resources>

@@ -7,7 +7,7 @@ class EventRepositoryImpl @Inject constructor(private val eventDao: EventDao) : 
 
     override suspend fun getAllEvents() = eventDao.getAllEvents()
 
-    override suspend fun setEvent(event: Event) {
+    override suspend fun saveEvent(event: Event) {
         eventDao.insertEvent(event)
     }
 }
