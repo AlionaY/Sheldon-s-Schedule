@@ -3,6 +3,7 @@ package com.pti.sheldons_schedule.data
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import com.pti.sheldons_schedule.data.Options.*
 import kotlinx.serialization.Serializable
 
 @Serializable
@@ -21,9 +22,9 @@ data class Event(
     @ColumnInfo(name = "duration")
     val duration: Long? = null,
     @ColumnInfo(name = "repeat")
-    val repeat: Repeat? = null,
+    val repeat: String? = null,
     @ColumnInfo(name = "priority")
-    val priority: Priority = Priority.Low,
+    val priority: String = Priority.Low.alias,
     @ColumnInfo(name = "reminder")
-    val reminder: Reminder? = null
+    val reminder: String? = null
 )

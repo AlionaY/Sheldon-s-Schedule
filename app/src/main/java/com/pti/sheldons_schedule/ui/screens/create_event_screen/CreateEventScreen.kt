@@ -6,7 +6,6 @@ import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -27,22 +26,21 @@ fun CreateEventScreen(
 
     val state by viewModel.createEventScreenState.collectAsState()
     val newEvent by viewModel.newEvent.collectAsState()
-    val context = LocalContext.current
 
-    BottomSheet(
+    ModalBottomSheet(
         modifier = Modifier
             .wrapContentHeight()
             .fillMaxWidth(),
-        data = state.options?.optionsList,
-        nameGetter = { context.getString(it) },
-        header = state.options?.title?.let { stringResource(id = it) }.orEmpty(),
-        onClick = { viewModel.onSelected(it, context) }
+        data = state.options.orEmpty(),
+        header = state.options?.first()?.title?.let { stringResource(it) }.orEmpty(),
+        nameGetter = { stringResource(id = it.nameId) },
+        onClick = { viewModel.onSelected(it) }
     ) { sheetState ->
 
         val scope = rememberCoroutineScope()
 
         LaunchedEffect(key1 = state.options) {
-            if (state.options != null) {
+            if (!state.options.isNullOrEmpty()) {
                 scope.launch {
                     sheetState.show()
                 }
@@ -179,20 +177,20 @@ fun CreateEventScreen(
                 }
                 HeightSpacer()
                 DefaultBottomSheetField(
-                    string = state.selectedRepeat ?: stringResource(
-                        id = R.string.repeat
+                    string = stringResource(
+                        id = state.repeat?.name ?: R.string.repeat
                     )
                 ) {
                     viewModel.onRepeatFieldClicked()
                 }
                 HeightSpacer()
-                DefaultBottomSheetField(string = state.selectedPriority) {
+                DefaultBottomSheetField(string = stringResource(id = state.priority.name)) {
                     viewModel.onPriorityFieldClicked()
                 }
                 HeightSpacer()
                 DefaultBottomSheetField(
-                    string = state.selectedRemind ?: stringResource(
-                        id = R.string.remind
+                    string = stringResource(
+                        id = state.remind?.name ?: R.string.remind
                     )
                 ) {
                     viewModel.onRemindFieldClicked()
