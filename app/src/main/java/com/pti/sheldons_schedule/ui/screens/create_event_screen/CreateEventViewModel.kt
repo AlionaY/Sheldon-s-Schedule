@@ -1,7 +1,6 @@
 package com.pti.sheldons_schedule.ui.screens.create_event_screen
 
 import android.content.Context
-import androidx.compose.material.ExperimentalMaterialApi
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.pti.sheldons_schedule.data.CreateEventScreenState
@@ -108,15 +107,24 @@ class CreateEventViewModel @Inject constructor(
         allEvents.value = repository.getAllEvents()
     }
 
-    fun saveEvent(event: Event) = viewModelScope.launch {
-        repository.saveEvent(event)
+    fun onSaveEventClicked() = viewModelScope.launch {
+        repository.saveEvent(newEvent.value)
     }
 
     fun onSelected(options: Options) {
         when (options) {
-            is Repeat -> createEventScreenState.update { it.copy(repeat = options, options = null) }
-            is Priority -> createEventScreenState.update { it.copy(priority = options, options = null) }
-            is Reminder -> createEventScreenState.update { it.copy(remind = options, options = null) }
+            is Repeat -> {
+                createEventScreenState.update { it.copy(repeat = options, options = null) }
+                newEvent.update { it.copy(repeat = options.alias) }
+            }
+            is Priority -> {
+                createEventScreenState.update { it.copy(priority = options, options = null) }
+                newEvent.update { it.copy(priority = options.alias) }
+            }
+            is Reminder -> {
+                createEventScreenState.update { it.copy(remind = options, options = null) }
+                newEvent.update { it.copy(reminder = options.alias) }
+            }
         }
     }
 }

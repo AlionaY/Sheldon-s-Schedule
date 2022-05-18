@@ -25,7 +25,6 @@ fun CreateEventScreen(
 ) {
 
     val state by viewModel.createEventScreenState.collectAsState()
-    val newEvent by viewModel.newEvent.collectAsState()
 
     ModalBottomSheet(
         modifier = Modifier
@@ -58,9 +57,8 @@ fun CreateEventScreen(
                 SaveOrCloseCreatingEvent(
                     onCloseIconClicked = { navController.popBackStack() },
                     onSaveIconClicked = {
-                        viewModel.saveEvent(newEvent)
-                        navController.popBackStack()
-                    },
+                        viewModel.onSaveEventClicked()
+                        navController.popBackStack() },
                     modifier = Modifier
                         .height(58.dp)
                         .fillMaxWidth()
