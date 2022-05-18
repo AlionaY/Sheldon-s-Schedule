@@ -4,8 +4,10 @@ import com.pti.sheldons_schedule.R
 import kotlinx.serialization.Serializable
 
 @Serializable
-enum class Priority(val alias: Int) {
+enum class Priority(val alias: Int) : Nameable {
     Low(R.string.priority_low),
     Medium(R.string.priority_medium),
-    High(R.string.priority_high)
+    High(R.string.priority_high);
+
+    override fun getKey(): Int = alias
 }

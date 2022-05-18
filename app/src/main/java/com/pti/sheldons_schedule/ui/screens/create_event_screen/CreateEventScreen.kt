@@ -6,6 +6,7 @@ import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -26,15 +27,16 @@ fun CreateEventScreen(
 
     val state by viewModel.createEventScreenState.collectAsState()
     val newEvent by viewModel.newEvent.collectAsState()
+    val context = LocalContext.current
 
-    ModalBottomSheet(
+    BottomSheet(
         modifier = Modifier
             .wrapContentHeight()
             .fillMaxWidth(),
-        state = state,
-        onSelected = { options, string ->
-            viewModel.onSelected(options, string)
-        },
+        data = state.options?.optionsList,
+        nameGetter = { context.getString(it) },
+        header = state.options?.title?.let { stringResource(id = it) }.orEmpty(),
+        onClick = { viewModel.onSelected(it, context) }
     ) { sheetState ->
 
         val scope = rememberCoroutineScope()

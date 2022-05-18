@@ -1,12 +1,11 @@
 package com.pti.sheldons_schedule.ui.screens.create_event_screen
 
 import android.content.Context
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.pti.sheldons_schedule.R
-import com.pti.sheldons_schedule.data.CreateEventScreenState
-import com.pti.sheldons_schedule.data.Event
-import com.pti.sheldons_schedule.data.Options
+import com.pti.sheldons_schedule.data.*
 import com.pti.sheldons_schedule.data.Options.*
 import com.pti.sheldons_schedule.db.EventRepository
 import com.pti.sheldons_schedule.util.Constants
@@ -16,6 +15,7 @@ import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import java.nio.file.Files.find
 import java.util.*
 import javax.inject.Inject
 
@@ -101,12 +101,41 @@ class CreateEventViewModel @Inject constructor(
         }
     }
 
-    fun onSelected(options: Options?, string: String) {
-        when (options) {
-            RepeatOptions -> createEventScreenState.update { it.copy(selectedRepeat = string) }
-            RemindOptions -> createEventScreenState.update { it.copy(selectedRemind = string) }
-            PriorityOptions -> createEventScreenState.update { it.copy(selectedPriority = string) }
-            else -> { }
+    fun onSelected(index: Int, context: Context) {
+        createEventScreenState.value.options?.let { options ->
+            val selectedOption = context.getString(options.optionsList[index])
+
+            when (options) {
+                RepeatOptions -> {
+                    newEvent.update { event ->
+                        event.copy(
+                            repeat = Repeat.values().find { it.alias == options.optionsList[index] }
+                        )
+                    }
+
+                    createEventScreenState.update { it.copy(selectedRepeat = selectedOption) }
+                }
+                PriorityOptions -> {
+                    newEvent.update { event ->
+                        event.copy(
+                            priority = Priority.values()
+                                .find { it.alias == options.optionsList[index] } ?: Priority.Low
+                        )
+                    }
+
+                    createEventScreenState.update { it.copy(selectedPriority = selectedOption) }
+                }
+                RemindOptions -> {
+                    newEvent.update { event ->
+                        event.copy(
+                            reminder = Reminder.values()
+                                .find { it.alias == options.optionsList[index] }
+                        )
+                    }
+
+                    createEventScreenState.update { it.copy(selectedRemind = selectedOption) }
+                }
+            }
         }
     }
 

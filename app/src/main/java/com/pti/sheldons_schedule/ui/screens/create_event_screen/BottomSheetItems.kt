@@ -1,7 +1,10 @@
 package com.pti.sheldons_schedule.ui.screens.create_event_screen
 
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
@@ -13,23 +16,24 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
 @Composable
-fun BottomSheetContentText(string: String, onClick: (String) -> Unit) {
+fun BottomSheetContentText(string: String, onClick: () -> Unit) {
     Text(
         text = string,
         fontSize = 15.sp,
         modifier = Modifier
             .padding(10.dp)
             .fillMaxSize()
-            .clickable { onClick(string) },
+            .clickable { onClick() },
         textAlign = TextAlign.Start
     )
 }
 
 @Composable
 fun BottomSheetContent(
-    items: List<String>,
+    data: List<Int>?,
+    nameGetter: (Int) -> String,
     header: String,
-    onClick: (String) -> Unit
+    onClick: (index: Int) -> Unit
 ) {
     LazyColumn(
         modifier = Modifier
@@ -47,9 +51,9 @@ fun BottomSheetContent(
             )
         }
 
-        items.forEach {
+        data?.forEach {
             item {
-                BottomSheetContentText(it) { onClick(it) }
+                BottomSheetContentText(nameGetter(it)) { onClick(data.indexOf(it)) }
             }
         }
     }
