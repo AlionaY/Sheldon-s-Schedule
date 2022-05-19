@@ -3,6 +3,7 @@ package com.pti.sheldons_schedule.ui.screens.create_event_screen
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.ExperimentalMaterialApi
+import androidx.compose.material.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -13,7 +14,6 @@ import com.pti.sheldons_schedule.R
 import com.pti.sheldons_schedule.data.CreateEventScreenState
 import com.pti.sheldons_schedule.ui.theme.LightSky
 import kotlinx.coroutines.launch
-import java.time.LocalDate
 import java.util.*
 
 private const val PADDING_WIDTH_SUM = 60
@@ -82,35 +82,20 @@ fun CreateEventScreen(viewModel: CreateEventViewModel = hiltViewModel()) {
                 )
                 HeightSpacer(height = 18.dp)
                 Row(
-                    modifier = Modifier
-                        .padding(horizontal = 15.dp)
-                        .fillMaxWidth()
-                        .wrapContentHeight()
-                ) {
-                    DefaultFieldHeader(
-                        header = stringResource(id = R.string.start_date),
-                        modifier = Modifier.width(halfFieldWidth.dp)
-                    )
-                    Spacer(modifier = Modifier.width(30.dp))
-                    DefaultFieldHeader(
-                        header = stringResource(id = R.string.end_date),
-                        modifier = Modifier.width(halfFieldWidth.dp)
-                    )
-                }
-                Row(
                     modifier = Modifier.fillMaxWidth(),
                     verticalAlignment = Alignment.CenterVertically,
                 ) {
                     DatePickerField(
-                        pickedDate = "",
-//                        pickedDate = state.formattedStartDate,
+                        pickedDate = state.formattedStartDate,
                         onPickedDate = { calendar ->
                             calendar?.let { it -> viewModel.onStartDatePicked(it) }
                         },
                         modifier = Modifier
                             .padding(start = 15.dp)
                             .width(halfFieldWidth.dp)
-                            .height(50.dp)
+                            .wrapContentHeight(),
+                        label = { Text(stringResource(id = R.string.start_date)) },
+                        onValueChanged = { }
                     )
                     Spacer(modifier = Modifier.width(30.dp))
                     DatePickerField(
@@ -121,7 +106,9 @@ fun CreateEventScreen(viewModel: CreateEventViewModel = hiltViewModel()) {
                         modifier = Modifier
                             .padding(end = 15.dp)
                             .width(halfFieldWidth.dp)
-                            .height(50.dp)
+                            .wrapContentHeight(),
+                        label = { Text(text = stringResource(id = R.string.end_date)) },
+                        onValueChanged = { }
                     )
                 }
                 HeightSpacer()
