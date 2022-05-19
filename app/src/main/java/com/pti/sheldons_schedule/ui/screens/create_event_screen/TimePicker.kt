@@ -1,33 +1,28 @@
 package com.pti.sheldons_schedule.ui.screens.create_event_screen
 
 import androidx.appcompat.app.AppCompatActivity
-import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.wrapContentSize
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.Text
+import androidx.compose.material.Icon
+import androidx.compose.material.OutlinedTextField
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Schedule
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import com.google.android.material.timepicker.MaterialTimePicker
 import com.google.android.material.timepicker.TimeFormat
 import com.pti.sheldons_schedule.R
-import com.pti.sheldons_schedule.ui.theme.Black
-import com.pti.sheldons_schedule.ui.theme.Steel
 
 @Composable
 fun TimePickerField(
-    currentTime: String,
+    pickedTime: String,
+    onValueChanged: (String) -> Unit,
     onTimePicked: (hour: Int, minutes: Int) -> Unit,
     modifier: Modifier = Modifier,
-    textPadding: Int = 10
+    label: @Composable (() -> Unit)? = null
 ) {
-
     var isClicked by remember { mutableStateOf(false) }
 
     if (isClicked) {
@@ -35,20 +30,21 @@ fun TimePickerField(
         isClicked = false
     }
 
-    Text(
-        text = currentTime,
-        fontSize = 16.sp,
+    OutlinedTextField(
+        value = pickedTime,
+        onValueChange = { onValueChanged(it) },
         modifier = modifier
-            .border(
-                width = 0.5.dp,
-                color = Steel,
-                shape = RoundedCornerShape(10)
+            .onFocusChanged { isClicked = it.isFocused }
+            .clickable { isClicked = true },
+        readOnly = true,
+        label = label,
+        trailingIcon = {
+            Icon(
+                imageVector = Icons.Filled.Schedule,
+                contentDescription = null,
+                modifier = Modifier.clickable { isClicked = true }
             )
-            .clickable { isClicked = true }
-            .padding(horizontal = textPadding.dp)
-            .wrapContentSize(),
-        color = Black,
-        textAlign = TextAlign.Center
+        }
     )
 }
 

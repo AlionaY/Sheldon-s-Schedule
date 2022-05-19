@@ -80,7 +80,7 @@ fun CreateEventScreen(viewModel: CreateEventViewModel = hiltViewModel()) {
                     label = stringResource(id = R.string.description),
                     modifier = Modifier.padding(horizontal = 15.dp)
                 )
-                HeightSpacer(height = 18.dp)
+                HeightSpacer()
                 Row(
                     modifier = Modifier.fillMaxWidth(),
                     verticalAlignment = Alignment.CenterVertically,
@@ -113,55 +113,34 @@ fun CreateEventScreen(viewModel: CreateEventViewModel = hiltViewModel()) {
                 }
                 HeightSpacer()
                 Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .wrapContentHeight()
-                        .padding(horizontal = 15.dp),
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    DefaultFieldHeader(
-                        header = stringResource(id = R.string.start_time),
-                        modifier = Modifier.width(halfFieldWidth.dp)
-                    )
-                    Spacer(modifier = Modifier.width(30.dp))
-                    DefaultFieldHeader(
-                        header = stringResource(id = R.string.end_time),
-                        modifier = Modifier.width(halfFieldWidth.dp)
-                    )
-                }
-                HeightSpacer(height = 5.dp)
-                Row(
                     modifier = Modifier.fillMaxWidth(),
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.Center
                 ) {
                     TimePickerField(
-                        currentTime = state.formattedStartTime,
+                        pickedTime = state.formattedStartTime,
                         onTimePicked = { hour, minutes ->
-                            viewModel.onTimeStartPicked(
-                                hour,
-                                minutes
-                            )
+                            viewModel.onTimeStartPicked(hour, minutes)
                         },
                         modifier = Modifier
                             .padding(start = 15.dp)
                             .width(halfFieldWidth.dp)
-                            .height(50.dp)
+                            .wrapContentHeight(),
+                        label = { Text(text = stringResource(id = R.string.start_time))},
+                        onValueChanged = {}
                     )
                     Spacer(modifier = Modifier.width(30.dp))
                     TimePickerField(
-                        currentTime = state.formattedEndTime,
+                        pickedTime = state.formattedEndTime,
                         onTimePicked = { hour, minutes ->
-                            viewModel.onTimeEndPicked(
-                                hour,
-                                minutes
-                            )
+                            viewModel.onTimeEndPicked(hour, minutes)
                         },
                         modifier = Modifier
                             .padding(end = 15.dp)
                             .width(halfFieldWidth.dp)
-                            .height(50.dp)
+                            .wrapContentHeight(),
+                        label = { Text(text = stringResource(id = R.string.end_time))},
+                        onValueChanged = {}
                     )
                 }
                 HeightSpacer()
