@@ -3,12 +3,14 @@ package com.pti.sheldons_schedule.ui.screens.create_event_screen
 import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.pti.sheldons_schedule.R
 import com.pti.sheldons_schedule.data.CreateEventScreenState
 import com.pti.sheldons_schedule.data.Event
 import com.pti.sheldons_schedule.data.Options
 import com.pti.sheldons_schedule.data.Options.*
+import com.pti.sheldons_schedule.data.toEvent
 import com.pti.sheldons_schedule.db.EventRepository
+import com.pti.sheldons_schedule.util.Constants
+import com.pti.sheldons_schedule.util.formatDate
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -26,8 +28,7 @@ class CreateEventViewModel @Inject constructor(
     val createEventScreenState = MutableStateFlow(
         CreateEventScreenState(
             startDate = Calendar.getInstance(),
-            endDate = Calendar.getInstance(),
-            selectedPriority = context.getString(R.string.priority_low)
+            endDate = Calendar.getInstance()
         )
     )
 
@@ -72,31 +73,16 @@ class CreateEventViewModel @Inject constructor(
         }
     }
 
-    fun onRepeatFieldClicked() {
-        createEventScreenState.update { state ->
-            state.copy(options = Repeat)
-        }
+    fun onRepeatFieldClicked() = viewModelScope.launch {
+        createEventScreenState.update { it.copy(options = Repeat.values()) }
     }
 
-    fun onPriorityFieldClicked() {
-        createEventScreenState.update { state ->
-            state.copy(options = Priority)
-        }
+    fun onPriorityFieldClicked() = viewModelScope.launch {
+        createEventScreenState.update { it.copy(options = Priority.values()) }
     }
 
-    fun onRemindFieldClicked() {
-        createEventScreenState.update { state ->
-            state.copy(options = Remind)
-        }
-    }
-
-    fun onSelected(options: Options?, string: String) {
-        when (options) {
-            Repeat -> createEventScreenState.update { it.copy(selectedRepeat = string) }
-            Remind -> createEventScreenState.update { it.copy(selectedRemind = string) }
-            Priority -> createEventScreenState.update { it.copy(selectedPriority = string) }
-            else -> { }
-        }
+    fun onRemindFieldClicked() = viewModelScope.launch {
+        createEventScreenState.update { it.copy(options = Reminder.values()) }
     }
 
     fun onTitleEdited(string: String) {
@@ -111,7 +97,24 @@ class CreateEventViewModel @Inject constructor(
         allEvents.value = repository.getAllEvents()
     }
 
-    fun saveEvent(event: Event) = viewModelScope.launch {
-        repository.saveEvent(event)
+    fun onSaveEventClicked() = viewModelScope.launch {
+        val currentDate = Calendar.getInstance().formatDate(Constants.DATE_FORMAT)
+        repository.saveEvent(
+            createEventScreenState.value.toEvent(currentDate)
+        )
+    }
+
+    fun onSelected(options: Options) {
+        when (options) {
+            is Repeat -> createEventScreenState.update {
+                it.copy(repeat = options, options = null)
+            }
+            is Priority -> createEventScreenState.update {
+                it.copy(priority = options, options = null)
+            }
+            is Reminder -> createEventScreenState.update {
+                it.copy(remind = options, options = null)
+            }
+        }
     }
 }

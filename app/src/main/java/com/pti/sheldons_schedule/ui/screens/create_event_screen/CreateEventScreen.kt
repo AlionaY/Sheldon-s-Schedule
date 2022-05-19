@@ -10,41 +10,37 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavController
 import com.pti.sheldons_schedule.R
-import com.pti.sheldons_schedule.data.CreateEventScreenState
 import com.pti.sheldons_schedule.ui.theme.LightSky
 import kotlinx.coroutines.launch
-import java.util.*
 
 private const val PADDING_WIDTH_SUM = 60
 private const val FIELD_COUNT = 2
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
-fun CreateEventScreen(viewModel: CreateEventViewModel = hiltViewModel()) {
+fun CreateEventScreen(
+    navController: NavController,
+    viewModel: CreateEventViewModel = hiltViewModel()
+) {
 
-    val state by viewModel.createEventScreenState.collectAsState(
-        CreateEventScreenState(
-            startDate = Calendar.getInstance(),
-            endDate = Calendar.getInstance(),
-            selectedPriority = stringResource(id = R.string.priority_low)
-        )
-    )
+    val state by viewModel.createEventScreenState.collectAsState()
 
     ModalBottomSheet(
         modifier = Modifier
             .wrapContentHeight()
             .fillMaxWidth(),
-        state = state,
-        onSelected = { options, string ->
-            viewModel.onSelected(options, string)
-        },
+        data = state.options.orEmpty(),
+        header = state.options?.first()?.title?.let { stringResource(it) }.orEmpty(),
+        nameGetter = { stringResource(id = it.nameId) },
+        onClick = { viewModel.onSelected(it) }
     ) { sheetState ->
 
         val scope = rememberCoroutineScope()
 
         LaunchedEffect(key1 = state.options) {
-            if (state.options != null) {
+            if (!state.options.isNullOrEmpty()) {
                 scope.launch {
                     sheetState.show()
                 }
@@ -60,8 +56,11 @@ fun CreateEventScreen(viewModel: CreateEventViewModel = hiltViewModel()) {
 
             Column(modifier = Modifier.fillMaxSize()) {
                 SaveOrCloseCreatingEvent(
-                    onCloseIconClicked = {},
-                    onSaveIconClicked = {},
+                    onCloseIconClicked = { navController.popBackStack() },
+                    onSaveIconClicked = {
+                        viewModel.onSaveEventClicked()
+                        navController.popBackStack()
+                    },
                     modifier = Modifier
                         .height(58.dp)
                         .fillMaxWidth()
@@ -145,20 +144,20 @@ fun CreateEventScreen(viewModel: CreateEventViewModel = hiltViewModel()) {
                 }
                 HeightSpacer()
                 DefaultBottomSheetField(
-                    string = state.selectedRepeat ?: stringResource(
-                        id = R.string.repeat
+                    string = stringResource(
+                        id = state.repeat?.name ?: R.string.repeat
                     )
                 ) {
                     viewModel.onRepeatFieldClicked()
                 }
                 HeightSpacer()
-                DefaultBottomSheetField(string = state.selectedPriority) {
+                DefaultBottomSheetField(string = stringResource(id = state.priority.name)) {
                     viewModel.onPriorityFieldClicked()
                 }
                 HeightSpacer()
                 DefaultBottomSheetField(
-                    string = state.selectedRemind ?: stringResource(
-                        id = R.string.remind
+                    string = stringResource(
+                        id = state.remind?.name ?: R.string.remind
                     )
                 ) {
                     viewModel.onRemindFieldClicked()

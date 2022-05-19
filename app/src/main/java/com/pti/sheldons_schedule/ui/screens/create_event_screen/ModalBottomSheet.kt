@@ -8,17 +8,17 @@ import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.stringResource
-import com.pti.sheldons_schedule.data.CreateEventScreenState
 import com.pti.sheldons_schedule.data.Options
 import com.pti.sheldons_schedule.ui.theme.LightSky
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
-fun ModalBottomSheet(
-    state: CreateEventScreenState,
-    onSelected: (Options?, String) -> Unit,
+fun <T> ModalBottomSheet(
+    data: List<T>,
+    header: String,
+    nameGetter: @Composable (T) -> String,
+    onClick: (T) -> Unit,
     modifier: Modifier = Modifier,
     content: @Composable (state: ModalBottomSheetState) -> Unit
 ) {
@@ -33,13 +33,13 @@ fun ModalBottomSheet(
                     .background(LightSky)
             ) {
                 BottomSheetContent(
-                    items = state.options?.optionsList?.map { stringResource(id = it) }.orEmpty(),
-                    header = state.options?.title?.let { stringResource(id = it) }.orEmpty(),
-                    onClick = {
-                        onSelected(state.options, it)
-                        scope.launch { sheetState.hide() }
-                    }
-                )
+                    data = data,
+                    header = header,
+                    nameGetter = { nameGetter(it) }
+                ) {
+                    onClick(it)
+                    scope.launch { sheetState.hide() }
+                }
             }
         },
         sheetState = sheetState,

@@ -1,29 +1,41 @@
 package com.pti.sheldons_schedule.data
 
-import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import androidx.room.TypeConverters
+import com.pti.sheldons_schedule.data.Options.*
+import com.pti.sheldons_schedule.db.OptionsTypeConverter
+import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
 @Entity(tableName = "EventTable")
+@TypeConverters(OptionsTypeConverter::class)
 data class Event(
     @PrimaryKey(autoGenerate = false)
     val creationDate: String,
-    @ColumnInfo(name = "title")
     val title: String = "",
-    @ColumnInfo(name = "description")
     val description: String = "",
-    @ColumnInfo(name = "startDate")
     val startDate: String,
-    @ColumnInfo(name = "endDate")
     val endDate: String,
-    @ColumnInfo(name = "duration")
     val duration: Long? = null,
-    @ColumnInfo(name = "repeat")
+    @SerialName("repeat")
     val repeat: Repeat? = null,
-    @ColumnInfo(name = "priority")
+    @SerialName("priority")
     val priority: Priority = Priority.Low,
-    @ColumnInfo(name = "reminder")
+    @SerialName("reminder")
     val reminder: Reminder? = null
+)
+
+//todo: calculate duration
+fun CreateEventScreenState.toEvent(creationDate: String, duration: Long? = null) = Event(
+    creationDate = creationDate,
+    title = this.title,
+    description = this.description,
+    startDate = this.formattedStartDate,
+    endDate = this.formattedEndDate,
+    duration = duration,
+    repeat = this.repeat,
+    priority = this.priority,
+    reminder = this.remind
 )
