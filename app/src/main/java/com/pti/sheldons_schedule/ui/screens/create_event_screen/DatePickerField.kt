@@ -10,6 +10,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.stringResource
 import com.google.android.material.datepicker.MaterialDatePicker
 import com.pti.sheldons_schedule.R
@@ -39,7 +40,7 @@ fun DatePickerField(
         value = pickedDate ?: LocalDate.now().format(formatter),
         onValueChange = { onValueChanged(it) },
         modifier = modifier
-            .onFocusChanged { isClicked = it.isFocused }
+            .onFocusChanged { isClicked = it.hasFocus }
             .clickable { isClicked = true },
         readOnly = true,
         label = label,
@@ -56,6 +57,7 @@ fun DatePickerField(
 @Composable
 private fun DatePicker(onPickedDate: (Calendar?) -> Unit) {
     val activity = LocalContext.current as? AppCompatActivity
+    val focusManager = LocalFocusManager.current
 
     MaterialDatePicker.Builder.datePicker()
         .setTitleText(stringResource(id = R.string.calendar_title))
@@ -66,6 +68,7 @@ private fun DatePicker(onPickedDate: (Calendar?) -> Unit) {
                 Calendar.getInstance().apply {
                     this.timeInMillis = it
                     onPickedDate(this)
+                    focusManager.clearFocus()
                 }
             }
         }

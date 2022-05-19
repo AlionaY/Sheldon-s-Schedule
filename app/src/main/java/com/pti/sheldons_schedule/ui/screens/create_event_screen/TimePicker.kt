@@ -10,6 +10,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.stringResource
 import com.google.android.material.timepicker.MaterialTimePicker
 import com.google.android.material.timepicker.TimeFormat
@@ -34,7 +35,7 @@ fun TimePickerField(
         value = pickedTime,
         onValueChange = { onValueChanged(it) },
         modifier = modifier
-            .onFocusChanged { isClicked = it.isFocused }
+            .onFocusChanged { isClicked = it.hasFocus }
             .clickable { isClicked = true },
         readOnly = true,
         label = label,
@@ -51,6 +52,7 @@ fun TimePickerField(
 @Composable
 fun TimePicker(onTimePicked: (hour: Int, minute: Int) -> Unit) {
     val activity = LocalContext.current as? AppCompatActivity
+    val focusManager = LocalFocusManager.current
 
     MaterialTimePicker.Builder()
         .setTimeFormat(TimeFormat.CLOCK_24H)
@@ -60,6 +62,7 @@ fun TimePicker(onTimePicked: (hour: Int, minute: Int) -> Unit) {
             activity?.supportFragmentManager?.let { show(it, this.toString()) }
             addOnPositiveButtonClickListener {
                 onTimePicked(hour, minute)
+                focusManager.clearFocus()
             }
         }
 }
