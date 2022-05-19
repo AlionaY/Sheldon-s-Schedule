@@ -6,8 +6,9 @@ import kotlinx.serialization.Serializable
 @Serializable
 sealed class Options(val title: Int, val nameId: Int) {
     @Serializable
-    sealed class Priority(val name: Int, val alias: String) : Options(R.string.priority, name) {
-        object Low : Priority(R.string.priority_low, "low")
+    sealed class Priority(val name: Int, val alias: String) :
+        Options(title = R.string.priority, nameId = name) {
+        object Low : Priority(name = R.string.priority_low, alias = "low")
         object Medium : Priority(R.string.priority_medium, "medium")
         object High : Priority(R.string.priority_high, "high")
 

@@ -14,7 +14,7 @@ import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
-fun <T: Options> ModalBottomSheet(
+fun <T> ModalBottomSheet(
     data: List<T>,
     header: String,
     nameGetter: @Composable (T) -> String,

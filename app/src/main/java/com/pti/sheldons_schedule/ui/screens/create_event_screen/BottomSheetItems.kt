@@ -18,7 +18,7 @@ import androidx.compose.ui.unit.sp
 import com.pti.sheldons_schedule.data.Options
 
 @Composable
-fun <T : Options> BottomSheetContent(
+fun <T> BottomSheetContent(
     data: List<T>,
     header: String,
     nameGetter: @Composable (T) -> String,
