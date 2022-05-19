@@ -7,6 +7,7 @@ import com.pti.sheldons_schedule.data.CreateEventScreenState
 import com.pti.sheldons_schedule.data.Event
 import com.pti.sheldons_schedule.data.Options
 import com.pti.sheldons_schedule.data.Options.*
+import com.pti.sheldons_schedule.data.toEvent
 import com.pti.sheldons_schedule.db.EventRepository
 import com.pti.sheldons_schedule.util.Constants
 import com.pti.sheldons_schedule.util.formatDate
@@ -32,13 +33,6 @@ class CreateEventViewModel @Inject constructor(
     )
 
     val allEvents = MutableStateFlow<List<Event>>(emptyList())
-    val newEvent = MutableStateFlow(
-        Event(
-            creationDate = Calendar.getInstance().formatDate(Constants.DATE_FORMAT_ISO_8601),
-            startDate = Calendar.getInstance().formatDate(Constants.DATE_FORMAT),
-            endDate = Calendar.getInstance().formatDate(Constants.DATE_FORMAT)
-        )
-    )
 
 
     fun onStartDatePicked(calendar: Calendar) {
@@ -49,7 +43,6 @@ class CreateEventViewModel @Inject constructor(
                 set(Calendar.DAY_OF_MONTH, calendar.get(Calendar.DAY_OF_MONTH))
             })
         }
-        newEvent.update { it.copy(startDate = createEventScreenState.value.formattedStartDate) }
     }
 
     fun onEndDatePicked(calendar: Calendar) {
@@ -60,7 +53,6 @@ class CreateEventViewModel @Inject constructor(
                 set(Calendar.DAY_OF_MONTH, calendar.get(Calendar.DAY_OF_MONTH))
             })
         }
-        newEvent.update { it.copy(endDate = createEventScreenState.value.formattedEndDate) }
     }
 
     fun onTimeStartPicked(hour: Int, minutes: Int) {
@@ -95,12 +87,10 @@ class CreateEventViewModel @Inject constructor(
 
     fun onTitleEdited(string: String) {
         createEventScreenState.update { it.copy(title = string) }
-        newEvent.update { it.copy(title = string) }
     }
 
     fun onDescriptionEdited(string: String) {
         createEventScreenState.update { it.copy(description = string) }
-        newEvent.update { it.copy(description = string) }
     }
 
     fun getAllEvents() = viewModelScope.launch {
@@ -108,22 +98,22 @@ class CreateEventViewModel @Inject constructor(
     }
 
     fun onSaveEventClicked() = viewModelScope.launch {
-        repository.saveEvent(newEvent.value)
+        val currentDate = Calendar.getInstance().formatDate(Constants.DATE_FORMAT)
+        repository.saveEvent(
+            createEventScreenState.value.toEvent(currentDate)
+        )
     }
 
     fun onSelected(options: Options) {
         when (options) {
-            is Repeat -> {
-                createEventScreenState.update { it.copy(repeat = options, options = null) }
-                newEvent.update { it.copy(repeat = options) }
+            is Repeat -> createEventScreenState.update {
+                it.copy(repeat = options, options = null)
             }
-            is Priority -> {
-                createEventScreenState.update { it.copy(priority = options, options = null) }
-                newEvent.update { it.copy(priority = options) }
+            is Priority -> createEventScreenState.update {
+                it.copy(priority = options, options = null)
             }
-            is Reminder -> {
-                createEventScreenState.update { it.copy(remind = options, options = null) }
-                newEvent.update { it.copy(reminder = options) }
+            is Reminder -> createEventScreenState.update {
+                it.copy(remind = options, options = null)
             }
         }
     }

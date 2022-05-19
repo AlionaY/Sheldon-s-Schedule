@@ -58,7 +58,8 @@ fun CreateEventScreen(
                     onCloseIconClicked = { navController.popBackStack() },
                     onSaveIconClicked = {
                         viewModel.onSaveEventClicked()
-                        navController.popBackStack() },
+                        navController.popBackStack()
+                    },
                     modifier = Modifier
                         .height(58.dp)
                         .fillMaxWidth()
