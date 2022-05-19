@@ -13,6 +13,7 @@ import com.pti.sheldons_schedule.R
 import com.pti.sheldons_schedule.data.CreateEventScreenState
 import com.pti.sheldons_schedule.ui.theme.LightSky
 import kotlinx.coroutines.launch
+import java.time.LocalDate
 import java.util.*
 
 private const val PADDING_WIDTH_SUM = 60
@@ -100,11 +101,13 @@ fun CreateEventScreen(viewModel: CreateEventViewModel = hiltViewModel()) {
                     modifier = Modifier.fillMaxWidth(),
                     verticalAlignment = Alignment.CenterVertically,
                 ) {
-                    DatePickerField(
-                        pickedDate = state.formattedStartDate,
+                    OutlineDatePicker(
+                        value = LocalDate.now(),
+//                        pickedDate = state.formattedStartDate,
                         onPickedDate = { calendar ->
                             calendar?.let { it -> viewModel.onStartDatePicked(it) }
                         },
+                        onValueChange = {},
                         modifier = Modifier
                             .padding(start = 15.dp)
                             .width(halfFieldWidth.dp)
