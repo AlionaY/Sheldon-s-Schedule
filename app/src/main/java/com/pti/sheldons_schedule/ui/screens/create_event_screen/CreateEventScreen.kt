@@ -101,13 +101,12 @@ fun CreateEventScreen(viewModel: CreateEventViewModel = hiltViewModel()) {
                     modifier = Modifier.fillMaxWidth(),
                     verticalAlignment = Alignment.CenterVertically,
                 ) {
-                    OutlineDatePicker(
-                        value = LocalDate.now(),
+                    DatePickerField(
+                        pickedDate = "",
 //                        pickedDate = state.formattedStartDate,
                         onPickedDate = { calendar ->
                             calendar?.let { it -> viewModel.onStartDatePicked(it) }
                         },
-                        onValueChange = {},
                         modifier = Modifier
                             .padding(start = 15.dp)
                             .width(halfFieldWidth.dp)
