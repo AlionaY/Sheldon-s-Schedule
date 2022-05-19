@@ -2,41 +2,27 @@ package com.pti.sheldons_schedule.db
 
 import androidx.room.TypeConverter
 import com.pti.sheldons_schedule.data.Options
-import org.json.JSONObject
 
 class OptionsTypeConverter {
 
     @TypeConverter
-    fun fromPriority(priority: Options.Priority) = JSONObject().apply {
-//        put("name", priority.name)
-        put("priority", priority.alias)
-    }
+    fun fromPriority(priority: Options.Priority?): String? = priority?.alias
 
     @TypeConverter
-    fun toPriority(string: String?): Options.Priority? {
-        return Options.Priority.values().firstOrNull { it.alias == string }
-    }
+    fun toPriority(alias: String?): Options.Priority? =
+        Options.Priority.values().firstOrNull { it.alias == alias }
 
     @TypeConverter
-    fun fromReminder(remind: Options.Reminder) = JSONObject().apply {
-//        put("name", remind.name)
-        put("remind", remind.alias)
-    }
+    fun fromRepeat(repeat: Options.Repeat?): String? = repeat?.alias
 
     @TypeConverter
-    fun toReminder(remind: String?): Options.Reminder? {
-        return Options.Reminder.values().firstOrNull { it.alias == remind }
-    }
+    fun toRepeat(alias: String?): Options.Repeat? =
+        Options.Repeat.values().firstOrNull { it.alias == alias }
 
     @TypeConverter
-    fun fromRepeat(repeat: Options.Repeat) = JSONObject().apply {
-//        put("name", repeat.name)
-        put("repeat", repeat.alias)
-    }
+    fun fromReminder(reminder: Options.Reminder?): String? = reminder?.alias
 
     @TypeConverter
-    fun toRepeat(repeat: String?): Options.Repeat? =
-        Options.Repeat.values().firstOrNull {
-            it.alias == repeat
-        }
+    fun toReminder(alias: String?): Options.Reminder? =
+        Options.Reminder.values().firstOrNull { it.alias == alias }
 }

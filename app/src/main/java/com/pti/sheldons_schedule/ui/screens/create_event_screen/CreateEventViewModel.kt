@@ -115,15 +115,15 @@ class CreateEventViewModel @Inject constructor(
         when (options) {
             is Repeat -> {
                 createEventScreenState.update { it.copy(repeat = options, options = null) }
-//                newEvent.update { it.copy(repeat = options) }
+                newEvent.update { it.copy(repeat = options) }
             }
             is Priority -> {
                 createEventScreenState.update { it.copy(priority = options, options = null) }
-//                newEvent.update { it.copy(priority = options) }
+                newEvent.update { it.copy(priority = options) }
             }
             is Reminder -> {
                 createEventScreenState.update { it.copy(remind = options, options = null) }
-//                newEvent.update { it.copy(reminder = options) }
+                newEvent.update { it.copy(reminder = options) }
             }
         }
     }

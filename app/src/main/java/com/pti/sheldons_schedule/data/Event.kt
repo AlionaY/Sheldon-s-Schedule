@@ -17,8 +17,8 @@ data class Event(
     val startDate: String,
     val endDate: String,
     val duration: Long? = null,
-//    @SerialName("repeat")
-//    val repeat: Repeat? = null,
+    @SerialName("repeat")
+    val repeat: Repeat? = null,
     @SerialName("priority")
     val priority: Priority = Priority.Low,
     @SerialName("reminder")
