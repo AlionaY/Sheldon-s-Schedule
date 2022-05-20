@@ -1,5 +1,6 @@
 package com.pti.sheldons_schedule.ui.screens.main_screen
 
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
@@ -24,6 +25,7 @@ import com.pti.sheldons_schedule.ui.theme.White
 import com.pti.sheldons_schedule.util.Constants
 import com.pti.sheldons_schedule.util.formatDate
 import java.time.DayOfWeek
+import java.time.YearMonth
 import java.util.*
 
 private const val SPACER_WIDTH = 60
@@ -33,10 +35,19 @@ private const val WEEK_DAYS_COUNT = 7
 @Composable
 fun MainScreen(viewModel: MainViewModel = hiltViewModel()) {
     val calendar = Calendar.getInstance(Locale.UK)
-    val currentDayName = calendar.formatDate(Constants.WEEK_NAME_FORMAT).uppercase()
-
+    val currentDayName = calendar.formatDate(Constants.DAY_NAME_FORMAT).uppercase()
     val dayOfWeek = DayOfWeek.values()
+
+    val config = LocalConfiguration.current
+    val width = (config.screenWidthDp - SPACER_WIDTH) / WEEK_DAYS_COUNT
+
     val pagerState = rememberPagerState()
+
+    val currentDayNumber = calendar.formatDate(Constants.DAY_NUMBER_FORMAT)
+
+    val maxDaysInMonth = YearMonth.now().atEndOfMonth()
+    val month = YearMonth.of(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH) + 1).lengthOfMonth()
+    Log.d("###", "day of month $month")
 
     Box(modifier = Modifier.fillMaxSize()) {
         Row(
@@ -62,16 +73,9 @@ fun MainScreen(viewModel: MainViewModel = hiltViewModel()) {
                         .wrapContentHeight()
                         .background(LightSky)
                 ) {
-                    val config = LocalConfiguration.current
-                    val width = (config.screenWidthDp - SPACER_WIDTH) / WEEK_DAYS_COUNT
-
                     dayOfWeek.forEach {
-
-                        val circleColor = if (it.name ==  currentDayName && page == 0) {
-                            Teal200
-                        } else {
-                            White
-                        }
+                        val textColor =
+                            if (it.name == currentDayName && page == 0) Teal200 else Black
 
                         Column(
                             modifier = Modifier
@@ -82,15 +86,37 @@ fun MainScreen(viewModel: MainViewModel = hiltViewModel()) {
                             Text(
                                 text = it.name[0].toString(),
                                 modifier = Modifier
-                                    .size(25.dp)
-                                    .clip(CircleShape)
-                                    .border(width = 1.dp, color = circleColor, shape = CircleShape)
-                                    .background(circleColor),
-                                color = Black,
-                                fontSize = 15.sp,
+                                    .fillMaxWidth()
+                                    .wrapContentHeight(),
+                                color = textColor,
+                                fontSize = 11.sp,
                                 textAlign = TextAlign.Center
                             )
                         }
+                    }
+
+                    Column(
+                        modifier = Modifier
+                            .fillMaxHeight()
+                            .width(width.dp)
+                    ) {
+                        val circleColor = if (page == 0) {
+                            Teal200
+                        } else {
+                            White
+                        }
+
+                        Text(
+                            text = "",
+                            modifier = Modifier
+                                .size(25.dp)
+                                .clip(CircleShape)
+                                .border(width = 1.dp, color = circleColor, shape = CircleShape)
+                                .background(circleColor),
+                            color = Black,
+                            fontSize = 15.sp,
+                            textAlign = TextAlign.Center
+                        )
                     }
                 }
             }
