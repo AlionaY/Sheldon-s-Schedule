@@ -1,5 +1,6 @@
 package com.pti.sheldons_schedule.data
 
+import com.pti.sheldons_schedule.data.Options.*
 import com.pti.sheldons_schedule.util.Constants.DATE_FORMAT
 import com.pti.sheldons_schedule.util.Constants.TIME_FORMAT
 import com.pti.sheldons_schedule.util.formatDate
@@ -8,12 +9,12 @@ import java.util.*
 data class CreateEventScreenState(
     val startDate: Calendar,
     val endDate: Calendar,
-    val title : String = "",
+    val title: String = "",
     val description: String = "",
-    val options: Options? = null,
-    val selectedPriority: String,
-    val selectedRemind: String? = null,
-    val selectedRepeat: String? = null
+    val options: List<Options>? = null,
+    val remind: Reminder? = null,
+    val repeat: Repeat? = null,
+    val priority: Priority = Priority.Low
 ) {
     val formattedStartDate: String = startDate.formatDate(DATE_FORMAT)
     val formattedEndDate: String = endDate.formatDate(DATE_FORMAT)
