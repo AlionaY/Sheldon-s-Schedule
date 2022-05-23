@@ -77,6 +77,8 @@ fun MainScreen(viewModel: MainViewModel = hiltViewModel()) {
                         val textColor =
                             if (it.name == currentDayName && page == 0) Teal200 else Black
 
+                        val circleColor = if (page == 0) Teal200 else White
+
                         Column(
                             modifier = Modifier
                                 .fillMaxHeight()
@@ -92,31 +94,19 @@ fun MainScreen(viewModel: MainViewModel = hiltViewModel()) {
                                 fontSize = 11.sp,
                                 textAlign = TextAlign.Center
                             )
-                        }
-                    }
 
-                    Column(
-                        modifier = Modifier
-                            .fillMaxHeight()
-                            .width(width.dp)
-                    ) {
-                        val circleColor = if (page == 0) {
-                            Teal200
-                        } else {
-                            White
+                            Text(
+                                text = "",
+                                modifier = Modifier
+                                    .size(25.dp)
+                                    .clip(CircleShape)
+                                    .border(width = 1.dp, color = circleColor, shape = CircleShape)
+                                    .background(circleColor),
+                                color = Black,
+                                fontSize = 15.sp,
+                                textAlign = TextAlign.Center
+                            )
                         }
-
-                        Text(
-                            text = "",
-                            modifier = Modifier
-                                .size(25.dp)
-                                .clip(CircleShape)
-                                .border(width = 1.dp, color = circleColor, shape = CircleShape)
-                                .background(circleColor),
-                            color = Black,
-                            fontSize = 15.sp,
-                            textAlign = TextAlign.Center
-                        )
                     }
                 }
             }
