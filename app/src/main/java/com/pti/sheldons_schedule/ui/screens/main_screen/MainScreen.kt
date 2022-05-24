@@ -7,9 +7,12 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -18,14 +21,13 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.HorizontalPager
 import com.google.accompanist.pager.rememberPagerState
+import com.pti.sheldons_schedule.data.WeekState
 import com.pti.sheldons_schedule.ui.theme.Black
 import com.pti.sheldons_schedule.ui.theme.LightSky
 import com.pti.sheldons_schedule.ui.theme.Teal200
 import com.pti.sheldons_schedule.ui.theme.White
 import com.pti.sheldons_schedule.util.Constants
 import com.pti.sheldons_schedule.util.formatDate
-import java.time.DayOfWeek
-import java.time.YearMonth
 import java.util.*
 
 private const val SPACER_WIDTH = 60
@@ -34,20 +36,11 @@ private const val WEEK_DAYS_COUNT = 7
 @OptIn(ExperimentalPagerApi::class)
 @Composable
 fun MainScreen(viewModel: MainViewModel = hiltViewModel()) {
-    val calendar = Calendar.getInstance(Locale.UK)
-    val currentDayName = calendar.formatDate(Constants.DAY_NAME_FORMAT).uppercase()
-    val dayOfWeek = DayOfWeek.values()
+    val state by viewModel.weekState.collectAsState()
+    val pagerState = rememberPagerState()
 
     val config = LocalConfiguration.current
     val width = (config.screenWidthDp - SPACER_WIDTH) / WEEK_DAYS_COUNT
-
-    val pagerState = rememberPagerState()
-
-    val currentDayNumber = calendar.formatDate(Constants.DAY_NUMBER_FORMAT)
-
-    val maxDaysInMonth = YearMonth.now().atEndOfMonth()
-    val month = YearMonth.of(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH) + 1).lengthOfMonth()
-    Log.d("###", "day of month $month")
 
     Box(modifier = Modifier.fillMaxSize()) {
         Row(
@@ -61,8 +54,9 @@ fun MainScreen(viewModel: MainViewModel = hiltViewModel()) {
                     .width(SPACER_WIDTH.dp)
             )
 
+//            todo: set endless pager
             HorizontalPager(
-                count = dayOfWeek.size,
+                count = 10,
                 state = pagerState,
                 modifier = Modifier.fillMaxSize()
             ) { page ->
@@ -73,43 +67,126 @@ fun MainScreen(viewModel: MainViewModel = hiltViewModel()) {
                         .wrapContentHeight()
                         .background(LightSky)
                 ) {
-                    dayOfWeek.forEach {
-                        val textColor =
-                            if (it.name == currentDayName && page == 0) Teal200 else Black
+                    // todo: fix text color and circle color conditions
+                    val textColor = if (state.currentDay.formatDate(Constants.DAY_NUMBER_FORMAT) ==
+                        state.calendar.formatDate(Constants.DAY_NAME_FORMAT)
+                    ) Teal200 else Black
 
-                        val circleColor = if (page == 0) Teal200 else White
+                    val circleColor = Teal200
 
-                        Column(
-                            modifier = Modifier
-                                .fillMaxHeight()
-                                .width(width.dp),
-                            horizontalAlignment = Alignment.CenterHorizontally
-                        ) {
-                            Text(
-                                text = it.name[0].toString(),
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .wrapContentHeight(),
-                                color = textColor,
-                                fontSize = 11.sp,
-                                textAlign = TextAlign.Center
-                            )
+                    DayNumberAndNameItem(
+                        width = width,
+                        state = state,
+                        dayNumber = getDayNumber(state.monday),
+                        dayName = getDayName(state.monday),
+                        textColor = textColor,
+                        circleColor = circleColor
+                    )
 
-                            Text(
-                                text = "",
-                                modifier = Modifier
-                                    .size(25.dp)
-                                    .clip(CircleShape)
-                                    .border(width = 1.dp, color = circleColor, shape = CircleShape)
-                                    .background(circleColor),
-                                color = Black,
-                                fontSize = 15.sp,
-                                textAlign = TextAlign.Center
-                            )
-                        }
-                    }
+                    DayNumberAndNameItem(
+                        width = width,
+                        state = state,
+                        dayNumber = getDayNumber(state.tuesday),
+                        dayName = getDayName(state.tuesday),
+                        textColor = textColor,
+                        circleColor = circleColor
+                    )
+
+                    DayNumberAndNameItem(
+                        width = width,
+                        state = state,
+                        dayNumber = getDayNumber(state.wednesday),
+                        dayName = getDayName(state.wednesday),
+                        textColor = textColor,
+                        circleColor = circleColor
+                    )
+
+                    DayNumberAndNameItem(
+                        width = width,
+                        state = state,
+                        dayNumber = getDayNumber(state.thursday),
+                        dayName = getDayName(state.thursday),
+                        textColor = textColor,
+                        circleColor = circleColor
+                    )
+
+                    DayNumberAndNameItem(
+                        width = width,
+                        state = state,
+                        dayNumber = getDayNumber(state.friday),
+                        dayName = getDayName(state.friday),
+                        textColor = textColor,
+                        circleColor = circleColor
+                    )
+
+                    DayNumberAndNameItem(
+                        width = width,
+                        state = state,
+                        dayNumber = getDayNumber(state.saturday),
+                        dayName = getDayName(state.saturday),
+                        textColor = textColor,
+                        circleColor = circleColor
+                    )
+
+                    DayNumberAndNameItem(
+                        width = width,
+                        state = state,
+                        dayNumber = getDayNumber(state.sunday),
+                        dayName = getDayName(state.sunday),
+                        textColor = textColor,
+                        circleColor = circleColor
+                    )
                 }
             }
         }
     }
 }
+
+@Composable
+private fun DayNumberAndNameItem(
+    width: Int,
+    state: WeekState,
+    dayName: String,
+    dayNumber: String,
+    textColor: Color,
+    circleColor: Color,
+    modifier: Modifier = Modifier
+) {
+    Log.d("$$$", "day name $dayName")
+    Column(
+        modifier = modifier
+            .fillMaxHeight()
+            .width(width.dp),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Text(
+            text = dayName,
+            modifier = Modifier
+                .fillMaxWidth()
+                .wrapContentHeight(),
+            color = textColor,
+            fontSize = 11.sp,
+            textAlign = TextAlign.Center
+        )
+
+        Text(
+            text = dayNumber,
+            modifier = Modifier
+                .size(25.dp)
+                .clip(CircleShape)
+                .border(
+                    width = 1.dp,
+                    color = circleColor,
+                    shape = CircleShape
+                )
+                .background(circleColor),
+            color = Black,
+            fontSize = 15.sp,
+            textAlign = TextAlign.Center
+        )
+    }
+}
+
+fun getDayName(calendar: Calendar) = calendar.formatDate(Constants.DAY_NAME_FORMAT)[0].toString()
+
+fun getDayNumber(calendar: Calendar) = calendar.formatDate(Constants.DAY_NUMBER_FORMAT)

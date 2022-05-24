@@ -5,6 +5,6 @@ import java.util.*
 
 fun Calendar.formatDate(format: String): String {
     this.firstDayOfWeek = Calendar.MONDAY
-    val formatter = SimpleDateFormat(format, Locale.US)
+    val formatter = SimpleDateFormat(format, Locale.UK)
     return formatter.format(this.time)
 }
