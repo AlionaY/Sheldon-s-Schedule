@@ -4,8 +4,8 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalConfiguration
@@ -13,6 +13,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.paging.compose.collectAsLazyPagingItems
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.HorizontalPager
 import com.google.accompanist.pager.rememberPagerState
@@ -24,10 +25,10 @@ private const val WEEK_DAYS_COUNT = 7
 @OptIn(ExperimentalPagerApi::class)
 @Composable
 fun MainScreen(viewModel: MainViewModel = hiltViewModel()) {
-    val state by viewModel.state.collectAsState()
     val pagerState = rememberPagerState()
     val config = LocalConfiguration.current
     val width = (config.screenWidthDp - SPACER_WIDTH) / WEEK_DAYS_COUNT
+    val source = viewModel.source.collectAsLazyPagingItems()
 
     Box(modifier = Modifier.fillMaxSize()) {
         Row(
@@ -35,54 +36,58 @@ fun MainScreen(viewModel: MainViewModel = hiltViewModel()) {
                 .fillMaxWidth()
                 .height(58.dp)
         ) {
+            var currentWeek = if (source.itemCount != 0) source.itemSnapshotList.items[0] else null
+
+            LaunchedEffect(key1 = pagerState) {
+                snapshotFlow { pagerState.currentPageOffset }.collect { offset ->
+                    viewModel.onPageOffsetChanged(offset)
+                }
+                snapshotFlow { pagerState.currentPage }.collect { page ->
+                    currentWeek = source.itemSnapshotList.items[page]
+                }
+            }
+
             Spacer(
                 modifier = Modifier
                     .fillMaxHeight()
                     .width(SPACER_WIDTH.dp)
             )
 
-//            todo: set endless pager
             HorizontalPager(
-                count = state?.week?.size ?: 1,
-                state = pagerState,
+                count = source.itemCount,
                 modifier = Modifier
                     .fillMaxSize()
-                    .background(LightSky)
-            ) { page ->
-                Column(modifier = Modifier.fillMaxSize()) {
-                    Row(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .height(23.dp),
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        state?.week?.forEach { dayOfWeek ->
-                            Text(
-                                text = dayOfWeek.weekDayName.substring(0, 3),
+                    .background(LightSky),
+                state = pagerState,
+            ) {
+                Row(modifier = Modifier.fillMaxSize()) {
+                    currentWeek?.week?.let { week ->
+                        for (i in 0 until WEEK_DAYS_COUNT) {
+                            Column(
                                 modifier = Modifier
                                     .width(width.dp)
                                     .fillMaxHeight(),
-                                fontSize = 12.sp,
-                                textAlign = TextAlign.Center
-                            )
-                        }
-                    }
+                                horizontalAlignment = Alignment.CenterHorizontally,
+                                verticalArrangement = Arrangement.Center
+                            ) {
+                                Text(
+                                    text = week[i].weekDayName.substring(0, 3),
+                                    modifier = Modifier
+                                        .wrapContentWidth()
+                                        .height(23.dp),
+                                    fontSize = 12.sp,
+                                    textAlign = TextAlign.Center
+                                )
 
-                    Row(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .height(35.dp),
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        state?.week?.forEach { dayOfWeek ->
-                            Text(
-                                text = dayOfWeek.dayOfMonth.toString(),
-                                modifier = Modifier
-                                    .width(width.dp)
-                                    .fillMaxHeight(),
-                                fontSize = 15.sp,
-                                textAlign = TextAlign.Center
-                            )
+                                Text(
+                                    text = week[i].dayOfMonth.toString(),
+                                    modifier = Modifier
+                                        .wrapContentWidth()
+                                        .height(35.dp),
+                                    fontSize = 15.sp,
+                                    textAlign = TextAlign.Center
+                                )
+                            }
                         }
                     }
                 }

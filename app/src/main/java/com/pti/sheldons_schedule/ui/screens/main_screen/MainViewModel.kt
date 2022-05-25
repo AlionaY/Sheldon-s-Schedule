@@ -1,53 +1,38 @@
 package com.pti.sheldons_schedule.ui.screens.main_screen
 
 import androidx.lifecycle.ViewModel
-import com.pti.sheldons_schedule.data.DayOfWeekUI
+import androidx.lifecycle.viewModelScope
+import androidx.paging.Pager
+import androidx.paging.PagingConfig
+import androidx.paging.cachedIn
 import com.pti.sheldons_schedule.data.WeekState
-import com.pti.sheldons_schedule.util.Constants
-import com.pti.sheldons_schedule.util.formatDate
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
-import java.util.*
+import java.util.Calendar.*
 import javax.inject.Inject
+import kotlin.math.roundToInt
 
 
 @HiltViewModel
-class MainViewModel @Inject constructor(
-    val weekdaysPagingSource: WeekdaysPagingSource
-) : ViewModel() {
+class MainViewModel @Inject constructor() : ViewModel() {
 
-    companion object {
-        const val WEEK_LENGTH = 7
+    val weekState = MutableStateFlow<WeekState?>(null)
+
+    val calendar = getInstance().apply {
+        set(HOUR_OF_DAY, 0)
+        set(MINUTE, 0)
+        set(SECOND, 0)
+        set(MILLISECOND, 0)
+        set(DAY_OF_WEEK, MONDAY)
+        firstDayOfWeek = MONDAY
     }
 
-    val state = MutableStateFlow<WeekState?>(null)
+    val source = Pager(PagingConfig(7)) {
+        WeekdaysPagingSource(calendar)
+    }.flow.cachedIn(viewModelScope)
 
-    val calendar = Calendar.getInstance().apply {
-        set(Calendar.HOUR_OF_DAY, 0)
-        set(Calendar.MINUTE, 0)
-        set(Calendar.SECOND, 0)
-        set(Calendar.MILLISECOND, 0)
-    }
 
-    val currentDay = calendar.clone() as Calendar
-    val weekList = MutableStateFlow<List<DayOfWeekUI>>(emptyList())
-
-    init {
-        getCurrentWeek()
-    }
-
-    private fun getCurrentWeek() {
-        calendar.set(Calendar.DAY_OF_WEEK, Calendar.MONDAY)
-        calendar.firstDayOfWeek = Calendar.MONDAY
-
-        (1..WEEK_LENGTH).map {
-            weekList.value += DayOfWeekUI(
-                dayOfMonth = calendar.get(Calendar.DAY_OF_MONTH),
-                weekDayName = calendar.formatDate(Constants.DAY_NAME_FORMAT)
-            )
-            calendar.add(Calendar.DAY_OF_YEAR, 1)
-        }
-
-        state.value = WeekState(weekList.value)
+    fun onPageOffsetChanged(offset: Float) {
+        calendar.add(DAY_OF_YEAR, offset.roundToInt() * 7)
     }
 }

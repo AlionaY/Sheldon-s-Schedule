@@ -11,7 +11,7 @@ import javax.inject.Singleton
 
 @Module
 @InstallIn(SingletonComponent::class)
-class DatabaseModule {
+object AppModule{
 
     @Provides
     fun provideDao(appDatabased: AppDatabase): EventDao = appDatabased.eventDao()
