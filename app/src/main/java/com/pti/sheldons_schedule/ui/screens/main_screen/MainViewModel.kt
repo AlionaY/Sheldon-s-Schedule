@@ -1,50 +1,53 @@
 package com.pti.sheldons_schedule.ui.screens.main_screen
 
 import androidx.lifecycle.ViewModel
+import com.pti.sheldons_schedule.data.DayOfWeekUI
 import com.pti.sheldons_schedule.data.WeekState
+import com.pti.sheldons_schedule.util.Constants
+import com.pti.sheldons_schedule.util.formatDate
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.update
 import java.util.*
 import javax.inject.Inject
 
 
 @HiltViewModel
 class MainViewModel @Inject constructor(
-    val pagingSource: EventPagingSource
+    val weekdaysPagingSource: WeekdaysPagingSource
 ) : ViewModel() {
 
-    val weekState = MutableStateFlow(
-        WeekState(calendar = Calendar.getInstance(), currentDay = Calendar.getInstance())
-    )
-
-
-    init {
-        getFirstDayOfTheWeek()
+    companion object {
+        const val WEEK_LENGTH = 7
     }
 
-    private fun getFirstDayOfTheWeek() {
-        val currDay = weekState.value.calendar.get(Calendar.DAY_OF_WEEK) - 2
-        val days = if (currDay == -1) -6 else currDay * (-1)
-        weekState.value.updatedDate.add(Calendar.DAY_OF_MONTH, days)
-        weekState.update { it.copy(monday = (it.updatedDate.clone() as Calendar)) }
+    val state = MutableStateFlow<WeekState?>(null)
 
-        weekState.value.updatedDate.add(Calendar.DAY_OF_MONTH, 1)
-        weekState.update { it.copy(tuesday = (it.updatedDate.clone() as Calendar)) }
+    val calendar = Calendar.getInstance().apply {
+        set(Calendar.HOUR_OF_DAY, 0)
+        set(Calendar.MINUTE, 0)
+        set(Calendar.SECOND, 0)
+        set(Calendar.MILLISECOND, 0)
+    }
 
-        weekState.value.updatedDate.add(Calendar.DAY_OF_MONTH, 1)
-        weekState.update { it.copy(wednesday = (it.updatedDate.clone() as Calendar)) }
+    val currentDay = calendar.clone() as Calendar
+    val weekList = MutableStateFlow<List<DayOfWeekUI>>(emptyList())
 
-        weekState.value.updatedDate.add(Calendar.DAY_OF_MONTH, 1)
-        weekState.update { it.copy(thursday = (it.updatedDate.clone() as Calendar)) }
+    init {
+        getCurrentWeek()
+    }
 
-        weekState.value.updatedDate.add(Calendar.DAY_OF_MONTH, 1)
-        weekState.update { it.copy(friday = (it.updatedDate.clone() as Calendar)) }
+    private fun getCurrentWeek() {
+        calendar.set(Calendar.DAY_OF_WEEK, Calendar.MONDAY)
+        calendar.firstDayOfWeek = Calendar.MONDAY
 
-        weekState.value.updatedDate.add(Calendar.DAY_OF_MONTH, 1)
-        weekState.update { it.copy(saturday = (it.updatedDate.clone() as Calendar)) }
+        (1..WEEK_LENGTH).map {
+            weekList.value += DayOfWeekUI(
+                dayOfMonth = calendar.get(Calendar.DAY_OF_MONTH),
+                weekDayName = calendar.formatDate(Constants.DAY_NAME_FORMAT)
+            )
+            calendar.add(Calendar.DAY_OF_YEAR, 1)
+        }
 
-        weekState.value.updatedDate.add(Calendar.DAY_OF_MONTH, 1)
-        weekState.update { it.copy(sunday = (it.updatedDate.clone() as Calendar)) }
+        state.value = WeekState(weekList.value)
     }
 }
