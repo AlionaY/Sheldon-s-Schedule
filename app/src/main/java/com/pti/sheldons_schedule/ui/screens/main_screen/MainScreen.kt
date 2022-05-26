@@ -29,6 +29,16 @@ fun MainScreen(viewModel: MainViewModel = hiltViewModel()) {
     val config = LocalConfiguration.current
     val width = (config.screenWidthDp - SPACER_WIDTH) / WEEK_DAYS_COUNT
     val source = viewModel.source.collectAsLazyPagingItems()
+    var currentWeek = if (source.itemCount != 0) source.itemSnapshotList.items[0] else null
+
+    LaunchedEffect(key1 = pagerState) {
+        snapshotFlow { pagerState.currentPageOffset }.collect { offset ->
+            viewModel.onPageOffsetChanged(offset)
+        }
+        snapshotFlow { pagerState.currentPage }.collect { page ->
+            currentWeek = source.itemSnapshotList.items[page]
+        }
+    }
 
     Box(modifier = Modifier.fillMaxSize()) {
         Row(
@@ -36,16 +46,6 @@ fun MainScreen(viewModel: MainViewModel = hiltViewModel()) {
                 .fillMaxWidth()
                 .height(58.dp)
         ) {
-            var currentWeek = if (source.itemCount != 0) source.itemSnapshotList.items[0] else null
-
-            LaunchedEffect(key1 = pagerState) {
-                snapshotFlow { pagerState.currentPageOffset }.collect { offset ->
-                    viewModel.onPageOffsetChanged(offset)
-                }
-                snapshotFlow { pagerState.currentPage }.collect { page ->
-                    currentWeek = source.itemSnapshotList.items[page]
-                }
-            }
 
             Spacer(
                 modifier = Modifier
@@ -61,33 +61,31 @@ fun MainScreen(viewModel: MainViewModel = hiltViewModel()) {
                 state = pagerState,
             ) {
                 Row(modifier = Modifier.fillMaxSize()) {
-                    currentWeek?.week?.let { week ->
-                        for (i in 0 until WEEK_DAYS_COUNT) {
-                            Column(
+                    currentWeek?.week?.forEach { week ->
+                        Column(
+                            modifier = Modifier
+                                .width(width.dp)
+                                .fillMaxHeight(),
+                            horizontalAlignment = Alignment.CenterHorizontally,
+                            verticalArrangement = Arrangement.Center
+                        ) {
+                            Text(
+                                text = week.weekDayName.substring(0, 3),
                                 modifier = Modifier
-                                    .width(width.dp)
-                                    .fillMaxHeight(),
-                                horizontalAlignment = Alignment.CenterHorizontally,
-                                verticalArrangement = Arrangement.Center
-                            ) {
-                                Text(
-                                    text = week[i].weekDayName.substring(0, 3),
-                                    modifier = Modifier
-                                        .wrapContentWidth()
-                                        .height(23.dp),
-                                    fontSize = 12.sp,
-                                    textAlign = TextAlign.Center
-                                )
+                                    .wrapContentWidth()
+                                    .height(23.dp),
+                                fontSize = 12.sp,
+                                textAlign = TextAlign.Center
+                            )
 
-                                Text(
-                                    text = week[i].dayOfMonth.toString(),
-                                    modifier = Modifier
-                                        .wrapContentWidth()
-                                        .height(35.dp),
-                                    fontSize = 15.sp,
-                                    textAlign = TextAlign.Center
-                                )
-                            }
+                            Text(
+                                text = week.dayOfMonth.toString(),
+                                modifier = Modifier
+                                    .wrapContentWidth()
+                                    .height(35.dp),
+                                fontSize = 15.sp,
+                                textAlign = TextAlign.Center
+                            )
                         }
                     }
                 }
