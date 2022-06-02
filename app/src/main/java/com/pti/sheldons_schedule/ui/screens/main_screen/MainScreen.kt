@@ -37,7 +37,6 @@ fun MainScreen(viewModel: MainViewModel = hiltViewModel()) {
                 .fillMaxWidth()
                 .height(58.dp)
         ) {
-
             Spacer(
                 modifier = Modifier
                     .fillMaxHeight()
@@ -51,7 +50,6 @@ fun MainScreen(viewModel: MainViewModel = hiltViewModel()) {
                     .background(LightSky),
                 state = pagerState
             ) { page ->
-
                 var currentWeek: Week? = null
                 if (currentWeek == null) currentWeek = weeks.peek(page)
 
@@ -67,9 +65,8 @@ fun MainScreen(viewModel: MainViewModel = hiltViewModel()) {
                     horizontalArrangement = Arrangement.Center
                 ) {
                     currentWeek?.week?.forEach { day ->
-                        val currentDay = calendar.get(Calendar.DAY_OF_MONTH) == day.dayOfMonth
-                        val textColor = if (currentDay) Teal200 else Black
-                        val backgroundColor = if (currentDay) Teal200 else Color.Transparent
+                        val textColor = if (day.isCurrent) Teal200 else Black
+                        val backgroundColor = if (day.isCurrent) Teal200 else Color.Transparent
 
                         Column(
                             modifier = Modifier

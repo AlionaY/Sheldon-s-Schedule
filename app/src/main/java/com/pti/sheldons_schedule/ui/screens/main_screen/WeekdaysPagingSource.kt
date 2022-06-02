@@ -15,22 +15,24 @@ class WeekdaysPagingSource : PagingSource<Int, Week>() {
         set(Calendar.MINUTE, 0)
         set(Calendar.SECOND, 0)
         set(Calendar.MILLISECOND, 0)
-        set(Calendar.DAY_OF_WEEK, Calendar.MONDAY)
     }
 
     override fun getRefreshKey(state: PagingState<Int, Week>) = state.anchorPosition
 
     override suspend fun load(params: LoadParams<Int>): LoadResult<Int, Week> {
         val page = params.key ?: 0
-        val currentCalendar = calendar.clone() as Calendar
+        val currentCalendar = (calendar.clone() as Calendar).apply {
+            set(Calendar.DAY_OF_WEEK, Calendar.MONDAY)
+        }
         val weekList = mutableListOf<DayOfWeek>()
 
         currentCalendar.add(Calendar.WEEK_OF_YEAR, page)
 
         for (i in 0 until WEEK_LENGTH) {
-             weekList += DayOfWeek(
+            weekList += DayOfWeek(
                 dayOfMonth = currentCalendar.get(Calendar.DAY_OF_MONTH),
-                weekDayName = currentCalendar.formatDate(Constants.DAY_NAME_FORMAT)
+                weekDayName = currentCalendar.formatDate(Constants.DAY_NAME_FORMAT),
+                isCurrent = currentCalendar.get(Calendar.DAY_OF_YEAR) == calendar.get(Calendar.DAY_OF_YEAR)
             )
             currentCalendar.add(Calendar.DAY_OF_YEAR, 1)
         }
