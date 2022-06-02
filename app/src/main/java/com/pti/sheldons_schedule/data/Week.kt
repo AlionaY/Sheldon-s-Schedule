@@ -5,11 +5,11 @@ import kotlinx.parcelize.Parcelize
 
 @Parcelize
 data class Week(
-    val week: List<DayOfWeekUI>
+    val week: List<DayOfWeek>
 ) : Parcelable
 
 @Parcelize
-data class DayOfWeekUI(
+data class DayOfWeek(
     val dayOfMonth: Int,
     val weekDayName: String,
     val isCurrent: Boolean = false

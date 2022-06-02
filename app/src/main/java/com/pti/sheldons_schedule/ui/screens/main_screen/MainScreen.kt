@@ -1,13 +1,16 @@
 package com.pti.sheldons_schedule.ui.screens.main_screen
 
+import android.icu.util.Calendar
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -17,13 +20,16 @@ import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.HorizontalPager
 import com.google.accompanist.pager.rememberPagerState
 import com.pti.sheldons_schedule.data.Week
+import com.pti.sheldons_schedule.ui.theme.Black
 import com.pti.sheldons_schedule.ui.theme.LightSky
+import com.pti.sheldons_schedule.ui.theme.Teal200
 
 @OptIn(ExperimentalPagerApi::class)
 @Composable
 fun MainScreen(viewModel: MainViewModel = hiltViewModel()) {
     val pagerState = rememberPagerState()
     val weeks = viewModel.weeks.collectAsLazyPagingItems()
+    val calendar = Calendar.getInstance()
 
     Box(modifier = Modifier.fillMaxSize()) {
         Row(
@@ -43,10 +49,10 @@ fun MainScreen(viewModel: MainViewModel = hiltViewModel()) {
                 modifier = Modifier
                     .fillMaxSize()
                     .background(LightSky),
-                state = pagerState,
+                state = pagerState
             ) { page ->
 
-                var currentWeek : Week? = null
+                var currentWeek: Week? = null
                 if (currentWeek == null) currentWeek = weeks.peek(page)
 
                 LaunchedEffect(key1 = pagerState) {
@@ -55,8 +61,16 @@ fun MainScreen(viewModel: MainViewModel = hiltViewModel()) {
                     }
                 }
 
-                Row(modifier = Modifier.fillMaxSize()) {
+                Row(
+                    modifier = Modifier.fillMaxSize(),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.Center
+                ) {
                     currentWeek?.week?.forEach { day ->
+                        val currentDay = calendar.get(Calendar.DAY_OF_MONTH) == day.dayOfMonth
+                        val textColor = if (currentDay) Teal200 else Black
+                        val backgroundColor = if (currentDay) Teal200 else Color.Transparent
+
                         Column(
                             modifier = Modifier
                                 .weight(0.14f)
@@ -67,20 +81,29 @@ fun MainScreen(viewModel: MainViewModel = hiltViewModel()) {
                             Text(
                                 text = day.weekDayName.substring(0, 3),
                                 modifier = Modifier
-                                    .wrapContentWidth()
-                                    .height(23.dp),
+                                    .fillMaxWidth()
+                                    .weight(0.4f),
                                 fontSize = 12.sp,
-                                textAlign = TextAlign.Center
+                                textAlign = TextAlign.Center,
+                                color = textColor
                             )
 
-                            Text(
-                                text = day.dayOfMonth.toString(),
+                            Box(
                                 modifier = Modifier
-                                    .wrapContentWidth()
-                                    .height(35.dp),
-                                fontSize = 15.sp,
-                                textAlign = TextAlign.Center
-                            )
+                                    .size(35.dp)
+                                    .weight(0.6f)
+                                    .background(color = backgroundColor, shape = CircleShape),
+                                contentAlignment = Alignment.Center
+                            ) {
+                                Text(
+                                    text = day.dayOfMonth.toString(),
+                                    modifier = Modifier
+                                        .size(25.dp)
+                                        .align(Alignment.Center),
+                                    fontSize = 15.sp,
+                                    textAlign = TextAlign.Center
+                                )
+                            }
                         }
                     }
                 }

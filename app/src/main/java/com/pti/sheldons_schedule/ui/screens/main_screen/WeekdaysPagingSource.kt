@@ -2,7 +2,7 @@ package com.pti.sheldons_schedule.ui.screens.main_screen
 
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
-import com.pti.sheldons_schedule.data.DayOfWeekUI
+import com.pti.sheldons_schedule.data.DayOfWeek
 import com.pti.sheldons_schedule.data.Week
 import com.pti.sheldons_schedule.util.Constants
 import com.pti.sheldons_schedule.util.Constants.WEEK_LENGTH
@@ -22,14 +22,13 @@ class WeekdaysPagingSource : PagingSource<Int, Week>() {
 
     override suspend fun load(params: LoadParams<Int>): LoadResult<Int, Week> {
         val page = params.key ?: 0
-        val prevPage = if (page == 0) null else page.minus(1)
         val currentCalendar = calendar.clone() as Calendar
-        val weekList = mutableListOf<DayOfWeekUI>()
+        val weekList = mutableListOf<DayOfWeek>()
 
         currentCalendar.add(Calendar.WEEK_OF_YEAR, page)
 
         for (i in 0 until WEEK_LENGTH) {
-             weekList += DayOfWeekUI(
+             weekList += DayOfWeek(
                 dayOfMonth = currentCalendar.get(Calendar.DAY_OF_MONTH),
                 weekDayName = currentCalendar.formatDate(Constants.DAY_NAME_FORMAT)
             )
@@ -38,7 +37,7 @@ class WeekdaysPagingSource : PagingSource<Int, Week>() {
 
         return LoadResult.Page(
             data = listOf(Week(weekList)),
-            prevKey = prevPage,
+            prevKey = if (page == 0) null else page.minus(1),
             nextKey = page.plus(1)
         )
     }
