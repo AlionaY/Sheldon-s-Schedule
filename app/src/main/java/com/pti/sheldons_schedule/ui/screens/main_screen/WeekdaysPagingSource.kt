@@ -16,7 +16,6 @@ class WeekdaysPagingSource : PagingSource<Int, Week>() {
         set(Calendar.SECOND, 0)
         set(Calendar.MILLISECOND, 0)
         set(Calendar.DAY_OF_WEEK, Calendar.MONDAY)
-        firstDayOfWeek = Calendar.MONDAY
     }
 
     override fun getRefreshKey(state: PagingState<Int, Week>) = state.anchorPosition
@@ -38,8 +37,8 @@ class WeekdaysPagingSource : PagingSource<Int, Week>() {
 
         return LoadResult.Page(
             data = listOf(Week(weekList)),
-            prevKey = page - 1,
-            nextKey = page + 1
+            prevKey = prevPage,
+            nextKey = page.plus(1)
         )
     }
 }
