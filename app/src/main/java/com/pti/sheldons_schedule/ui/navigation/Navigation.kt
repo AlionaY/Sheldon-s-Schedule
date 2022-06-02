@@ -5,7 +5,7 @@ import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
 import com.google.accompanist.navigation.animation.AnimatedNavHost
 import com.pti.sheldons_schedule.ui.screens.create_event_screen.CreateEventScreen
-import com.pti.sheldons_schedule.ui.screens.EntryScreen
+import com.pti.sheldons_schedule.ui.screens.main_screen.MainScreen
 
 @ExperimentalAnimationApi
 @Composable
@@ -16,7 +16,7 @@ fun Navigation(navHostController: NavHostController) {
         startDestination = NavDestination.EntryScreen.route
     ) {
         addScreen(route = NavDestination.EntryScreen) {
-            EntryScreen(navHostController)
+            MainScreen(navHostController)
         }
 
         addScreen(route = NavDestination.CreateEventScreen, withAnimation = true) {

@@ -1,10 +1,13 @@
 package com.pti.sheldons_schedule.ui.screens.main_screen
 
-import android.icu.util.Calendar
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material.FloatingActionButton
+import androidx.compose.material.Icon
 import androidx.compose.material.Text
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.snapshotFlow
@@ -15,21 +18,27 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavController
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.HorizontalPager
 import com.google.accompanist.pager.rememberPagerState
 import com.pti.sheldons_schedule.data.Week
+import com.pti.sheldons_schedule.ui.navigation.NavDestination
+import com.pti.sheldons_schedule.ui.navigation.navigate
 import com.pti.sheldons_schedule.ui.theme.Black
 import com.pti.sheldons_schedule.ui.theme.LightSky
 import com.pti.sheldons_schedule.ui.theme.Teal200
+import com.pti.sheldons_schedule.util.horizontalPadding
 
 @OptIn(ExperimentalPagerApi::class)
 @Composable
-fun MainScreen(viewModel: MainViewModel = hiltViewModel()) {
+fun MainScreen(
+    navController: NavController,
+    viewModel: MainViewModel = hiltViewModel()
+) {
     val pagerState = rememberPagerState()
     val weeks = viewModel.weeks.collectAsLazyPagingItems()
-    val calendar = Calendar.getInstance()
 
     Box(modifier = Modifier.fillMaxSize()) {
         Row(
@@ -105,6 +114,15 @@ fun MainScreen(viewModel: MainViewModel = hiltViewModel()) {
                     }
                 }
             }
+        }
+
+        FloatingActionButton(
+            onClick = { navController.navigate(NavDestination.CreateEventScreen) },
+            modifier = Modifier
+                .horizontalPadding(horizontal = 10.dp, bottom = 15.dp)
+                .align(Alignment.BottomEnd)
+        ) {
+            Icon(Icons.Filled.Add, "")
         }
     }
 }
