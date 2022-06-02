@@ -22,6 +22,7 @@ class WeekdaysPagingSource : PagingSource<Int, Week>() {
 
     override suspend fun load(params: LoadParams<Int>): LoadResult<Int, Week> {
         val page = params.key ?: 0
+        val prevPage = if (page == 0) null else page.minus(1)
         val currentCalendar = calendar.clone() as Calendar
         val weekList = mutableListOf<DayOfWeekUI>()
 
