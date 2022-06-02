@@ -4,7 +4,7 @@ import android.os.Parcelable
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
-data class WeekState(
+data class Week(
     val week: List<DayOfWeekUI>
 ) : Parcelable
 

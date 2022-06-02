@@ -1,5 +1,6 @@
 package com.pti.sheldons_schedule.ui.screens.main_screen
 
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.Text
@@ -19,24 +20,15 @@ import com.google.accompanist.pager.HorizontalPager
 import com.google.accompanist.pager.rememberPagerState
 import com.pti.sheldons_schedule.ui.theme.LightSky
 
-private const val SPACER_WIDTH = 60
-private const val WEEK_DAYS_COUNT = 7
-
 @OptIn(ExperimentalPagerApi::class)
 @Composable
 fun MainScreen(viewModel: MainViewModel = hiltViewModel()) {
     val pagerState = rememberPagerState()
-    val config = LocalConfiguration.current
-    val width = (config.screenWidthDp - SPACER_WIDTH) / WEEK_DAYS_COUNT
     val source = viewModel.source.collectAsLazyPagingItems()
-    var currentWeek = if (source.itemCount != 0) source.itemSnapshotList.items[0] else null
 
     LaunchedEffect(key1 = pagerState) {
         snapshotFlow { pagerState.currentPageOffset }.collect { offset ->
-            viewModel.onPageOffsetChanged(offset)
-        }
-        snapshotFlow { pagerState.currentPage }.collect { page ->
-            currentWeek = source.itemSnapshotList.items[page]
+            Log.d("###", "params offset ${offset}")
         }
     }
 
@@ -50,7 +42,7 @@ fun MainScreen(viewModel: MainViewModel = hiltViewModel()) {
             Spacer(
                 modifier = Modifier
                     .fillMaxHeight()
-                    .width(SPACER_WIDTH.dp)
+                    .width(60.dp)
             )
 
             HorizontalPager(
@@ -59,9 +51,9 @@ fun MainScreen(viewModel: MainViewModel = hiltViewModel()) {
                     .fillMaxSize()
                     .background(LightSky),
                 state = pagerState,
-            ) {
+            ) { page ->
                 Row(modifier = Modifier.fillMaxSize()) {
-                    currentWeek?.week?.forEach { week ->
+                    source.peek(page)?.week?.forEach { day ->
                         Column(
                             modifier = Modifier
                                 .width(width.dp)
@@ -70,7 +62,7 @@ fun MainScreen(viewModel: MainViewModel = hiltViewModel()) {
                             verticalArrangement = Arrangement.Center
                         ) {
                             Text(
-                                text = week.weekDayName.substring(0, 3),
+                                text = day.weekDayName.substring(0, 3),
                                 modifier = Modifier
                                     .wrapContentWidth()
                                     .height(23.dp),
@@ -79,7 +71,7 @@ fun MainScreen(viewModel: MainViewModel = hiltViewModel()) {
                             )
 
                             Text(
-                                text = week.dayOfMonth.toString(),
+                                text = day.dayOfMonth.toString(),
                                 modifier = Modifier
                                     .wrapContentWidth()
                                     .height(35.dp),
