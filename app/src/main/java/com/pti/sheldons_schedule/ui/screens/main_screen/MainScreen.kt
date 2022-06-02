@@ -1,7 +1,9 @@
 package com.pti.sheldons_schedule.ui.screens.main_screen
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.FloatingActionButton
 import androidx.compose.material.Icon
@@ -13,7 +15,10 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.RectangleShape
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -29,6 +34,7 @@ import com.pti.sheldons_schedule.ui.navigation.navigate
 import com.pti.sheldons_schedule.ui.theme.Black
 import com.pti.sheldons_schedule.ui.theme.LightSky
 import com.pti.sheldons_schedule.ui.theme.Teal200
+import com.pti.sheldons_schedule.util.Constants
 import com.pti.sheldons_schedule.util.horizontalPadding
 
 @OptIn(ExperimentalPagerApi::class)
@@ -40,7 +46,7 @@ fun MainScreen(
     val pagerState = rememberPagerState()
     val weeks = viewModel.weeks.collectAsLazyPagingItems()
 
-    Box(modifier = Modifier.fillMaxSize()) {
+    Column(modifier = Modifier.fillMaxSize()) {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
@@ -116,13 +122,48 @@ fun MainScreen(
             }
         }
 
+        LazyColumn(modifier = Modifier.fillMaxSize()) {
+            items(24) {
+                val config = LocalConfiguration.current
+                val height = (config.screenHeightDp - 58).toFloat() / 11f
+
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(height.dp)
+                ) {
+                    Text(
+                        text = "11 AM", modifier = Modifier
+                            .fillMaxHeight()
+                            .width(60.dp),
+                        textAlign = TextAlign.End,
+                        fontSize = 12.sp,
+                        color = Black
+                    )
+                    for (i in 0 until Constants.WEEK_LENGTH) {
+                        Box(
+                            modifier = Modifier
+                                .fillMaxHeight()
+                                .weight(0.14f)
+                                .border(
+                                    width = 1.dp,
+                                    shape = RectangleShape,
+                                    color = Color.Gray
+                                )
+                        )
+                    }
+                }
+            }
+        }
+
         FloatingActionButton(
             onClick = { navController.navigate(NavDestination.CreateEventScreen) },
             modifier = Modifier
                 .horizontalPadding(horizontal = 10.dp, bottom = 15.dp)
-                .align(Alignment.BottomEnd)
+//                    .align(Alignment.BottomEnd)
+                .alpha(1f)
         ) {
-            Icon(Icons.Filled.Add, "")
+            Icon(Icons.Filled.Add, null)
         }
     }
 }
