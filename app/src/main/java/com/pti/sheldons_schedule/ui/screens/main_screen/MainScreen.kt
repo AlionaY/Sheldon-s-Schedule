@@ -17,7 +17,6 @@ import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.RectangleShape
-import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -50,7 +49,8 @@ fun MainScreen(
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(Sky)
+            .background(Sky),
+        contentAlignment = Alignment.Center
     ) {
         HorizontalPager(
             count = weeks.itemCount,
@@ -76,24 +76,27 @@ fun MainScreen(
             ) {
                 stickyHeader { CalendarHeader(currentWeek) }
 
-                items(HOURS_COUNT) { item ->
-                    val hoursText = if (item == 0) "" else "$item:00"
-
+                items(HOURS_COUNT) { hour ->
                     Row(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .height(60.dp)
+                            .height(60.dp),
+                        verticalAlignment = Alignment.CenterVertically
                     ) {
-                        Text(
-                            text = hoursText,
+                        Box(
                             modifier = Modifier
                                 .fillMaxHeight()
-                                .width(60.dp)
-                                .align(Alignment.Bottom),
-                            textAlign = TextAlign.Center,
-                            fontSize = 13.sp,
-                            color = Black
-                        )
+                                .width(60.dp),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            Text(
+                                text = "$hour:00",
+                                modifier = Modifier.wrapContentSize(),
+                                textAlign = TextAlign.Center,
+                                fontSize = 13.sp,
+                                color = Black
+                            )
+                        }
 
                         for (day in 0 until Constants.WEEK_LENGTH) {
                             Box(
@@ -105,9 +108,7 @@ fun MainScreen(
                                         shape = RectangleShape,
                                         color = LightSky
                                     )
-                            ) {
-
-                            }
+                            )
                         }
                     }
                 }
