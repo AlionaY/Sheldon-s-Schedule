@@ -34,7 +34,6 @@ import com.pti.sheldons_schedule.ui.theme.LightSky
 import com.pti.sheldons_schedule.ui.theme.Sky
 import com.pti.sheldons_schedule.util.Constants
 import com.pti.sheldons_schedule.util.horizontalPadding
-import java.util.*
 
 
 private const val HOURS_COUNT = 24
@@ -108,11 +107,7 @@ fun MainScreen(
                                         shape = RectangleShape,
                                         color = LightSky
                                     )
-                            ) {
-                                if (item == Calendar.getInstance().get(Calendar.HOUR_OF_DAY)) {
-                                    Text("curr")
-                                }
-                            }
+                            )
                         }
                     }
                 }
