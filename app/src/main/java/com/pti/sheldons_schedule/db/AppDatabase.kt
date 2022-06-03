@@ -6,9 +6,8 @@ import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
 import com.pti.sheldons_schedule.data.Event
-import com.pti.sheldons_schedule.data.Options
 
-@Database(entities = [Event::class], version = 5)
+@Database(entities = [Event::class], version = 5, exportSchema = false)
 @TypeConverters(OptionsTypeConverter::class)
 abstract class AppDatabase : RoomDatabase() {
 
