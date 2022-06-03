@@ -76,7 +76,7 @@ fun MainScreen(viewModel: MainViewModel = hiltViewModel()) {
                             verticalArrangement = Arrangement.Center
                         ) {
                             Text(
-                                text = day.weekDayName.substring(0, 3),
+                                text = day.weekDayName,
                                 modifier = Modifier
                                     .fillMaxWidth()
                                     .weight(0.4f),

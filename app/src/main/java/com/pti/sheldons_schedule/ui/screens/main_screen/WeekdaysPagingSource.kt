@@ -31,7 +31,7 @@ class WeekdaysPagingSource : PagingSource<Int, Week>() {
         for (i in 0 until WEEK_LENGTH) {
             weekList += DayOfWeek(
                 dayOfMonth = currentCalendar.get(Calendar.DAY_OF_MONTH),
-                weekDayName = currentCalendar.formatDate(Constants.DAY_NAME_FORMAT),
+                weekDayName = currentCalendar.formatDate(Constants.DAY_NAME_FORMAT).substring(0, 3),
                 isCurrent = currentCalendar.get(Calendar.DAY_OF_YEAR) == calendar.get(Calendar.DAY_OF_YEAR)
             )
             currentCalendar.add(Calendar.DAY_OF_YEAR, 1)
