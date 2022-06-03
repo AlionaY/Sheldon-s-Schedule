@@ -1,6 +1,5 @@
 package com.pti.sheldons_schedule.ui.screens.main_screen
 
-import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
@@ -29,15 +28,17 @@ import androidx.paging.compose.collectAsLazyPagingItems
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.HorizontalPager
 import com.google.accompanist.pager.rememberPagerState
-import com.pti.sheldons_schedule.data.Week
 import com.pti.sheldons_schedule.ui.navigation.NavDestination
 import com.pti.sheldons_schedule.ui.navigation.navigate
 import com.pti.sheldons_schedule.ui.theme.Black
 import com.pti.sheldons_schedule.ui.theme.LightSky
+import com.pti.sheldons_schedule.ui.theme.Sky
 import com.pti.sheldons_schedule.ui.theme.Teal200
 import com.pti.sheldons_schedule.util.Constants
 import com.pti.sheldons_schedule.util.horizontalPadding
-import java.util.*
+
+
+private const val HOURS_COUNT = 24
 
 @OptIn(ExperimentalPagerApi::class)
 @Composable
@@ -48,11 +49,14 @@ fun MainScreen(
     val pagerState = rememberPagerState()
     val weeks = viewModel.weeks.collectAsLazyPagingItems()
 
-    Column(modifier = Modifier.fillMaxSize()) {
+    Column(modifier = Modifier
+        .fillMaxSize()
+        .background(Sky)) {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
                 .height(58.dp)
+                .background(LightSky)
         ) {
             Spacer(
                 modifier = Modifier
@@ -62,9 +66,7 @@ fun MainScreen(
 
             HorizontalPager(
                 count = weeks.itemCount,
-                modifier = Modifier
-                    .fillMaxSize()
-                    .background(LightSky),
+                modifier = Modifier.fillMaxSize(),
                 state = pagerState
             ) { page ->
                 var currentWeek = weeks.peek(page)
@@ -123,39 +125,45 @@ fun MainScreen(
             }
         }
 
-        LazyColumn(modifier = Modifier.fillMaxSize()) {
-            items(24) { item ->
-                val calendar = Calendar.getInstance()
+        LazyColumn(
+            modifier = Modifier
+                .fillMaxSize()
+                .border(
+                    width = 0.5.dp,
+                    shape = RectangleShape,
+                    color = LightSky
+                )
+        ) {
+            items(HOURS_COUNT) { item ->
+                val hoursText = if (item == 0) "" else "$item:00"
                 val config = LocalConfiguration.current
                 val height = (config.screenHeightDp - 58).toFloat() / 11
-
-                Log.d("###", "curr hours ${calendar.get(Calendar.HOUR_OF_DAY)}, min ${calendar.get(Calendar.MINUTE)}")
 
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
                         .height(height.dp)
                 ) {
-
                     Text(
-                        text = "$item:00",
+                        text = hoursText,
                         modifier = Modifier
                             .fillMaxHeight()
                             .width(60.dp)
                             .align(Alignment.Bottom),
-                        textAlign = TextAlign.End,
-                        fontSize = 12.sp,
+                        textAlign = TextAlign.Center,
+                        fontSize = 13.sp,
                         color = Black
                     )
+
                     for (day in 0 until Constants.WEEK_LENGTH) {
                         Box(
                             modifier = Modifier
                                 .fillMaxHeight()
                                 .weight(0.14f)
                                 .border(
-                                    width = 1.dp,
+                                    width = 0.5.dp,
                                     shape = RectangleShape,
-                                    color = Color.Gray
+                                    color = LightSky
                                 )
                         )
                     }
