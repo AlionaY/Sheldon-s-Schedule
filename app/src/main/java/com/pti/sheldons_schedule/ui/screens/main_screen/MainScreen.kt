@@ -78,13 +78,11 @@ fun MainScreen(
 
                 items(HOURS_COUNT) { item ->
                     val hoursText = if (item == 0) "" else "$item:00"
-                    val config = LocalConfiguration.current
-                    val height = (config.screenHeightDp - 58).toFloat() / 11
 
                     Row(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .height(height.dp)
+                            .height(60.dp)
                     ) {
                         Text(
                             text = hoursText,
@@ -107,7 +105,9 @@ fun MainScreen(
                                         shape = RectangleShape,
                                         color = LightSky
                                     )
-                            )
+                            ) {
+
+                            }
                         }
                     }
                 }
