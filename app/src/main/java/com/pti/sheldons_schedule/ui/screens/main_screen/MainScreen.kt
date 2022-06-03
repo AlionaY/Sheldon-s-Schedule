@@ -1,5 +1,6 @@
 package com.pti.sheldons_schedule.ui.screens.main_screen
 
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
@@ -36,6 +37,7 @@ import com.pti.sheldons_schedule.ui.theme.LightSky
 import com.pti.sheldons_schedule.ui.theme.Teal200
 import com.pti.sheldons_schedule.util.Constants
 import com.pti.sheldons_schedule.util.horizontalPadding
+import java.util.*
 
 @OptIn(ExperimentalPagerApi::class)
 @Composable
@@ -123,24 +125,30 @@ fun MainScreen(
         }
 
         LazyColumn(modifier = Modifier.fillMaxSize()) {
-            items(24) {
+            items(24) { item ->
+                val calendar = Calendar.getInstance()
                 val config = LocalConfiguration.current
-                val height = (config.screenHeightDp - 58).toFloat() / 11f
+                val height = (config.screenHeightDp - 58).toFloat() / 11
+
+                Log.d("###", "curr hours ${calendar.get(Calendar.HOUR_OF_DAY)}, min ${calendar.get(Calendar.MINUTE)}")
 
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
                         .height(height.dp)
                 ) {
+
                     Text(
-                        text = "11 AM", modifier = Modifier
+                        text = "$item:00",
+                        modifier = Modifier
                             .fillMaxHeight()
-                            .width(60.dp),
+                            .width(60.dp)
+                            .align(Alignment.Bottom),
                         textAlign = TextAlign.End,
                         fontSize = 12.sp,
                         color = Black
                     )
-                    for (i in 0 until Constants.WEEK_LENGTH) {
+                    for (day in 0 until Constants.WEEK_LENGTH) {
                         Box(
                             modifier = Modifier
                                 .fillMaxHeight()
