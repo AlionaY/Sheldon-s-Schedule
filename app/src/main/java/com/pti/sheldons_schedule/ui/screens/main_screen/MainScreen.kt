@@ -1,5 +1,6 @@
 package com.pti.sheldons_schedule.ui.screens.main_screen
 
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
@@ -33,11 +34,12 @@ import com.pti.sheldons_schedule.ui.theme.LightSky
 import com.pti.sheldons_schedule.ui.theme.Sky
 import com.pti.sheldons_schedule.util.Constants
 import com.pti.sheldons_schedule.util.horizontalPadding
+import java.util.*
 
 
 private const val HOURS_COUNT = 24
 
-@OptIn(ExperimentalPagerApi::class)
+@OptIn(ExperimentalPagerApi::class, ExperimentalFoundationApi::class)
 @Composable
 fun MainScreen(
     navController: NavController,
@@ -64,7 +66,7 @@ fun MainScreen(
                 }
             }
 
-            Column(
+            LazyColumn(
                 modifier = Modifier
                     .fillMaxSize()
                     .border(
@@ -73,49 +75,43 @@ fun MainScreen(
                         color = LightSky
                     )
             ) {
-                CalendarHeader(currentWeek)
+                stickyHeader { CalendarHeader(currentWeek) }
 
-                LazyColumn(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .border(
-                            width = 0.5.dp,
-                            shape = RectangleShape,
-                            color = LightSky
-                        )
-                ) {
-                    items(HOURS_COUNT) { item ->
-                        val hoursText = if (item == 0) "" else "$item:00"
-                        val config = LocalConfiguration.current
-                        val height = (config.screenHeightDp - 58).toFloat() / 11
+                items(HOURS_COUNT) { item ->
+                    val hoursText = if (item == 0) "" else "$item:00"
+                    val config = LocalConfiguration.current
+                    val height = (config.screenHeightDp - 58).toFloat() / 11
 
-                        Row(
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(height.dp)
+                    ) {
+                        Text(
+                            text = hoursText,
                             modifier = Modifier
-                                .fillMaxWidth()
-                                .height(height.dp)
-                        ) {
-                            Text(
-                                text = hoursText,
+                                .fillMaxHeight()
+                                .width(60.dp)
+                                .align(Alignment.Bottom),
+                            textAlign = TextAlign.Center,
+                            fontSize = 13.sp,
+                            color = Black
+                        )
+
+                        for (day in 0 until Constants.WEEK_LENGTH) {
+                            Box(
                                 modifier = Modifier
                                     .fillMaxHeight()
-                                    .width(60.dp)
-                                    .align(Alignment.Bottom),
-                                textAlign = TextAlign.Center,
-                                fontSize = 13.sp,
-                                color = Black
-                            )
-
-                            for (day in 0 until Constants.WEEK_LENGTH) {
-                                Box(
-                                    modifier = Modifier
-                                        .fillMaxHeight()
-                                        .weight(0.14f)
-                                        .border(
-                                            width = 0.5.dp,
-                                            shape = RectangleShape,
-                                            color = LightSky
-                                        )
-                                )
+                                    .weight(0.14f)
+                                    .border(
+                                        width = 0.5.dp,
+                                        shape = RectangleShape,
+                                        color = LightSky
+                                    )
+                            ) {
+                                if (item == Calendar.getInstance().get(Calendar.HOUR_OF_DAY)) {
+                                    Text("curr")
+                                }
                             }
                         }
                     }
