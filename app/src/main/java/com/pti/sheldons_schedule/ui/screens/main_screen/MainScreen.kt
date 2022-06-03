@@ -67,8 +67,7 @@ fun MainScreen(
                     .background(LightSky),
                 state = pagerState
             ) { page ->
-                var currentWeek: Week? = null
-                if (currentWeek == null) currentWeek = weeks.peek(page)
+                var currentWeek = weeks.peek(page)
 
                 LaunchedEffect(key1 = pagerState) {
                     snapshotFlow { pagerState.currentPage }.collect {
@@ -93,7 +92,7 @@ fun MainScreen(
                             verticalArrangement = Arrangement.Center
                         ) {
                             Text(
-                                text = day.weekDayName.substring(0, 3),
+                                text = day.weekDayName,
                                 modifier = Modifier
                                     .fillMaxWidth()
                                     .weight(0.4f),
