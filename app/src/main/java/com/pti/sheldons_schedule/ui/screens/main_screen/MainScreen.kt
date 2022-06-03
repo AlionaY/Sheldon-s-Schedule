@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.FloatingActionButton
+import androidx.compose.material.FloatingActionButtonDefaults
 import androidx.compose.material.Icon
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
@@ -15,7 +16,6 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.platform.LocalConfiguration
@@ -49,123 +49,127 @@ fun MainScreen(
     val pagerState = rememberPagerState()
     val weeks = viewModel.weeks.collectAsLazyPagingItems()
 
-    Column(modifier = Modifier
-        .fillMaxSize()
-        .background(Sky)) {
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(58.dp)
-                .background(LightSky)
-        ) {
-            Spacer(
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(Sky)
+    ) {
+        Column(modifier = Modifier.fillMaxSize()) {
+            Row(
                 modifier = Modifier
-                    .fillMaxHeight()
-                    .width(60.dp)
-            )
+                    .fillMaxWidth()
+                    .height(58.dp)
+                    .background(LightSky)
+            ) {
+                Spacer(
+                    modifier = Modifier
+                        .fillMaxHeight()
+                        .width(60.dp)
+                )
 
-            HorizontalPager(
-                count = weeks.itemCount,
-                modifier = Modifier.fillMaxSize(),
-                state = pagerState
-            ) { page ->
-                var currentWeek = weeks.peek(page)
-
-                LaunchedEffect(key1 = pagerState) {
-                    snapshotFlow { pagerState.currentPage }.collect {
-                        currentWeek = weeks[page]
-                    }
-                }
-
-                Row(
+                HorizontalPager(
+                    count = weeks.itemCount,
                     modifier = Modifier.fillMaxSize(),
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.Center
-                ) {
-                    currentWeek?.week?.forEach { day ->
-                        val textColor = if (day.isCurrent) Teal200 else Black
-                        val backgroundColor = if (day.isCurrent) Teal200 else Color.Transparent
+                    state = pagerState
+                ) { page ->
+                    var currentWeek = weeks.peek(page)
 
-                        Column(
-                            modifier = Modifier
-                                .weight(0.14f)
-                                .fillMaxHeight(),
-                            horizontalAlignment = Alignment.CenterHorizontally,
-                            verticalArrangement = Arrangement.Center
-                        ) {
-                            Text(
-                                text = day.weekDayName,
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .weight(0.4f),
-                                fontSize = 12.sp,
-                                textAlign = TextAlign.Center,
-                                color = textColor
-                            )
+                    LaunchedEffect(key1 = pagerState) {
+                        snapshotFlow { pagerState.currentPage }.collect {
+                            currentWeek = weeks[page]
+                        }
+                    }
 
-                            Box(
+                    Row(
+                        modifier = Modifier.fillMaxSize(),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.Center
+                    ) {
+                        currentWeek?.week?.forEach { day ->
+                            val textColor = if (day.isCurrent) Teal200 else Black
+                            val backgroundColor = if (day.isCurrent) Teal200 else Color.Transparent
+
+                            Column(
                                 modifier = Modifier
-                                    .size(35.dp)
-                                    .weight(0.6f)
-                                    .background(color = backgroundColor, shape = CircleShape),
-                                contentAlignment = Alignment.Center
+                                    .weight(0.14f)
+                                    .fillMaxHeight(),
+                                horizontalAlignment = Alignment.CenterHorizontally,
+                                verticalArrangement = Arrangement.Center
                             ) {
                                 Text(
-                                    text = day.dayOfMonth.toString(),
+                                    text = day.weekDayName,
                                     modifier = Modifier
-                                        .size(25.dp)
-                                        .align(Alignment.Center),
-                                    fontSize = 15.sp,
-                                    textAlign = TextAlign.Center
+                                        .fillMaxWidth()
+                                        .weight(0.4f),
+                                    fontSize = 12.sp,
+                                    textAlign = TextAlign.Center,
+                                    color = textColor
                                 )
+
+                                Box(
+                                    modifier = Modifier
+                                        .size(35.dp)
+                                        .weight(0.6f)
+                                        .background(color = backgroundColor, shape = CircleShape),
+                                    contentAlignment = Alignment.Center
+                                ) {
+                                    Text(
+                                        text = day.dayOfMonth.toString(),
+                                        modifier = Modifier
+                                            .size(25.dp)
+                                            .align(Alignment.Center),
+                                        fontSize = 15.sp,
+                                        textAlign = TextAlign.Center
+                                    )
+                                }
                             }
                         }
                     }
                 }
             }
-        }
 
-        LazyColumn(
-            modifier = Modifier
-                .fillMaxSize()
-                .border(
-                    width = 0.5.dp,
-                    shape = RectangleShape,
-                    color = LightSky
-                )
-        ) {
-            items(HOURS_COUNT) { item ->
-                val hoursText = if (item == 0) "" else "$item:00"
-                val config = LocalConfiguration.current
-                val height = (config.screenHeightDp - 58).toFloat() / 11
-
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(height.dp)
-                ) {
-                    Text(
-                        text = hoursText,
-                        modifier = Modifier
-                            .fillMaxHeight()
-                            .width(60.dp)
-                            .align(Alignment.Bottom),
-                        textAlign = TextAlign.Center,
-                        fontSize = 13.sp,
-                        color = Black
+            LazyColumn(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .border(
+                        width = 0.5.dp,
+                        shape = RectangleShape,
+                        color = LightSky
                     )
+            ) {
+                items(HOURS_COUNT) { item ->
+                val hoursText = if (item == 0) "" else "$item:00"
+                    val config = LocalConfiguration.current
+                    val height = (config.screenHeightDp - 58).toFloat() / 11
 
-                    for (day in 0 until Constants.WEEK_LENGTH) {
-                        Box(
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(height.dp)
+                    ) {
+                        Text(
+                            text = hoursText,
                             modifier = Modifier
                                 .fillMaxHeight()
-                                .weight(0.14f)
-                                .border(
-                                    width = 0.5.dp,
-                                    shape = RectangleShape,
-                                    color = LightSky
-                                )
+                                .width(60.dp)
+                                .align(Alignment.Bottom),
+                            textAlign = TextAlign.Center,
+                            fontSize = 13.sp,
+                            color = Black
                         )
+
+                        for (day in 0 until Constants.WEEK_LENGTH) {
+                            Box(
+                                modifier = Modifier
+                                    .fillMaxHeight()
+                                    .weight(0.14f)
+                                    .border(
+                                        width = 0.5.dp,
+                                        shape = RectangleShape,
+                                        color = LightSky
+                                    )
+                            )
+                        }
                     }
                 }
             }
@@ -175,8 +179,8 @@ fun MainScreen(
             onClick = { navController.navigate(NavDestination.CreateEventScreen) },
             modifier = Modifier
                 .horizontalPadding(horizontal = 10.dp, bottom = 15.dp)
-//                    .align(Alignment.BottomEnd)
-                .alpha(1f)
+                .align(Alignment.BottomEnd),
+            elevation = FloatingActionButtonDefaults.elevation(5.dp)
         ) {
             Icon(Icons.Filled.Add, null)
         }
