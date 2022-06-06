@@ -38,7 +38,7 @@ fun CalendarHeader(currentWeek: Week?, modifier : Modifier = Modifier) {
 
             Column(
                 modifier = Modifier
-                    .weight(0.14f)
+                    .weight(1f)
                     .fillMaxHeight(),
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Center

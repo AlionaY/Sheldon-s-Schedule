@@ -111,7 +111,7 @@ fun MainScreen(
                                         Box(
                                             modifier = Modifier
                                                 .height(60.dp)
-                                                .weight(0.14f)
+                                                .weight(1f)
                                                 .drawBehind {
                                                     val strokeWidth = 2f
                                                     val y = size.height - strokeWidth
