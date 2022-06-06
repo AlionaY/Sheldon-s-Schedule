@@ -129,7 +129,6 @@ fun MainScreen(
                                     color = LightSky,
                                     modifier = Modifier
                                         .height(0.5.dp)
-                                        .padding(start = 50.dp)
                                         .constrainAs(horizontalLine) {
                                             end.linkTo(parent.end)
                                             top.linkTo(box.top)
@@ -141,14 +140,14 @@ fun MainScreen(
 
                                 Text(
                                     text = "$item:00",
-                                    modifier = Modifier.constrainAs(hour) {
-                                        width = Dimension.fillToConstraints
-                                        top.linkTo(horizontalLine.top)
-                                        bottom.linkTo(horizontalLine.bottom)
-                                        start.linkTo(parent.start)
-                                        end.linkTo(horizontalLine.start)
-                                        width = Dimension.wrapContent
-                                    },
+                                    modifier = Modifier
+                                        .constrainAs(hour) {
+                                            top.linkTo(horizontalLine.top)
+                                            bottom.linkTo(horizontalLine.bottom)
+                                            start.linkTo(parent.start)
+                                            end.linkTo(horizontalLine.start)
+                                            width = Dimension.value(50.dp)
+                                        },
                                     textAlign = TextAlign.Center,
                                     fontSize = 13.sp,
                                     color = Black
