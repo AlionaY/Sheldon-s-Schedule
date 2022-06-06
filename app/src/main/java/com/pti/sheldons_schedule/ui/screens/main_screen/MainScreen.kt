@@ -1,106 +1,160 @@
 package com.pti.sheldons_schedule.ui.screens.main_screen
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material.Text
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.material.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.draw.drawBehind
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.constraintlayout.compose.ConstraintLayout
+import androidx.constraintlayout.compose.Dimension
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavController
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.HorizontalPager
 import com.google.accompanist.pager.rememberPagerState
+import com.pti.sheldons_schedule.ui.navigation.NavDestination
+import com.pti.sheldons_schedule.ui.navigation.navigate
 import com.pti.sheldons_schedule.ui.theme.Black
 import com.pti.sheldons_schedule.ui.theme.LightSky
-import com.pti.sheldons_schedule.ui.theme.Teal200
+import com.pti.sheldons_schedule.ui.theme.Sky
+import com.pti.sheldons_schedule.util.Constants
+import com.pti.sheldons_schedule.util.horizontalPadding
+
+
+private const val HOURS_COUNT = 24
 
 @OptIn(ExperimentalPagerApi::class)
 @Composable
-fun MainScreen(viewModel: MainViewModel = hiltViewModel()) {
+fun MainScreen(
+    navController: NavController,
+    viewModel: MainViewModel = hiltViewModel()
+) {
     val pagerState = rememberPagerState()
     val weeks = viewModel.weeks.collectAsLazyPagingItems()
 
-    Box(modifier = Modifier.fillMaxSize()) {
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(58.dp)
-        ) {
-            Spacer(
-                modifier = Modifier
-                    .fillMaxHeight()
-                    .width(60.dp)
-            )
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(Sky),
+        contentAlignment = Alignment.Center
+    ) {
+        HorizontalPager(
+            count = weeks.itemCount,
+            modifier = Modifier.fillMaxSize(),
+            state = pagerState
+        ) { page ->
+            var currentWeek = weeks.peek(page)
 
-            HorizontalPager(
-                count = weeks.itemCount,
-                modifier = Modifier
-                    .fillMaxSize()
-                    .background(LightSky),
-                state = pagerState
-            ) { page ->
-                var currentWeek = weeks.peek(page)
-
-                LaunchedEffect(key1 = pagerState) {
-                    snapshotFlow { pagerState.currentPage }.collect {
-                        currentWeek = weeks[page]
-                    }
+            LaunchedEffect(key1 = pagerState) {
+                snapshotFlow { pagerState.currentPage }.collect {
+                    currentWeek = weeks[page]
                 }
+            }
 
-                Row(
-                    modifier = Modifier.fillMaxSize(),
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.Center
+            Column(modifier = Modifier.fillMaxSize()) {
+                CalendarHeader(currentWeek)
+
+                LazyColumn(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .border(
+                            width = 0.5.dp,
+                            shape = RectangleShape,
+                            color = LightSky
+                        )
                 ) {
-                    currentWeek?.week?.forEach { day ->
-                        val textColor = if (day.isCurrent) Teal200 else Black
-                        val backgroundColor = if (day.isCurrent) Teal200 else Color.Transparent
-
-                        Column(
+                    items(HOURS_COUNT) { item ->
+                        Box(
                             modifier = Modifier
-                                .weight(0.14f)
-                                .fillMaxHeight(),
-                            horizontalAlignment = Alignment.CenterHorizontally,
-                            verticalArrangement = Arrangement.Center
+                                .fillMaxWidth()
+                                .height(60.dp)
                         ) {
-                            Text(
-                                text = day.weekDayName,
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .weight(0.4f),
-                                fontSize = 12.sp,
-                                textAlign = TextAlign.Center,
-                                color = textColor
-                            )
+                            ConstraintLayout(modifier = Modifier.fillMaxSize()) {
+                                val (horizontalLine, hour, content) = createRefs()
 
-                            Box(
-                                modifier = Modifier
-                                    .size(35.dp)
-                                    .weight(0.6f)
-                                    .background(color = backgroundColor, shape = CircleShape),
-                                contentAlignment = Alignment.Center
-                            ) {
-                                Text(
-                                    text = day.dayOfMonth.toString(),
+                                Divider(
+                                    color = LightSky,
                                     modifier = Modifier
-                                        .size(25.dp)
-                                        .align(Alignment.Center),
-                                    fontSize = 15.sp,
-                                    textAlign = TextAlign.Center
+                                        .height(0.7.dp)
+                                        .constrainAs(horizontalLine) {
+                                            top.linkTo(content.top)
+                                            start.linkTo(hour.end)
+                                            end.linkTo(parent.end)
+                                            width = Dimension.fillToConstraints
+                                        }
+                                )
+
+                                Row(
+                                    modifier = Modifier
+                                        .constrainAs(content) {
+                                            width = Dimension.fillToConstraints
+                                            start.linkTo(parent.start)
+                                            end.linkTo(parent.end)
+                                        }
+                                        .padding(start = 60.dp)
+                                ) {
+                                    for (day in 0 until Constants.WEEK_LENGTH) {
+                                        Box(
+                                            modifier = Modifier
+                                                .height(60.dp)
+                                                .weight(1f)
+                                                .drawBehind {
+                                                    val strokeWidth = 2f
+                                                    val y = size.height - strokeWidth
+
+                                                    drawLine(
+                                                        color = LightSky,
+                                                        start = Offset(0f, 0f),
+                                                        end = Offset(0f, y),
+                                                        strokeWidth = strokeWidth
+                                                    )
+                                                }
+                                        )
+                                    }
+                                }
+
+                                Text(
+                                    text = if (item == 0) "" else "$item:00",
+                                    modifier = Modifier.constrainAs(hour) {
+                                        top.linkTo(horizontalLine.top)
+                                        bottom.linkTo(horizontalLine.bottom)
+                                        start.linkTo(parent.start)
+                                        end.linkTo(horizontalLine.start)
+                                        width = Dimension.value(50.dp)
+                                    },
+                                    textAlign = TextAlign.Center,
+                                    fontSize = 13.sp,
+                                    color = Black
                                 )
                             }
                         }
                     }
                 }
             }
+        }
+
+        FloatingActionButton(
+            onClick = { navController.navigate(NavDestination.CreateEventScreen) },
+            modifier = Modifier
+                .horizontalPadding(horizontal = 10.dp, bottom = 15.dp)
+                .align(Alignment.BottomEnd),
+            elevation = FloatingActionButtonDefaults.elevation(5.dp)
+        ) {
+            Icon(Icons.Filled.Add, null)
         }
     }
 }
