@@ -94,16 +94,28 @@ fun MainScreen(
                                     width = Dimension.fillToConstraints
                                 }
                                 .fillMaxWidth()
-                                .wrapContentHeight()
+                                .height(60.dp)
                         ) {
                             ConstraintLayout(modifier = Modifier.fillMaxSize()) {
                                 val (horizontalLine, hour, content) = createRefs()
+
+                                Divider(
+                                    color = LightSky,
+                                    modifier = Modifier
+                                        .height(0.5.dp)
+                                        .constrainAs(horizontalLine) {
+                                            top.linkTo(content.top)
+                                            start.linkTo(hour.end)
+                                            end.linkTo(parent.end)
+                                            width = Dimension.fillToConstraints
+                                        }
+                                )
 
                                 Row(
                                     modifier = Modifier
                                         .constrainAs(content) {
                                             width = Dimension.fillToConstraints
-                                            start.linkTo(parent.start, 60.dp)
+                                            start.linkTo(parent.start)
                                             end.linkTo(parent.end)
                                         }
                                         .padding(start = 60.dp)
@@ -125,21 +137,8 @@ fun MainScreen(
                                     }
                                 }
 
-                                Divider(
-                                    color = LightSky,
-                                    modifier = Modifier
-                                        .height(0.5.dp)
-                                        .constrainAs(horizontalLine) {
-                                            end.linkTo(parent.end)
-                                            top.linkTo(box.top)
-                                            start.linkTo(hour.end)
-                                            end.linkTo(parent.end)
-                                            width = Dimension.fillToConstraints
-                                        }
-                                )
-
                                 Text(
-                                    text = "$item:00",
+                                    text = if (item == 0) "" else "$item:00",
                                     modifier = Modifier
                                         .constrainAs(hour) {
                                             top.linkTo(horizontalLine.top)
