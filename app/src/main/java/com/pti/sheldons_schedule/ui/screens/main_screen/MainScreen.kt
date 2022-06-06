@@ -31,11 +31,14 @@ import com.pti.sheldons_schedule.ui.navigation.navigate
 import com.pti.sheldons_schedule.ui.theme.Black
 import com.pti.sheldons_schedule.ui.theme.LightSky
 import com.pti.sheldons_schedule.ui.theme.Sky
-import com.pti.sheldons_schedule.util.Constants
+import com.pti.sheldons_schedule.ui.theme.White
 import com.pti.sheldons_schedule.util.horizontalPadding
+import java.util.*
 
 
 private const val HOURS_COUNT = 24
+private const val CONTENT_BOX_HEIGHT = 60
+private const val MINUTES_IN_HOUR_FLOAT = 60f
 
 @OptIn(ExperimentalPagerApi::class)
 @Composable
@@ -77,11 +80,11 @@ fun MainScreen(
                             color = LightSky
                         )
                 ) {
-                    items(HOURS_COUNT) { item ->
+                    items(HOURS_COUNT) { hourItem ->
                         Box(
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .height(60.dp)
+                                .height(CONTENT_BOX_HEIGHT.dp)
                         ) {
                             ConstraintLayout(modifier = Modifier.fillMaxSize()) {
                                 val (horizontalLine, hour, content) = createRefs()
@@ -107,10 +110,10 @@ fun MainScreen(
                                         }
                                         .padding(start = 60.dp)
                                 ) {
-                                    for (day in 0 until Constants.WEEK_LENGTH) {
+                                    currentWeek?.week?.forEach { dayOfWeek ->
                                         Box(
                                             modifier = Modifier
-                                                .height(60.dp)
+                                                .fillMaxHeight()
                                                 .weight(1f)
                                                 .drawBehind {
                                                     val strokeWidth = 2f
@@ -123,12 +126,30 @@ fun MainScreen(
                                                         strokeWidth = strokeWidth
                                                     )
                                                 }
-                                        )
+                                        ) {
+                                            val calendar = Calendar.getInstance()
+                                            val isCurrentHour =
+                                                calendar.get(Calendar.HOUR_OF_DAY) == hourItem
+
+                                            if (dayOfWeek.isCurrent && isCurrentHour) {
+                                                val currentMinutesInPercent = (calendar.get(Calendar.MINUTE)
+                                                    .toFloat() / MINUTES_IN_HOUR_FLOAT)
+                                                val padding = CONTENT_BOX_HEIGHT * currentMinutesInPercent
+
+                                                Divider(
+                                                    modifier = Modifier
+                                                        .padding(top = padding.dp)
+                                                        .fillMaxWidth()
+                                                        .height(2.dp),
+                                                    color = White
+                                                )
+                                            }
+                                        }
                                     }
                                 }
 
                                 Text(
-                                    text = if (item == 0) "" else "$item:00",
+                                    text = if (hourItem == 0) "" else "$hourItem:00",
                                     modifier = Modifier.constrainAs(hour) {
                                         top.linkTo(horizontalLine.top)
                                         bottom.linkTo(horizontalLine.bottom)
