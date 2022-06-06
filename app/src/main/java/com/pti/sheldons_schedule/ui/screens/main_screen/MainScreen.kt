@@ -1,6 +1,5 @@
 package com.pti.sheldons_schedule.ui.screens.main_screen
 
-import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
@@ -16,7 +15,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.RectangleShape
-import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -39,7 +37,7 @@ import com.pti.sheldons_schedule.util.horizontalPadding
 
 private const val HOURS_COUNT = 24
 
-@OptIn(ExperimentalPagerApi::class, ExperimentalFoundationApi::class)
+@OptIn(ExperimentalPagerApi::class)
 @Composable
 fun MainScreen(
     navController: NavController,
@@ -102,7 +100,7 @@ fun MainScreen(
                                 Divider(
                                     color = LightSky,
                                     modifier = Modifier
-                                        .height(0.5.dp)
+                                        .height(0.7.dp)
                                         .constrainAs(horizontalLine) {
                                             top.linkTo(content.top)
                                             start.linkTo(hour.end)
@@ -126,11 +124,14 @@ fun MainScreen(
                                                 .height(60.dp)
                                                 .weight(0.14f)
                                                 .drawBehind {
+                                                    val strokeWidth = 2f
+                                                    val y = size.height - strokeWidth
+
                                                     drawLine(
-                                                        LightSky,
-                                                        Offset(0f, size.height),
-                                                        Offset(size.height, size.width),
-                                                        Stroke.DefaultMiter
+                                                        color = LightSky,
+                                                        start = Offset(0f, 0f),
+                                                        end = Offset(0f, y),
+                                                        strokeWidth = strokeWidth
                                                     )
                                                 }
                                         )
@@ -139,14 +140,13 @@ fun MainScreen(
 
                                 Text(
                                     text = if (item == 0) "" else "$item:00",
-                                    modifier = Modifier
-                                        .constrainAs(hour) {
-                                            top.linkTo(horizontalLine.top)
-                                            bottom.linkTo(horizontalLine.bottom)
-                                            start.linkTo(parent.start)
-                                            end.linkTo(horizontalLine.start)
-                                            width = Dimension.value(50.dp)
-                                        },
+                                    modifier = Modifier.constrainAs(hour) {
+                                        top.linkTo(horizontalLine.top)
+                                        bottom.linkTo(horizontalLine.bottom)
+                                        start.linkTo(parent.start)
+                                        end.linkTo(horizontalLine.start)
+                                        width = Dimension.value(50.dp)
+                                    },
                                     textAlign = TextAlign.Center,
                                     fontSize = 13.sp,
                                     color = Black
