@@ -5,10 +5,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.material.FloatingActionButton
-import androidx.compose.material.FloatingActionButtonDefaults
-import androidx.compose.material.Icon
-import androidx.compose.material.Text
+import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.runtime.Composable
@@ -16,10 +13,15 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.drawBehind
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.RectangleShape
+import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.constraintlayout.compose.ConstraintLayout
+import androidx.constraintlayout.compose.Dimension
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.paging.compose.collectAsLazyPagingItems
@@ -65,50 +67,93 @@ fun MainScreen(
                 }
             }
 
-            LazyColumn(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .border(
-                        width = 0.5.dp,
-                        shape = RectangleShape,
-                        color = LightSky
-                    )
-            ) {
-                stickyHeader { CalendarHeader(currentWeek) }
+            CalendarHeader(currentWeek)
 
-                items(HOURS_COUNT) { hour ->
-                    Row(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .height(60.dp),
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
+            ConstraintLayout(
+                modifier = Modifier
+                    .padding(top = 58.dp)
+                    .fillMaxSize()
+            ) {
+                val box = createRef()
+
+                LazyColumn(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .border(
+                            width = 0.5.dp,
+                            shape = RectangleShape,
+                            color = LightSky
+                        )
+                ) {
+                    items(HOURS_COUNT) { item ->
                         Box(
                             modifier = Modifier
-                                .fillMaxHeight()
-                                .width(60.dp),
-                            contentAlignment = Alignment.Center
+                                .constrainAs(box) {
+                                    start.linkTo(parent.start)
+                                    end.linkTo(parent.end)
+                                    width = Dimension.fillToConstraints
+                                }
+                                .fillMaxWidth()
+                                .wrapContentHeight()
                         ) {
-                            Text(
-                                text = "$hour:00",
-                                modifier = Modifier.wrapContentSize(),
-                                textAlign = TextAlign.Center,
-                                fontSize = 13.sp,
-                                color = Black
-                            )
-                        }
+                            ConstraintLayout(modifier = Modifier.fillMaxSize()) {
+                                val (horizontalLine, hour, content) = createRefs()
 
-                        for (day in 0 until Constants.WEEK_LENGTH) {
-                            Box(
-                                modifier = Modifier
-                                    .fillMaxHeight()
-                                    .weight(0.14f)
-                                    .border(
-                                        width = 0.5.dp,
-                                        shape = RectangleShape,
-                                        color = LightSky
-                                    )
-                            )
+                                Row(
+                                    modifier = Modifier
+                                        .constrainAs(content) {
+                                            width = Dimension.fillToConstraints
+                                            start.linkTo(parent.start, 60.dp)
+                                            end.linkTo(parent.end)
+                                        }
+                                        .padding(start = 60.dp)
+                                ) {
+                                    for (day in 0 until Constants.WEEK_LENGTH) {
+                                        Box(
+                                            modifier = Modifier
+                                                .height(60.dp)
+                                                .weight(0.14f)
+                                                .drawBehind {
+                                                    drawLine(
+                                                        LightSky,
+                                                        Offset(0f, size.height),
+                                                        Offset(size.height, size.width),
+                                                        Stroke.DefaultMiter
+                                                    )
+                                                }
+                                        )
+                                    }
+                                }
+
+                                Divider(
+                                    color = LightSky,
+                                    modifier = Modifier
+                                        .height(0.5.dp)
+                                        .padding(start = 50.dp)
+                                        .constrainAs(horizontalLine) {
+                                            end.linkTo(parent.end)
+                                            top.linkTo(box.top)
+                                            start.linkTo(hour.end)
+                                            end.linkTo(parent.end)
+                                            width = Dimension.fillToConstraints
+                                        }
+                                )
+
+                                Text(
+                                    text = "$item:00",
+                                    modifier = Modifier.constrainAs(hour) {
+                                        width = Dimension.fillToConstraints
+                                        top.linkTo(horizontalLine.top)
+                                        bottom.linkTo(horizontalLine.bottom)
+                                        start.linkTo(parent.start)
+                                        end.linkTo(horizontalLine.start)
+                                        width = Dimension.wrapContent
+                                    },
+                                    textAlign = TextAlign.Center,
+                                    fontSize = 13.sp,
+                                    color = Black
+                                )
+                            }
                         }
                     }
                 }

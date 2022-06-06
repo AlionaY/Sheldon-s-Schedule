@@ -17,9 +17,9 @@ import com.pti.sheldons_schedule.ui.theme.LightSky
 import com.pti.sheldons_schedule.ui.theme.Teal200
 
 @Composable
-fun CalendarHeader(currentWeek: Week?) {
+fun CalendarHeader(currentWeek: Week?, modifier : Modifier = Modifier) {
     Row(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxWidth()
             .height(58.dp)
             .background(LightSky),
