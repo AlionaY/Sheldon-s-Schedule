@@ -65,14 +65,8 @@ fun MainScreen(
                 }
             }
 
-            CalendarHeader(currentWeek)
-
-            ConstraintLayout(
-                modifier = Modifier
-                    .padding(top = 58.dp)
-                    .fillMaxSize()
-            ) {
-                val box = createRef()
+            Column(modifier = Modifier.fillMaxSize()) {
+                CalendarHeader(currentWeek)
 
                 LazyColumn(
                     modifier = Modifier
@@ -86,11 +80,6 @@ fun MainScreen(
                     items(HOURS_COUNT) { item ->
                         Box(
                             modifier = Modifier
-                                .constrainAs(box) {
-                                    start.linkTo(parent.start)
-                                    end.linkTo(parent.end)
-                                    width = Dimension.fillToConstraints
-                                }
                                 .fillMaxWidth()
                                 .height(60.dp)
                         ) {
