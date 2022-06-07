@@ -4,12 +4,13 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.snapshotFlow
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawBehind
@@ -31,14 +32,14 @@ import com.pti.sheldons_schedule.ui.navigation.navigate
 import com.pti.sheldons_schedule.ui.theme.Black
 import com.pti.sheldons_schedule.ui.theme.LightSky
 import com.pti.sheldons_schedule.ui.theme.Sky
-import com.pti.sheldons_schedule.ui.theme.White
+import com.pti.sheldons_schedule.ui.theme.Teal200
 import com.pti.sheldons_schedule.util.horizontalPadding
+import kotlinx.coroutines.launch
 import java.util.*
 
 
 private const val HOURS_COUNT = 24
-private const val CONTENT_BOX_HEIGHT = 60
-private const val MINUTES_IN_HOUR_FLOAT = 60f
+const val CONTENT_BOX_HEIGHT = 60
 
 @OptIn(ExperimentalPagerApi::class)
 @Composable
@@ -46,8 +47,10 @@ fun MainScreen(
     navController: NavController,
     viewModel: MainViewModel = hiltViewModel()
 ) {
-    val pagerState = rememberPagerState()
     val weeks = viewModel.weeks.collectAsLazyPagingItems()
+    val timePadding by viewModel.timePadding.collectAsState()
+
+    val pagerState = rememberPagerState()
 
     Box(
         modifier = Modifier
@@ -80,7 +83,7 @@ fun MainScreen(
                             color = LightSky
                         )
                 ) {
-                    items(HOURS_COUNT) { hourItem ->
+                    itemsIndexed(items = (0 until HOURS_COUNT).map { listOf(it) }) { hourItem, index ->
                         Box(
                             modifier = Modifier
                                 .fillMaxWidth()
@@ -111,7 +114,7 @@ fun MainScreen(
                                         .padding(start = 60.dp)
                                 ) {
                                     currentWeek?.week?.forEach { dayOfWeek ->
-                                        Box(
+                                        BoxWithConstraints(
                                             modifier = Modifier
                                                 .fillMaxHeight()
                                                 .weight(1f)
@@ -132,16 +135,12 @@ fun MainScreen(
                                                 calendar.get(Calendar.HOUR_OF_DAY) == hourItem
 
                                             if (dayOfWeek.isCurrent && isCurrentHour) {
-                                                val currentMinutesInPercent = (calendar.get(Calendar.MINUTE)
-                                                    .toFloat() / MINUTES_IN_HOUR_FLOAT)
-                                                val padding = CONTENT_BOX_HEIGHT * currentMinutesInPercent
-
                                                 Divider(
                                                     modifier = Modifier
-                                                        .padding(top = padding.dp)
+                                                        .padding(top = timePadding.dp)
                                                         .fillMaxWidth()
                                                         .height(2.dp),
-                                                    color = White
+                                                    color = Teal200
                                                 )
                                             }
                                         }
