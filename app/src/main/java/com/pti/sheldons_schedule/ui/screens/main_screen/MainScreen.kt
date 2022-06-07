@@ -6,7 +6,6 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
@@ -34,7 +33,6 @@ import com.pti.sheldons_schedule.ui.theme.LightSky
 import com.pti.sheldons_schedule.ui.theme.Sky
 import com.pti.sheldons_schedule.ui.theme.Teal200
 import com.pti.sheldons_schedule.util.horizontalPadding
-import kotlinx.coroutines.launch
 import java.util.*
 
 
@@ -49,8 +47,11 @@ fun MainScreen(
 ) {
     val weeks = viewModel.weeks.collectAsLazyPagingItems()
     val timePadding by viewModel.timePadding.collectAsState()
+    val calendar = Calendar.getInstance()
+    val currentHour = calendar.get(Calendar.HOUR_OF_DAY)
 
     val pagerState = rememberPagerState()
+    val lazyListState = rememberLazyListState()
 
     Box(
         modifier = Modifier
@@ -81,9 +82,14 @@ fun MainScreen(
                             width = 0.5.dp,
                             shape = RectangleShape,
                             color = LightSky
-                        )
+                        ),
+                    state = lazyListState
                 ) {
                     itemsIndexed(items = (0 until HOURS_COUNT).map { listOf(it) }) { hourItem, index ->
+                        LaunchedEffect(key1 = Unit) {
+                            lazyListState.scrollToItem(currentHour)
+                        }
+
                         Box(
                             modifier = Modifier
                                 .fillMaxWidth()
@@ -130,9 +136,7 @@ fun MainScreen(
                                                     )
                                                 }
                                         ) {
-                                            val calendar = Calendar.getInstance()
-                                            val isCurrentHour =
-                                                calendar.get(Calendar.HOUR_OF_DAY) == hourItem
+                                            val isCurrentHour = currentHour == hourItem
 
                                             if (dayOfWeek.isCurrent && isCurrentHour) {
                                                 Divider(
