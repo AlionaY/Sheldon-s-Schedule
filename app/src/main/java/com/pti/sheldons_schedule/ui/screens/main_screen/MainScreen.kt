@@ -1,10 +1,12 @@
 package com.pti.sheldons_schedule.ui.screens.main_screen
 
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.lazy.layout.LazyLayout
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
@@ -51,7 +53,6 @@ fun MainScreen(
     val currentHour = calendar.get(Calendar.HOUR_OF_DAY)
 
     val pagerState = rememberPagerState()
-    val lazyListState = rememberLazyListState()
 
     Box(
         modifier = Modifier
@@ -73,6 +74,8 @@ fun MainScreen(
             }
 
             Column(modifier = Modifier.fillMaxSize()) {
+                val lazyListState = rememberLazyListState()
+
                 CalendarHeader(currentWeek)
 
                 LazyColumn(
@@ -87,7 +90,7 @@ fun MainScreen(
                 ) {
                     itemsIndexed(items = (0 until HOURS_COUNT).map { listOf(it) }) { hourItem, index ->
                         LaunchedEffect(key1 = Unit) {
-                            lazyListState.scrollToItem(currentHour)
+                            if (!lazyListState.isScrollInProgress) lazyListState.scrollToItem(currentHour)
                         }
 
                         Box(
