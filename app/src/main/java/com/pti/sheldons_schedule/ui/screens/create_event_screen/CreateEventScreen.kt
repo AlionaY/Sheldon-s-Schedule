@@ -7,6 +7,8 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -38,6 +40,7 @@ fun CreateEventScreen(
     ) { sheetState ->
 
         val scope = rememberCoroutineScope()
+        val focusRequester = remember { FocusRequester() }
 
         LaunchedEffect(key1 = state.options) {
             if (!state.options.isNullOrEmpty()) {
@@ -45,6 +48,10 @@ fun CreateEventScreen(
                     sheetState.show()
                 }
             }
+        }
+
+        LaunchedEffect(key1 = Unit) {
+            focusRequester.requestFocus()
         }
 
         BoxWithConstraints(
@@ -70,7 +77,10 @@ fun CreateEventScreen(
                     value = state.title,
                     onValueChanged = { viewModel.onTitleEdited(it) },
                     label = stringResource(id = R.string.title),
-                    modifier = Modifier.padding(horizontal = 15.dp)
+                    modifier = Modifier
+                        .padding(horizontal = 15.dp)
+                        .focusRequester(focusRequester),
+                    enableErrorMessage = true
                 )
                 HeightSpacer()
                 DefaultTextField(
@@ -125,7 +135,7 @@ fun CreateEventScreen(
                             .padding(start = 15.dp)
                             .width(halfFieldWidth.dp)
                             .wrapContentHeight(),
-                        label = { Text(text = stringResource(id = R.string.start_time))},
+                        label = { Text(text = stringResource(id = R.string.start_time)) },
                         onValueChanged = {}
                     )
                     Spacer(modifier = Modifier.width(30.dp))
@@ -138,7 +148,7 @@ fun CreateEventScreen(
                             .padding(end = 15.dp)
                             .width(halfFieldWidth.dp)
                             .wrapContentHeight(),
-                        label = { Text(text = stringResource(id = R.string.end_time))},
+                        label = { Text(text = stringResource(id = R.string.end_time)) },
                         onValueChanged = {}
                     )
                 }

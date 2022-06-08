@@ -4,15 +4,23 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.OutlinedTextField
 import androidx.compose.material.Text
-import androidx.compose.runtime.Composable
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Error
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusDirection
+import androidx.compose.ui.focus.onFocusChanged
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
@@ -69,14 +77,47 @@ fun DefaultTextField(
     value: String,
     onValueChanged: (String) -> Unit,
     label: String,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    enableErrorMessage: Boolean = false
 ) {
-    OutlinedTextField(
-        value = value,
-        onValueChange = { onValueChanged(it) },
-        label = { Text(label) },
-        modifier = modifier.fillMaxWidth()
-    )
+    val focusManager = LocalFocusManager.current
+    val isError = value.isEmpty() && enableErrorMessage
+    var hasFocus by remember { mutableStateOf(false) }
+
+    Column(modifier = modifier.fillMaxWidth()) {
+        OutlinedTextField(
+            value = value,
+            onValueChange = { onValueChanged(it.trim()) },
+            trailingIcon = {
+                if (isError && !hasFocus) {
+                    Icon(
+                        imageVector = Icons.Filled.Error,
+                        contentDescription = "error",
+                        tint = MaterialTheme.colors.error
+                    )
+                }
+            },
+            label = { Text(label) },
+            modifier = Modifier
+                .fillMaxWidth()
+                .onFocusChanged {
+                    hasFocus = it.hasFocus
+                },
+            keyboardActions = KeyboardActions(
+                onNext = { focusManager.moveFocus(FocusDirection.Down) }
+            ),
+            keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next)
+        )
+
+        if (isError && !hasFocus) {
+            Text(
+                text = stringResource(id = R.string.title_error_message),
+                color = MaterialTheme.colors.error,
+                modifier = Modifier.padding(start = 16.dp),
+                fontSize = 13.sp
+            )
+        }
+    }
 }
 
 @Composable
