@@ -50,20 +50,6 @@ fun DefaultBottomSheetField(string: String, onClick: () -> Unit) {
 }
 
 @Composable
-fun DefaultFieldHeader(
-    header: String,
-    modifier: Modifier = Modifier
-) {
-    Text(
-        text = header.uppercase(),
-        modifier = modifier,
-        textAlign = TextAlign.Start,
-        fontSize = 10.sp,
-        color = Steel
-    )
-}
-
-@Composable
 fun HeightSpacer(height: Dp = 20.dp) {
     Spacer(
         modifier = Modifier
