@@ -5,8 +5,6 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
-import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
@@ -34,7 +32,6 @@ import com.pti.sheldons_schedule.ui.theme.LightSky
 import com.pti.sheldons_schedule.ui.theme.Sky
 import com.pti.sheldons_schedule.ui.theme.Teal200
 import com.pti.sheldons_schedule.util.horizontalPadding
-import kotlinx.coroutines.launch
 import java.util.*
 
 
@@ -48,7 +45,7 @@ fun MainScreen(
     viewModel: MainViewModel = hiltViewModel()
 ) {
     val weeks = viewModel.weeks.collectAsLazyPagingItems()
-    val timePadding by viewModel.timePadding.collectAsState()
+    val timeline by viewModel.timeline.collectAsState()
 
     val pagerState = rememberPagerState()
 
@@ -137,7 +134,7 @@ fun MainScreen(
                                             if (dayOfWeek.isCurrent && isCurrentHour) {
                                                 Divider(
                                                     modifier = Modifier
-                                                        .padding(top = timePadding.dp)
+                                                        .padding(top = timeline.dp)
                                                         .fillMaxWidth()
                                                         .height(2.dp),
                                                     color = Teal200
