@@ -25,7 +25,7 @@ class MainViewModel @Inject constructor() : ViewModel() {
         WeekdaysPagingSource()
     }.flow.cachedIn(viewModelScope)
 
-    val timePadding = MutableStateFlow(0f)
+    val timelinePadding = MutableStateFlow(0f)
 
     private val timerFlow = MutableStateFlow<Calendar>(Calendar.getInstance())
 
@@ -58,6 +58,6 @@ class MainViewModel @Inject constructor() : ViewModel() {
 
     private fun calculateCurrentTimeLinePadding(currentMinutes: Int) {
         val currentMinutesInPercent = (currentMinutes / MINUTES_IN_HOUR_FLOAT)
-        timePadding.value = CONTENT_BOX_HEIGHT * currentMinutesInPercent
+        timelinePadding.value = CONTENT_BOX_HEIGHT * currentMinutesInPercent
     }
 }
