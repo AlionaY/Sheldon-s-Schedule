@@ -19,7 +19,10 @@ fun <T> ModalBottomSheet(
     modifier: Modifier = Modifier,
     content: @Composable (state: ModalBottomSheetState) -> Unit
 ) {
-    val sheetState = rememberModalBottomSheetState(initialValue = ModalBottomSheetValue.Hidden)
+    val sheetState = rememberModalBottomSheetState(
+        initialValue = ModalBottomSheetValue.Hidden,
+        confirmStateChange = { false }
+    )
     val scope = rememberCoroutineScope()
 
     ModalBottomSheetLayout(

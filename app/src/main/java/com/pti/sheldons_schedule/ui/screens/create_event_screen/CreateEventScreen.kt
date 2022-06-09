@@ -8,6 +8,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -26,6 +27,7 @@ fun CreateEventScreen(
 ) {
 
     val state by viewModel.createEventScreenState.collectAsState()
+    val focusManager = LocalFocusManager.current
 
     ModalBottomSheet(
         modifier = Modifier
@@ -34,7 +36,10 @@ fun CreateEventScreen(
         data = state.options.orEmpty(),
         header = state.options?.first()?.title?.let { stringResource(it) }.orEmpty(),
         nameGetter = { stringResource(id = it.nameId) },
-        onClick = { viewModel.onSelected(it) }
+        onClick = {
+            viewModel.onSelected(it)
+            focusManager.clearFocus()
+        }
     ) { sheetState ->
 
         val scope = rememberCoroutineScope()
@@ -75,7 +80,7 @@ fun CreateEventScreen(
                         .padding(horizontal = 15.dp)
                         .focusRequester(focusRequester),
                     showError = state.showError,
-                    onFocusChanged = { viewModel.validateTitle(it)}
+                    onFocusChanged = { viewModel.validateTitle(it) }
                 )
                 HeightSpacer()
                 DefaultTextField(
