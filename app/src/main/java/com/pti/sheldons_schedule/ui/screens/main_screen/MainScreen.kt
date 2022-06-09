@@ -4,12 +4,11 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.snapshotFlow
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawBehind
@@ -31,11 +30,13 @@ import com.pti.sheldons_schedule.ui.navigation.navigate
 import com.pti.sheldons_schedule.ui.theme.Black
 import com.pti.sheldons_schedule.ui.theme.LightSky
 import com.pti.sheldons_schedule.ui.theme.Sky
-import com.pti.sheldons_schedule.util.Constants
+import com.pti.sheldons_schedule.ui.theme.Teal200
 import com.pti.sheldons_schedule.util.horizontalPadding
+import java.util.*
 
 
 private const val HOURS_COUNT = 24
+const val CONTENT_BOX_HEIGHT = 60
 
 @OptIn(ExperimentalPagerApi::class)
 @Composable
@@ -43,8 +44,10 @@ fun MainScreen(
     navController: NavController,
     viewModel: MainViewModel = hiltViewModel()
 ) {
-    val pagerState = rememberPagerState()
     val weeks = viewModel.weeks.collectAsLazyPagingItems()
+    val ticker by viewModel.ticker.collectAsState(initial = 0f)
+
+    val pagerState = rememberPagerState()
 
     Box(
         modifier = Modifier
@@ -77,11 +80,11 @@ fun MainScreen(
                             color = LightSky
                         )
                 ) {
-                    items(HOURS_COUNT) { item ->
+                    itemsIndexed(items = (0 until HOURS_COUNT).map { listOf(it) }) { hourItem, index ->
                         Box(
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .height(60.dp)
+                                .height(CONTENT_BOX_HEIGHT.dp)
                         ) {
                             ConstraintLayout(modifier = Modifier.fillMaxSize()) {
                                 val (horizontalLine, hour, content) = createRefs()
@@ -107,10 +110,10 @@ fun MainScreen(
                                         }
                                         .padding(start = 60.dp)
                                 ) {
-                                    for (day in 0 until Constants.WEEK_LENGTH) {
-                                        Box(
+                                    currentWeek?.week?.forEach { dayOfWeek ->
+                                        BoxWithConstraints(
                                             modifier = Modifier
-                                                .height(60.dp)
+                                                .fillMaxHeight()
                                                 .weight(1f)
                                                 .drawBehind {
                                                     val strokeWidth = 2f
@@ -123,12 +126,27 @@ fun MainScreen(
                                                         strokeWidth = strokeWidth
                                                     )
                                                 }
-                                        )
+                                        ) {
+                                            val calendar = Calendar.getInstance()
+                                            val isCurrentHour =
+                                                calendar.get(Calendar.HOUR_OF_DAY) == hourItem
+                                            val padding = ticker * this.maxHeight.value
+
+                                            if (dayOfWeek.isCurrent && isCurrentHour) {
+                                                Divider(
+                                                    modifier = Modifier
+                                                        .padding(top = padding.dp)
+                                                        .fillMaxWidth()
+                                                        .height(2.dp),
+                                                    color = Teal200
+                                                )
+                                            }
+                                        }
                                     }
                                 }
 
                                 Text(
-                                    text = if (item == 0) "" else "$item:00",
+                                    text = if (hourItem == 0) "" else "$hourItem:00",
                                     modifier = Modifier.constrainAs(hour) {
                                         top.linkTo(horizontalLine.top)
                                         bottom.linkTo(horizontalLine.bottom)
