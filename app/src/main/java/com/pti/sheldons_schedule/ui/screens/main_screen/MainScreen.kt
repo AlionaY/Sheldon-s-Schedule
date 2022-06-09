@@ -45,7 +45,7 @@ fun MainScreen(
     viewModel: MainViewModel = hiltViewModel()
 ) {
     val weeks = viewModel.weeks.collectAsLazyPagingItems()
-    val timeline by viewModel.timeline.collectAsState()
+    val ticker by viewModel.ticker.collectAsState(initial = 0f)
 
     val pagerState = rememberPagerState()
 
@@ -130,11 +130,12 @@ fun MainScreen(
                                             val calendar = Calendar.getInstance()
                                             val isCurrentHour =
                                                 calendar.get(Calendar.HOUR_OF_DAY) == hourItem
+                                            val padding = ticker * this.maxHeight.value
 
                                             if (dayOfWeek.isCurrent && isCurrentHour) {
                                                 Divider(
                                                     modifier = Modifier
-                                                        .padding(top = timeline.dp)
+                                                        .padding(top = padding.dp)
                                                         .fillMaxWidth()
                                                         .height(2.dp),
                                                     color = Teal200
