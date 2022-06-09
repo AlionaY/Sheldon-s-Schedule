@@ -6,13 +6,15 @@ import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.cachedIn
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.ObsoleteCoroutinesApi
+import kotlinx.coroutines.channels.ticker
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.receiveAsFlow
 import java.util.*
 import javax.inject.Inject
 
 
+@OptIn(ObsoleteCoroutinesApi::class)
 @HiltViewModel
 class MainViewModel @Inject constructor() : ViewModel() {
 
@@ -25,39 +27,14 @@ class MainViewModel @Inject constructor() : ViewModel() {
         WeekdaysPagingSource()
     }.flow.cachedIn(viewModelScope)
 
-    val timelinePadding = MutableStateFlow(0f)
-
-    private val timerFlow = MutableStateFlow<Calendar>(Calendar.getInstance())
-
-
-    init {
-        startTickerFlow()
-        observeTimeFlow()
-    }
-
-    private fun startTickerFlow() {
-        viewModelScope.launch {
-            tickerFlow()
-        }
-    }
-
-    private fun observeTimeFlow() {
-        viewModelScope.launch {
-            timerFlow.collect {
-                calculateCurrentTimeLinePadding(it.get(Calendar.MINUTE))
-            }
-        }
-    }
-
-    private suspend fun tickerFlow() {
-        while (true) {
-            delay(MINUTE_LONG)
-            timerFlow.emit(Calendar.getInstance())
-        }
-    }
-
-    private fun calculateCurrentTimeLinePadding(currentMinutes: Int) {
+    val ticker = ticker(
+        delayMillis = MINUTE_LONG,
+        initialDelayMillis = 0,
+        context = viewModelScope.coroutineContext
+    ).receiveAsFlow().map {
+        val calendar = Calendar.getInstance()
+        val currentMinutes = calendar.get(Calendar.MINUTE)
         val currentMinutesInPercent = (currentMinutes / MINUTES_IN_HOUR_FLOAT)
-        timelinePadding.value = CONTENT_BOX_HEIGHT * currentMinutesInPercent
+        currentMinutesInPercent
     }
 }
