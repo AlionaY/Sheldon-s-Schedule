@@ -3,9 +3,8 @@ package com.pti.sheldons_schedule.ui.screens.main_screen
 import androidx.compose.foundation.border
 import androidx.compose.foundation.gestures.scrollBy
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.itemsIndexed
-import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
@@ -17,6 +16,7 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.layout.positionInParent
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -57,20 +57,17 @@ fun MainScreen(
     val calendar = Calendar.getInstance()
     val currentHour = calendar.get(Calendar.HOUR_OF_DAY)
 
-    BoxWithConstraints(
+    Box(
         modifier = Modifier.fillMaxSize(),
         contentAlignment = Alignment.Center
     ) {
-        val positionToScroll =
-            (this.maxHeight.value - CALENDAR_HEADER_HEIGHT - CONTENT_BOX_HEIGHT) / 2
-
         HorizontalPager(
             count = weeks.itemCount,
             modifier = Modifier.fillMaxSize(),
             state = pagerState
         ) { page ->
             var currentWeek = weeks.peek(page)
-            val lazyListState = rememberLazyListState()
+            val scrollState = rememberScrollState()
 
             LaunchedEffect(key1 = pagerState) {
                 snapshotFlow { pagerState.currentPage }.collect {
@@ -84,17 +81,21 @@ fun MainScreen(
                     height = CALENDAR_HEADER_HEIGHT.dp
                 )
 
-                LazyColumn(
+                Column(
                     modifier = Modifier
                         .fillMaxSize()
                         .border(
                             width = 0.5.dp,
                             shape = RectangleShape,
                             color = LightSky
-                        ),
-                    state = lazyListState
+                        )
+                        .verticalScroll(scrollState)
                 ) {
-                    itemsIndexed(items = (0 until HOURS_COUNT).map { listOf(it) }) { hourItem, index ->
+                    val config = LocalConfiguration.current
+                    val centerOfCalendar =
+                        config.screenHeightDp.toFloat() / 2 + CONTENT_BOX_HEIGHT + CALENDAR_HEADER_HEIGHT
+
+                    (0 until HOURS_COUNT).forEach { hourItem ->
                         val isCurrentHour = currentHour == hourItem
 
                         Box(
@@ -125,18 +126,7 @@ fun MainScreen(
                                             end.linkTo(parent.end)
                                         }
                                         .padding(start = 60.dp)
-                                        .onGloballyPositioned { coordinates ->
-                                            if (isCurrentHour &&
-                                                coordinates.positionInParent().y != positionToScroll &&
-                                                !lazyListState.isScrollInProgress
-                                            ) {
-                                                scope.launch {
-                                                    lazyListState.scrollBy(
-                                                        positionToScroll
-                                                    )
-                                                }
-                                            }
-                                        }
+
                                 ) {
                                     currentWeek?.week?.forEach { dayOfWeek ->
                                         BoxWithConstraints(
@@ -162,7 +152,18 @@ fun MainScreen(
                                                     modifier = Modifier
                                                         .padding(top = padding.dp)
                                                         .fillMaxWidth()
-                                                        .height(2.dp),
+                                                        .height(2.dp)
+                                                        .onGloballyPositioned { coordinates ->
+                                                            if (
+                                                                isCurrentHour &&
+                                                                coordinates.positionInParent().y != centerOfCalendar &&
+                                                                !scrollState.isScrollInProgress
+                                                            ) {
+                                                                scope.launch {
+                                                                    scrollState.scrollBy(centerOfCalendar)
+                                                                }
+                                                            }
+                                                        },
                                                     color = Teal200
                                                 )
                                             }
