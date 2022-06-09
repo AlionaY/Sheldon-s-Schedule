@@ -21,14 +21,13 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.pti.sheldons_schedule.R
-import androidx.compose.material.OutlinedTextField
 
 @Composable
 fun DefaultBottomSheetField(
     string: String,
     onClick: () -> Unit,
     onValueChanged: (String) -> Unit,
-    modifier : Modifier = Modifier
+    modifier: Modifier = Modifier
 ) {
     OutlinedTextField(
         value = string,
@@ -52,21 +51,20 @@ fun HeightSpacer(height: Dp = 20.dp) {
 @Composable
 fun DefaultTextField(
     value: String,
-    onValueChanged: (String) -> Unit,
     label: String,
+    onFocusChanged: (Boolean) -> Unit,
+    onValueChanged: (String) -> Unit,
     modifier: Modifier = Modifier,
-    enableErrorMessage: Boolean = false
+    showError: Boolean = false
 ) {
     val focusManager = LocalFocusManager.current
-    val isError = value.isEmpty() && enableErrorMessage
-    var hasFocus by remember { mutableStateOf(false) }
 
     Column(modifier = modifier.fillMaxWidth()) {
         OutlinedTextField(
             value = value,
             onValueChange = { onValueChanged(it.trim()) },
             trailingIcon = {
-                if (isError && !hasFocus) {
+                if (showError) {
                     Icon(
                         imageVector = Icons.Filled.Error,
                         contentDescription = "error",
@@ -77,7 +75,7 @@ fun DefaultTextField(
             label = { Text(label) },
             modifier = Modifier
                 .fillMaxWidth()
-                .onFocusChanged { hasFocus = it.hasFocus },
+                .onFocusChanged { onFocusChanged(it.hasFocus) },
             keyboardActions = KeyboardActions(
                 onNext = { focusManager.moveFocus(FocusDirection.Down) }
             ),
@@ -89,7 +87,7 @@ fun DefaultTextField(
             )
         )
 
-        if (isError && !hasFocus) {
+        if (showError) {
             Text(
                 text = stringResource(id = R.string.title_error_message),
                 color = MaterialTheme.colors.error,

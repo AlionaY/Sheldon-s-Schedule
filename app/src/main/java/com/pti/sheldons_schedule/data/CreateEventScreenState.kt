@@ -14,7 +14,8 @@ data class CreateEventScreenState(
     val options: List<Options>? = null,
     val remind: Reminder? = null,
     val repeat: Repeat? = null,
-    val priority: Priority = Priority.Low
+    val priority: Priority = Priority.Low,
+    val showError : Boolean = false
 ) {
     val formattedStartDate: String = startDate.formatDate(DATE_FORMAT)
     val formattedEndDate: String = endDate.formatDate(DATE_FORMAT)

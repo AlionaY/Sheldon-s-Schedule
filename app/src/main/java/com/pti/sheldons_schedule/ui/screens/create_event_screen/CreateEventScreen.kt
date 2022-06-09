@@ -74,14 +74,16 @@ fun CreateEventScreen(
                     modifier = Modifier
                         .padding(horizontal = 15.dp)
                         .focusRequester(focusRequester),
-                    enableErrorMessage = true
+                    showError = state.showError,
+                    onFocusChanged = { viewModel.validateTitle(it)}
                 )
                 HeightSpacer()
                 DefaultTextField(
                     value = state.description,
                     onValueChanged = { viewModel.onDescriptionEdited(it) },
                     label = stringResource(id = R.string.description),
-                    modifier = Modifier.padding(horizontal = 15.dp)
+                    modifier = Modifier.padding(horizontal = 15.dp),
+                    onFocusChanged = { }
                 )
                 HeightSpacer()
                 Row(
