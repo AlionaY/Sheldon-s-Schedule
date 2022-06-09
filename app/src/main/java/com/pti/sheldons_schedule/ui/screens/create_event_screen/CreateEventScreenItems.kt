@@ -1,15 +1,10 @@
 package com.pti.sheldons_schedule.ui.screens.create_event_screen
 
-import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material.Icon
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.OutlinedTextField
-import androidx.compose.material.Text
+import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Error
 import androidx.compose.runtime.*
@@ -17,35 +12,31 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusDirection
 import androidx.compose.ui.focus.onFocusChanged
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.pti.sheldons_schedule.R
-import com.pti.sheldons_schedule.ui.theme.Red
-import com.pti.sheldons_schedule.ui.theme.Steel
+import androidx.compose.material.OutlinedTextField
 
 @Composable
-fun DefaultBottomSheetField(string: String, onClick: () -> Unit) {
-    Text(
-        text = string,
-        modifier = Modifier
-            .padding(horizontal = 15.dp)
-            .fillMaxWidth()
-            .height(50.dp)
-            .clickable { onClick() }
-            .border(
-                width = 0.5.dp,
-                color = Steel,
-                shape = RoundedCornerShape(10)
-            )
-            .padding(15.dp),
-        color = Steel,
-        textAlign = TextAlign.Start
+fun DefaultBottomSheetField(
+    string: String,
+    onClick: () -> Unit,
+    onValueChanged: (String) -> Unit,
+    modifier : Modifier = Modifier
+) {
+    OutlinedTextField(
+        value = string,
+        onValueChange = { onValueChanged(it) },
+        modifier = modifier
+            .onFocusChanged { if (it.hasFocus) onClick() }
+            .clickable { onClick() },
+        readOnly = true
     )
 }
 
@@ -86,13 +77,16 @@ fun DefaultTextField(
             label = { Text(label) },
             modifier = Modifier
                 .fillMaxWidth()
-                .onFocusChanged {
-                    hasFocus = it.hasFocus
-                },
+                .onFocusChanged { hasFocus = it.hasFocus },
             keyboardActions = KeyboardActions(
                 onNext = { focusManager.moveFocus(FocusDirection.Down) }
             ),
-            keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next)
+            keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
+            colors = TextFieldDefaults.textFieldColors(
+                textColor = MaterialTheme.colors.onBackground,
+                cursorColor = MaterialTheme.colors.onBackground,
+                backgroundColor = Color.Transparent
+            )
         )
 
         if (isError && !hasFocus) {
@@ -129,7 +123,7 @@ fun SaveOrCloseCreatingEvent(
                     .padding(start = 15.dp)
                     .wrapContentSize()
                     .clickable { onCloseIconClicked() },
-                tint = Red
+                tint = MaterialTheme.colors.error
             )
 
             Text(
@@ -137,7 +131,8 @@ fun SaveOrCloseCreatingEvent(
                 modifier = Modifier
                     .wrapContentSize()
                     .padding(start = 25.dp),
-                style = MaterialTheme.typography.h6
+                style = MaterialTheme.typography.h6,
+                color = MaterialTheme.colors.onBackground
             )
         }
 
@@ -148,7 +143,7 @@ fun SaveOrCloseCreatingEvent(
                 .wrapContentHeight()
                 .padding(end = 15.dp)
                 .clickable { onSaveIconClicked() },
-            tint = Red
+            tint = MaterialTheme.colors.secondary
         )
     }
 }

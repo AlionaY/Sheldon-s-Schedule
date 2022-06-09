@@ -1,6 +1,5 @@
 package com.pti.sheldons_schedule.ui.screens.create_event_screen
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.Text
@@ -14,7 +13,6 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.pti.sheldons_schedule.R
-import com.pti.sheldons_schedule.ui.theme.LightSky
 import kotlinx.coroutines.launch
 
 private const val PADDING_WIDTH_SUM = 60
@@ -54,11 +52,7 @@ fun CreateEventScreen(
             focusRequester.requestFocus()
         }
 
-        BoxWithConstraints(
-            modifier = Modifier
-                .fillMaxSize()
-                .background(LightSky)
-        ) {
+        BoxWithConstraints(modifier = Modifier.fillMaxSize()) {
             val halfFieldWidth = (this.maxWidth.value.toInt() - PADDING_WIDTH_SUM) / FIELD_COUNT
 
             Column(modifier = Modifier.fillMaxSize()) {
@@ -154,24 +148,33 @@ fun CreateEventScreen(
                 }
                 HeightSpacer()
                 DefaultBottomSheetField(
-                    string = stringResource(
-                        id = state.repeat?.name ?: R.string.repeat
-                    )
-                ) {
-                    viewModel.onRepeatFieldClicked()
-                }
-                HeightSpacer()
-                DefaultBottomSheetField(string = stringResource(id = state.priority.name)) {
-                    viewModel.onPriorityFieldClicked()
-                }
+                    string = stringResource(id = state.repeat?.name ?: R.string.repeat),
+                    onClick = { viewModel.onRepeatFieldClicked() },
+                    modifier = Modifier
+                        .padding(horizontal = 15.dp)
+                        .fillMaxWidth()
+                        .height(50.dp),
+                    onValueChanged = { }
+                )
                 HeightSpacer()
                 DefaultBottomSheetField(
-                    string = stringResource(
-                        id = state.remind?.name ?: R.string.remind
-                    )
-                ) {
-                    viewModel.onRemindFieldClicked()
-                }
+                    string = stringResource(id = state.priority.name),
+                    onClick = { viewModel.onPriorityFieldClicked() },
+                    modifier = Modifier
+                        .padding(horizontal = 15.dp)
+                        .fillMaxWidth()
+                        .height(50.dp),
+                    onValueChanged = {})
+                HeightSpacer()
+                DefaultBottomSheetField(
+                    string = stringResource(id = state.remind?.name ?: R.string.remind),
+                    onClick = { viewModel.onRemindFieldClicked() },
+                    modifier = Modifier
+                        .padding(horizontal = 15.dp)
+                        .fillMaxWidth()
+                        .height(50.dp),
+                    onValueChanged = { }
+                )
             }
         }
     }

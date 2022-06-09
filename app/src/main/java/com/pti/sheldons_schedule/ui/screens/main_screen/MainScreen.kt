@@ -1,7 +1,7 @@
 package com.pti.sheldons_schedule.ui.screens.main_screen
 
-import androidx.compose.foundation.background
-import androidx.compose.foundation.border
+import android.util.Log
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.*
@@ -14,7 +14,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -28,9 +27,8 @@ import com.google.accompanist.pager.HorizontalPager
 import com.google.accompanist.pager.rememberPagerState
 import com.pti.sheldons_schedule.ui.navigation.NavDestination
 import com.pti.sheldons_schedule.ui.navigation.navigate
-import com.pti.sheldons_schedule.ui.theme.Black
-import com.pti.sheldons_schedule.ui.theme.LightSky
-import com.pti.sheldons_schedule.ui.theme.Sky
+import com.pti.sheldons_schedule.ui.theme.Graphite
+import com.pti.sheldons_schedule.ui.theme.Steel
 import com.pti.sheldons_schedule.util.Constants
 import com.pti.sheldons_schedule.util.horizontalPadding
 
@@ -47,9 +45,7 @@ fun MainScreen(
     val weeks = viewModel.weeks.collectAsLazyPagingItems()
 
     Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(Sky),
+        modifier = Modifier.fillMaxSize(),
         contentAlignment = Alignment.Center
     ) {
         HorizontalPager(
@@ -68,15 +64,7 @@ fun MainScreen(
             Column(modifier = Modifier.fillMaxSize()) {
                 CalendarHeader(currentWeek)
 
-                LazyColumn(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .border(
-                            width = 0.5.dp,
-                            shape = RectangleShape,
-                            color = LightSky
-                        )
-                ) {
+                LazyColumn(modifier = Modifier.fillMaxSize()) {
                     items(HOURS_COUNT) { item ->
                         Box(
                             modifier = Modifier
@@ -85,9 +73,10 @@ fun MainScreen(
                         ) {
                             ConstraintLayout(modifier = Modifier.fillMaxSize()) {
                                 val (horizontalLine, hour, content) = createRefs()
+                                val dividerColor = if (isSystemInDarkTheme()) Steel else Graphite
 
                                 Divider(
-                                    color = LightSky,
+                                    color = dividerColor,
                                     modifier = Modifier
                                         .height(0.7.dp)
                                         .constrainAs(horizontalLine) {
@@ -96,6 +85,20 @@ fun MainScreen(
                                             end.linkTo(parent.end)
                                             width = Dimension.fillToConstraints
                                         }
+                                )
+
+                                Text(
+                                    text = if (item == 0) "" else "$item:00",
+                                    modifier = Modifier.constrainAs(hour) {
+                                        top.linkTo(horizontalLine.top)
+                                        bottom.linkTo(horizontalLine.bottom)
+                                        start.linkTo(parent.start)
+                                        end.linkTo(horizontalLine.start)
+                                        width = Dimension.value(50.dp)
+                                    },
+                                    textAlign = TextAlign.Center,
+                                    fontSize = 13.sp,
+                                    color = MaterialTheme.colors.onSurface
                                 )
 
                                 Row(
@@ -117,7 +120,7 @@ fun MainScreen(
                                                     val y = size.height - strokeWidth
 
                                                     drawLine(
-                                                        color = LightSky,
+                                                        color = dividerColor,
                                                         start = Offset(0f, 0f),
                                                         end = Offset(0f, y),
                                                         strokeWidth = strokeWidth
@@ -126,20 +129,6 @@ fun MainScreen(
                                         )
                                     }
                                 }
-
-                                Text(
-                                    text = if (item == 0) "" else "$item:00",
-                                    modifier = Modifier.constrainAs(hour) {
-                                        top.linkTo(horizontalLine.top)
-                                        bottom.linkTo(horizontalLine.bottom)
-                                        start.linkTo(parent.start)
-                                        end.linkTo(horizontalLine.start)
-                                        width = Dimension.value(50.dp)
-                                    },
-                                    textAlign = TextAlign.Center,
-                                    fontSize = 13.sp,
-                                    color = Black
-                                )
                             }
                         }
                     }
