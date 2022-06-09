@@ -1,10 +1,10 @@
 package com.pti.sheldons_schedule.ui.screens.main_screen
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.gestures.scrollBy
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
@@ -14,6 +14,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.RectangleShape
+import androidx.compose.ui.layout.onGloballyPositioned
+import androidx.compose.ui.layout.positionInParent
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -29,14 +32,15 @@ import com.pti.sheldons_schedule.ui.navigation.NavDestination
 import com.pti.sheldons_schedule.ui.navigation.navigate
 import com.pti.sheldons_schedule.ui.theme.Black
 import com.pti.sheldons_schedule.ui.theme.LightSky
-import com.pti.sheldons_schedule.ui.theme.Sky
 import com.pti.sheldons_schedule.ui.theme.Teal200
 import com.pti.sheldons_schedule.util.horizontalPadding
+import kotlinx.coroutines.launch
 import java.util.*
 
 
 private const val HOURS_COUNT = 24
 const val CONTENT_BOX_HEIGHT = 60
+const val CALENDAR_HEADER_HEIGHT = 58
 
 @OptIn(ExperimentalPagerApi::class)
 @Composable
@@ -48,11 +52,13 @@ fun MainScreen(
     val ticker by viewModel.ticker.collectAsState(initial = 0f)
 
     val pagerState = rememberPagerState()
+    val scope = rememberCoroutineScope()
+
+    val calendar = Calendar.getInstance()
+    val currentHour = calendar.get(Calendar.HOUR_OF_DAY)
 
     Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(Sky),
+        modifier = Modifier.fillMaxSize(),
         contentAlignment = Alignment.Center
     ) {
         HorizontalPager(
@@ -61,6 +67,7 @@ fun MainScreen(
             state = pagerState
         ) { page ->
             var currentWeek = weeks.peek(page)
+            val scrollState = rememberScrollState()
 
             LaunchedEffect(key1 = pagerState) {
                 snapshotFlow { pagerState.currentPage }.collect {
@@ -69,9 +76,12 @@ fun MainScreen(
             }
 
             Column(modifier = Modifier.fillMaxSize()) {
-                CalendarHeader(currentWeek)
+                CalendarHeader(
+                    currentWeek = currentWeek,
+                    height = CALENDAR_HEADER_HEIGHT.dp
+                )
 
-                LazyColumn(
+                Column(
                     modifier = Modifier
                         .fillMaxSize()
                         .border(
@@ -79,8 +89,15 @@ fun MainScreen(
                             shape = RectangleShape,
                             color = LightSky
                         )
+                        .verticalScroll(scrollState)
                 ) {
-                    itemsIndexed(items = (0 until HOURS_COUNT).map { listOf(it) }) { hourItem, index ->
+                    val config = LocalConfiguration.current
+                    val centerOfCalendar =
+                        config.screenHeightDp.toFloat() / 2 + CONTENT_BOX_HEIGHT + CALENDAR_HEADER_HEIGHT
+
+                    (0 until HOURS_COUNT).forEach { hourItem ->
+                        val isCurrentHour = currentHour == hourItem
+
                         Box(
                             modifier = Modifier
                                 .fillMaxWidth()
@@ -109,6 +126,7 @@ fun MainScreen(
                                             end.linkTo(parent.end)
                                         }
                                         .padding(start = 60.dp)
+
                                 ) {
                                     currentWeek?.week?.forEach { dayOfWeek ->
                                         BoxWithConstraints(
@@ -127,9 +145,6 @@ fun MainScreen(
                                                     )
                                                 }
                                         ) {
-                                            val calendar = Calendar.getInstance()
-                                            val isCurrentHour =
-                                                calendar.get(Calendar.HOUR_OF_DAY) == hourItem
                                             val padding = ticker * this.maxHeight.value
 
                                             if (dayOfWeek.isCurrent && isCurrentHour) {
@@ -137,7 +152,18 @@ fun MainScreen(
                                                     modifier = Modifier
                                                         .padding(top = padding.dp)
                                                         .fillMaxWidth()
-                                                        .height(2.dp),
+                                                        .height(2.dp)
+                                                        .onGloballyPositioned { coordinates ->
+                                                            if (
+                                                                isCurrentHour &&
+                                                                coordinates.positionInParent().y != centerOfCalendar &&
+                                                                !scrollState.isScrollInProgress
+                                                            ) {
+                                                                scope.launch {
+                                                                    scrollState.scrollBy(centerOfCalendar)
+                                                                }
+                                                            }
+                                                        },
                                                     color = Teal200
                                                 )
                                             }

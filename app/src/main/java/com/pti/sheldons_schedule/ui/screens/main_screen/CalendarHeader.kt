@@ -9,6 +9,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.pti.sheldons_schedule.data.Week
@@ -17,11 +18,11 @@ import com.pti.sheldons_schedule.ui.theme.LightSky
 import com.pti.sheldons_schedule.ui.theme.Teal200
 
 @Composable
-fun CalendarHeader(currentWeek: Week?, modifier : Modifier = Modifier) {
+fun CalendarHeader(currentWeek: Week?, height: Dp) {
     Row(
-        modifier = modifier
+        modifier = Modifier
             .fillMaxWidth()
-            .height(58.dp)
+            .height(height)
             .background(LightSky),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.Center
