@@ -74,7 +74,6 @@ fun CreateEventScreen(
                     modifier = Modifier
                         .padding(horizontal = 15.dp)
                         .focusRequester(focusRequester),
-                    showError = state.showError,
                     errorText = stringResource(R.string.title_error_message),
                     onFocusChanged = { viewModel.validateTitle(it)}
                 )

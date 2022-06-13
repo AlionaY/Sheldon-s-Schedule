@@ -7,7 +7,7 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Error
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusDirection
@@ -55,8 +55,7 @@ fun DefaultTextField(
     onFocusChanged: (Boolean) -> Unit,
     onValueChanged: (String) -> Unit,
     modifier: Modifier = Modifier,
-    errorText: String? = null,
-    showError: Boolean = false
+    errorText: String? = null
 ) {
     val focusManager = LocalFocusManager.current
 
@@ -65,7 +64,7 @@ fun DefaultTextField(
             value = value,
             onValueChange = { onValueChanged(it.trim()) },
             trailingIcon = {
-                if (showError) {
+                if (value.isEmpty() && !errorText.isNullOrEmpty()) {
                     Icon(
                         imageVector = Icons.Filled.Error,
                         contentDescription = "error",
@@ -88,7 +87,7 @@ fun DefaultTextField(
             )
         )
 
-        if (showError) {
+        if (value.isEmpty()) {
             Text(
                 text = errorText.orEmpty(),
                 color = MaterialTheme.colors.error,
