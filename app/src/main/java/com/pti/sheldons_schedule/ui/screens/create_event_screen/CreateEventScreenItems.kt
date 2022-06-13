@@ -1,57 +1,41 @@
 package com.pti.sheldons_schedule.ui.screens.create_event_screen
 
-import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.Icon
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.OutlinedTextField
-import androidx.compose.material.Text
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Error
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusDirection
+import androidx.compose.ui.focus.onFocusChanged
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.pti.sheldons_schedule.R
-import com.pti.sheldons_schedule.ui.theme.Red
-import com.pti.sheldons_schedule.ui.theme.Steel
 
 @Composable
-fun DefaultBottomSheetField(string: String, onClick: () -> Unit) {
-    Text(
-        text = string,
-        modifier = Modifier
-            .padding(horizontal = 15.dp)
-            .fillMaxWidth()
-            .height(50.dp)
-            .clickable { onClick() }
-            .border(
-                width = 0.5.dp,
-                color = Steel,
-                shape = RoundedCornerShape(10)
-            )
-            .padding(15.dp),
-        color = Steel,
-        textAlign = TextAlign.Start
-    )
-}
-
-@Composable
-fun DefaultFieldHeader(
-    header: String,
+fun DefaultBottomSheetField(
+    string: String,
+    onClick: () -> Unit,
+    onValueChanged: (String) -> Unit,
     modifier: Modifier = Modifier
 ) {
-    Text(
-        text = header.uppercase(),
-        modifier = modifier,
-        textAlign = TextAlign.Start,
-        fontSize = 10.sp,
-        color = Steel
+    OutlinedTextField(
+        value = string,
+        onValueChange = { onValueChanged(it) },
+        modifier = modifier
+            .onFocusChanged { if (it.hasFocus) onClick() }
+            .clickable { onClick() },
+        readOnly = true
     )
 }
 
@@ -67,16 +51,48 @@ fun HeightSpacer(height: Dp = 20.dp) {
 @Composable
 fun DefaultTextField(
     value: String,
-    onValueChanged: (String) -> Unit,
     label: String,
-    modifier: Modifier = Modifier
+    onValueChanged: (String) -> Unit,
+    modifier: Modifier = Modifier,
+    errorText: String? = null
 ) {
-    OutlinedTextField(
-        value = value,
-        onValueChange = { onValueChanged(it) },
-        label = { Text(label) },
-        modifier = modifier.fillMaxWidth()
-    )
+    val focusManager = LocalFocusManager.current
+
+    Column(modifier = modifier.fillMaxWidth()) {
+        OutlinedTextField(
+            value = value,
+            onValueChange = { onValueChanged(it.trim()) },
+            trailingIcon = {
+                if (!errorText.isNullOrEmpty()) {
+                    Icon(
+                        imageVector = Icons.Filled.Error,
+                        contentDescription = "error",
+                        tint = MaterialTheme.colors.error
+                    )
+                }
+            },
+            label = { Text(label) },
+            modifier = Modifier.fillMaxWidth(),
+            keyboardActions = KeyboardActions(
+                onNext = { focusManager.moveFocus(FocusDirection.Down) }
+            ),
+            keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
+            colors = TextFieldDefaults.textFieldColors(
+                textColor = MaterialTheme.colors.onBackground,
+                cursorColor = MaterialTheme.colors.onBackground,
+                backgroundColor = Color.Transparent
+            )
+        )
+
+        if (!errorText.isNullOrEmpty()) {
+            Text(
+                text = errorText.orEmpty(),
+                color = MaterialTheme.colors.error,
+                modifier = Modifier.padding(start = 16.dp),
+                fontSize = 13.sp
+            )
+        }
+    }
 }
 
 @Composable
@@ -102,7 +118,7 @@ fun SaveOrCloseCreatingEvent(
                     .padding(start = 15.dp)
                     .wrapContentSize()
                     .clickable { onCloseIconClicked() },
-                tint = Red
+                tint = MaterialTheme.colors.error
             )
 
             Text(
@@ -110,7 +126,8 @@ fun SaveOrCloseCreatingEvent(
                 modifier = Modifier
                     .wrapContentSize()
                     .padding(start = 25.dp),
-                style = MaterialTheme.typography.h6
+                style = MaterialTheme.typography.h6,
+                color = MaterialTheme.colors.onBackground
             )
         }
 
@@ -121,7 +138,7 @@ fun SaveOrCloseCreatingEvent(
                 .wrapContentHeight()
                 .padding(end = 15.dp)
                 .clickable { onSaveIconClicked() },
-            tint = Red
+            tint = MaterialTheme.colors.secondary
         )
     }
 }
