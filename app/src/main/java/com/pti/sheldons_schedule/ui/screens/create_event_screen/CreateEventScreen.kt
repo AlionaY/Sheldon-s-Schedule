@@ -40,12 +40,6 @@ fun CreateEventScreen(
 
         val scope = rememberCoroutineScope()
         val focusRequester = remember { FocusRequester() }
-        var hasFocus by remember { mutableStateOf(false) }
-        val errorText = if (state.title.isEmpty() && !hasFocus) {
-            stringResource(R.string.title_error_message)
-        } else {
-            null
-        }
 
         LaunchedEffect(key1 = state.options) {
             if (!state.options.isNullOrEmpty()) {
@@ -81,8 +75,8 @@ fun CreateEventScreen(
                     modifier = Modifier
                         .padding(horizontal = 15.dp)
                         .focusRequester(focusRequester)
-                        .onFocusChanged { hasFocus = it.hasFocus },
-                    errorText = errorText,
+                        .onFocusChanged { viewModel.onFocusChanged(it.hasFocus) },
+                    errorText = state.errorText.orEmpty(),
                 )
                 HeightSpacer()
                 DefaultTextField(
