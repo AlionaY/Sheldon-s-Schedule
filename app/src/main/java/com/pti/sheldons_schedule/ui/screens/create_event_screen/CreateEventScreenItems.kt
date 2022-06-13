@@ -55,6 +55,7 @@ fun DefaultTextField(
     onFocusChanged: (Boolean) -> Unit,
     onValueChanged: (String) -> Unit,
     modifier: Modifier = Modifier,
+    errorText: String? = null,
     showError: Boolean = false
 ) {
     val focusManager = LocalFocusManager.current
@@ -89,7 +90,7 @@ fun DefaultTextField(
 
         if (showError) {
             Text(
-                text = stringResource(id = R.string.title_error_message),
+                text = errorText.orEmpty(),
                 color = MaterialTheme.colors.error,
                 modifier = Modifier.padding(start = 16.dp),
                 fontSize = 13.sp
