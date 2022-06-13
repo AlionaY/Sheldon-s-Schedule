@@ -9,6 +9,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -81,6 +82,9 @@ fun CreateEventScreen(
                         .focusRequester(focusRequester),
                     showError = state.showError,
                     onFocusChanged = { viewModel.validateTitle(it) }
+                        .focusRequester(focusRequester)
+                        .onFocusChanged { viewModel.onFocusChanged(it.hasFocus) },
+                    errorText = state.errorText.orEmpty(),
                 )
                 HeightSpacer()
                 DefaultTextField(
@@ -88,7 +92,6 @@ fun CreateEventScreen(
                     onValueChanged = { viewModel.onDescriptionEdited(it) },
                     label = stringResource(id = R.string.description),
                     modifier = Modifier.padding(horizontal = 15.dp),
-                    onFocusChanged = { }
                 )
                 HeightSpacer()
                 Row(

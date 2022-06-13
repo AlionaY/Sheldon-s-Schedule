@@ -7,7 +7,7 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Error
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusDirection
@@ -52,10 +52,9 @@ fun HeightSpacer(height: Dp = 20.dp) {
 fun DefaultTextField(
     value: String,
     label: String,
-    onFocusChanged: (Boolean) -> Unit,
     onValueChanged: (String) -> Unit,
     modifier: Modifier = Modifier,
-    showError: Boolean = false
+    errorText: String? = null
 ) {
     val focusManager = LocalFocusManager.current
 
@@ -64,7 +63,7 @@ fun DefaultTextField(
             value = value,
             onValueChange = { onValueChanged(it.trim()) },
             trailingIcon = {
-                if (showError) {
+                if (!errorText.isNullOrEmpty()) {
                     Icon(
                         imageVector = Icons.Filled.Error,
                         contentDescription = "error",
@@ -73,9 +72,7 @@ fun DefaultTextField(
                 }
             },
             label = { Text(label) },
-            modifier = Modifier
-                .fillMaxWidth()
-                .onFocusChanged { onFocusChanged(it.hasFocus) },
+            modifier = Modifier.fillMaxWidth(),
             keyboardActions = KeyboardActions(
                 onNext = { focusManager.moveFocus(FocusDirection.Down) }
             ),
@@ -87,9 +84,9 @@ fun DefaultTextField(
             )
         )
 
-        if (showError) {
+        if (!errorText.isNullOrEmpty()) {
             Text(
-                text = stringResource(id = R.string.title_error_message),
+                text = errorText.orEmpty(),
                 color = MaterialTheme.colors.error,
                 modifier = Modifier.padding(start = 16.dp),
                 fontSize = 13.sp

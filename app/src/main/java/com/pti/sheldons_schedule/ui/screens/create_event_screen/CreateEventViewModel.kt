@@ -3,8 +3,8 @@ package com.pti.sheldons_schedule.ui.screens.create_event_screen
 import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.pti.sheldons_schedule.R
 import com.pti.sheldons_schedule.data.CreateEventScreenState
-import com.pti.sheldons_schedule.data.Event
 import com.pti.sheldons_schedule.data.Options
 import com.pti.sheldons_schedule.data.Options.*
 import com.pti.sheldons_schedule.data.toEvent
@@ -21,7 +21,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class CreateEventViewModel @Inject constructor(
-    @ApplicationContext context: Context,
+    @ApplicationContext val context: Context,
     private val repository: EventRepository
 ) : ViewModel() {
 
@@ -112,11 +112,13 @@ class CreateEventViewModel @Inject constructor(
         }
     }
 
-    fun validateTitle(hasFocus: Boolean) {
-        if (!hasFocus && createEventScreenState.value.title.isEmpty()) {
-            createEventScreenState.update { it.copy(showError = true) }
+    fun onFocusChanged(hasFocus: Boolean) {
+        val errorText = if (createEventScreenState.value.title.isEmpty() && !hasFocus) {
+            context.getText(R.string.title_error_message).toString()
         } else {
-            createEventScreenState.update { it.copy(showError = false)}
+            null
         }
+
+        createEventScreenState.update { it.copy(errorText = errorText) }
     }
 }
