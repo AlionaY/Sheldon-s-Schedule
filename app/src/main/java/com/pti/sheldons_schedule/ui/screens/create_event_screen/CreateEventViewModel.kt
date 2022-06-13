@@ -32,8 +32,10 @@ class CreateEventViewModel @Inject constructor(
         )
     )
 
-    val allEvents = MutableStateFlow<List<Event>>(emptyList())
 
+    init {
+        onStartDateGet()
+    }
 
     fun onStartDatePicked(calendar: Calendar) {
         createEventScreenState.update {
@@ -93,10 +95,6 @@ class CreateEventViewModel @Inject constructor(
         createEventScreenState.update { it.copy(description = string) }
     }
 
-    fun getAllEvents() = viewModelScope.launch {
-        allEvents.value = repository.getAllEvents()
-    }
-
     fun onSaveEventClicked() = viewModelScope.launch {
         val currentDate = Calendar.getInstance().formatDate(Constants.DATE_FORMAT)
         repository.saveEvent(
@@ -115,6 +113,16 @@ class CreateEventViewModel @Inject constructor(
             is Reminder -> createEventScreenState.update {
                 it.copy(remind = options, options = null)
             }
+        }
+    }
+
+    private fun onStartDateGet() = viewModelScope.launch {
+        val calendar = Calendar.getInstance()
+
+        createEventScreenState.collect { state ->
+            calendar.timeInMillis = state.startDate.timeInMillis
+            calendar.add(Calendar.DAY_OF_YEAR, -1)
+            createEventScreenState.update { it.copy(datePickerStartDate = calendar.timeInMillis) }
         }
     }
 }

@@ -107,7 +107,8 @@ fun CreateEventScreen(
                             .width(halfFieldWidth.dp)
                             .wrapContentHeight(),
                         label = { Text(text = stringResource(id = R.string.end_date)) },
-                        onValueChanged = { }
+                        onValueChanged = { },
+                        startDate = state.datePickerStartDate
                     )
                 }
                 HeightSpacer()

@@ -12,6 +12,8 @@ import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.stringResource
+import com.google.android.material.datepicker.CalendarConstraints
+import com.google.android.material.datepicker.DateValidatorPointForward
 import com.google.android.material.datepicker.MaterialDatePicker
 import com.pti.sheldons_schedule.R
 import com.pti.sheldons_schedule.util.Constants
@@ -26,13 +28,14 @@ fun DatePickerField(
     onPickedDate: (Calendar?) -> Unit,
     onValueChanged: (String) -> Unit,
     modifier: Modifier = Modifier,
+    startDate: Long? = null,
     label: @Composable (() -> Unit)? = null
 ) {
     var isClicked by remember { mutableStateOf(false) }
     val formatter: DateTimeFormatter = DateTimeFormatter.ofPattern(Constants.DATE_FORMAT)
 
     if (isClicked) {
-        DatePicker(onPickedDate)
+        DatePicker(onPickedDate = onPickedDate, startDate = startDate)
         isClicked = false
     }
 
@@ -55,12 +58,26 @@ fun DatePickerField(
 }
 
 @Composable
-private fun DatePicker(onPickedDate: (Calendar?) -> Unit) {
+private fun DatePicker(
+    onPickedDate: (Calendar?) -> Unit,
+    startDate: Long? = null,
+    calendarHeader: String = stringResource(id = R.string.calendar_title)
+) {
     val activity = LocalContext.current as? AppCompatActivity
     val focusManager = LocalFocusManager.current
+    val validator = if (startDate == null) {
+        DateValidatorPointForward.now()
+    } else {
+        DateValidatorPointForward.from(startDate)
+    }
+
+    val constraintsBuilder = CalendarConstraints.Builder()
+        .setValidator(validator)
+        .build()
 
     MaterialDatePicker.Builder.datePicker()
-        .setTitleText(stringResource(id = R.string.calendar_title))
+        .setCalendarConstraints(constraintsBuilder)
+        .setTitleText(calendarHeader)
         .build()
         .apply {
             activity?.supportFragmentManager?.let { show(it, this.toString()) }
