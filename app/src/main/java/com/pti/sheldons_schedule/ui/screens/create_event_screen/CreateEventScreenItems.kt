@@ -52,7 +52,6 @@ fun HeightSpacer(height: Dp = 20.dp) {
 fun DefaultTextField(
     value: String,
     label: String,
-    onFocusChanged: (Boolean) -> Unit,
     onValueChanged: (String) -> Unit,
     modifier: Modifier = Modifier,
     errorText: String? = null
@@ -64,7 +63,7 @@ fun DefaultTextField(
             value = value,
             onValueChange = { onValueChanged(it.trim()) },
             trailingIcon = {
-                if (value.isEmpty() && !errorText.isNullOrEmpty()) {
+                if (!errorText.isNullOrEmpty()) {
                     Icon(
                         imageVector = Icons.Filled.Error,
                         contentDescription = "error",
@@ -73,9 +72,7 @@ fun DefaultTextField(
                 }
             },
             label = { Text(label) },
-            modifier = Modifier
-                .fillMaxWidth()
-                .onFocusChanged { onFocusChanged(it.hasFocus) },
+            modifier = Modifier.fillMaxWidth(),
             keyboardActions = KeyboardActions(
                 onNext = { focusManager.moveFocus(FocusDirection.Down) }
             ),
@@ -87,7 +84,7 @@ fun DefaultTextField(
             )
         )
 
-        if (value.isEmpty()) {
+        if (!errorText.isNullOrEmpty()) {
             Text(
                 text = errorText.orEmpty(),
                 color = MaterialTheme.colors.error,

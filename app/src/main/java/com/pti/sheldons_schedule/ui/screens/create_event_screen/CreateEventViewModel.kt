@@ -111,12 +111,4 @@ class CreateEventViewModel @Inject constructor(
             }
         }
     }
-
-    fun validateTitle(hasFocus: Boolean) {
-        if (!hasFocus && createEventScreenState.value.title.isEmpty()) {
-            createEventScreenState.update { it.copy(showError = true) }
-        } else {
-            createEventScreenState.update { it.copy(showError = false)}
-        }
-    }
 }

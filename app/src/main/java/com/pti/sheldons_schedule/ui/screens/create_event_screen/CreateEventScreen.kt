@@ -8,6 +8,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
+import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -39,6 +40,12 @@ fun CreateEventScreen(
 
         val scope = rememberCoroutineScope()
         val focusRequester = remember { FocusRequester() }
+        var hasFocus by remember { mutableStateOf(false) }
+        val errorText = if (state.title.isEmpty() && !hasFocus) {
+            stringResource(R.string.title_error_message)
+        } else {
+            null
+        }
 
         LaunchedEffect(key1 = state.options) {
             if (!state.options.isNullOrEmpty()) {
@@ -73,9 +80,9 @@ fun CreateEventScreen(
                     label = stringResource(id = R.string.title),
                     modifier = Modifier
                         .padding(horizontal = 15.dp)
-                        .focusRequester(focusRequester),
-                    errorText = stringResource(R.string.title_error_message),
-                    onFocusChanged = { viewModel.validateTitle(it)}
+                        .focusRequester(focusRequester)
+                        .onFocusChanged { hasFocus = it.hasFocus },
+                    errorText = errorText,
                 )
                 HeightSpacer()
                 DefaultTextField(
@@ -83,7 +90,6 @@ fun CreateEventScreen(
                     onValueChanged = { viewModel.onDescriptionEdited(it) },
                     label = stringResource(id = R.string.description),
                     modifier = Modifier.padding(horizontal = 15.dp),
-                    onFocusChanged = { }
                 )
                 HeightSpacer()
                 Row(
