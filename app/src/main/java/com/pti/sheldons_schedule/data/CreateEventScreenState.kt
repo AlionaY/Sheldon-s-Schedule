@@ -15,7 +15,7 @@ data class CreateEventScreenState(
     val remind: Reminder? = null,
     val repeat: Repeat? = null,
     val priority: Priority = Priority.Low,
-    val datePickerStartDate: Long = Calendar.getInstance().timeInMillis
+    val datePickerStartDate: Long = Calendar.getInstance().timeInMillis,
     val errorText: String? = null
 ) {
     val formattedStartDate: String = startDate.formatDate(DATE_FORMAT)
