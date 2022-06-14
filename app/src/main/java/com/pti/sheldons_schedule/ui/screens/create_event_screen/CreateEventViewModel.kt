@@ -34,7 +34,27 @@ class CreateEventViewModel @Inject constructor(
 
 
     init {
-        onStartDateGet()
+        observeScreenState()
+        setDefaultStartTime()
+        setDefaultEndTime()
+    }
+
+    private fun setDefaultEndTime() {
+        createEventScreenState.update {
+            it.copy(endDate = (it.endDate.clone() as Calendar).apply {
+                val currentMinutes = it.startDate.get(Calendar.MINUTE)
+                set(Calendar.MINUTE, currentMinutes)
+                add(Calendar.MINUTE,  30)
+            })
+        }
+    }
+
+    private fun setDefaultStartTime() {
+        createEventScreenState.update {
+            it.copy(startDate = (it.startDate.clone() as Calendar).apply {
+                add(Calendar.MINUTE, 10)
+            })
+        }
     }
 
     fun onStartDatePicked(calendar: Calendar) {
@@ -59,10 +79,17 @@ class CreateEventViewModel @Inject constructor(
 
     fun onTimeStartPicked(hour: Int, minutes: Int) {
         createEventScreenState.update {
-            it.copy(startDate = (it.startDate.clone() as Calendar).apply {
-                set(Calendar.HOUR_OF_DAY, hour)
-                set(Calendar.MINUTE, minutes)
-            })
+            it.copy(
+                startDate = (it.startDate.clone() as Calendar).apply {
+                    set(Calendar.HOUR_OF_DAY, hour)
+                    set(Calendar.MINUTE, minutes)
+                },
+                endDate = (it.endDate.clone() as Calendar).apply {
+                    set(Calendar.HOUR_OF_DAY, hour)
+                    set(Calendar.MINUTE, minutes)
+                    add(Calendar.MINUTE, 30)
+                }
+            )
         }
     }
 
@@ -126,13 +153,20 @@ class CreateEventViewModel @Inject constructor(
         createEventScreenState.update { it.copy(errorText = errorText) }
     }
 
-    private fun onStartDateGet() = viewModelScope.launch {
+    private fun observeScreenState() = viewModelScope.launch {
         val calendar = Calendar.getInstance()
 
         createEventScreenState.collect { state ->
-            calendar.timeInMillis = state.startDate.timeInMillis
-            calendar.add(Calendar.DAY_OF_YEAR, -1)
-            createEventScreenState.update { it.copy(datePickerStartDate = calendar.timeInMillis) }
+            updateDatePickerStartDate(calendar, state)
         }
+    }
+
+    private fun updateDatePickerStartDate(
+        calendar: Calendar,
+        state: CreateEventScreenState
+    ) {
+        calendar.timeInMillis = state.startDate.timeInMillis
+        calendar.add(Calendar.DAY_OF_YEAR, -1)
+        createEventScreenState.update { it.copy(datePickerStartDate = calendar.timeInMillis) }
     }
 }
