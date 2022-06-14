@@ -33,6 +33,10 @@ class CreateEventViewModel @Inject constructor(
     )
 
 
+    init {
+        onStartDateGet()
+    }
+
     fun onStartDatePicked(calendar: Calendar) {
         createEventScreenState.update {
             it.copy(startDate = (it.startDate.clone() as Calendar).apply {
@@ -120,5 +124,15 @@ class CreateEventViewModel @Inject constructor(
         }
 
         createEventScreenState.update { it.copy(errorText = errorText) }
+    }
+
+    private fun onStartDateGet() = viewModelScope.launch {
+        val calendar = Calendar.getInstance()
+
+        createEventScreenState.collect { state ->
+            calendar.timeInMillis = state.startDate.timeInMillis
+            calendar.add(Calendar.DAY_OF_YEAR, -1)
+            createEventScreenState.update { it.copy(datePickerStartDate = calendar.timeInMillis) }
+        }
     }
 }
