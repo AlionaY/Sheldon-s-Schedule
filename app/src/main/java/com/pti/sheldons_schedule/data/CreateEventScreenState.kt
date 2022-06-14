@@ -7,6 +7,7 @@ import com.pti.sheldons_schedule.util.formatDate
 import java.util.*
 
 data class CreateEventScreenState(
+    val calendar: Calendar = Calendar.getInstance(),
     val startDate: Calendar,
     val endDate: Calendar,
     val title: String = "",
@@ -16,7 +17,9 @@ data class CreateEventScreenState(
     val repeat: Repeat? = null,
     val priority: Priority = Priority.Low,
     val datePickerStartDate: Long = Calendar.getInstance().timeInMillis,
-    val errorText: String? = null
+    val titleErrorText: String? = null,
+    val startTimeErrorText: String? = null,
+    val endTimeErrorText: String? = null
 ) {
     val formattedStartDate: String = startDate.formatDate(DATE_FORMAT)
     val formattedEndDate: String = endDate.formatDate(DATE_FORMAT)

@@ -2,6 +2,8 @@ package com.pti.sheldons_schedule.ui.screens.create_event_screen
 
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material.Icon
 import androidx.compose.material.OutlinedTextField
 import androidx.compose.material.icons.Icons
@@ -21,6 +23,7 @@ import java.util.*
 fun TimePickerField(
     pickedTime: String,
     calendar: Calendar,
+    errorText: String,
     onValueChanged: (String) -> Unit,
     onTimePicked: (hour: Int, minutes: Int) -> Unit,
     modifier: Modifier = Modifier,
@@ -33,22 +36,25 @@ fun TimePickerField(
         isClicked = false
     }
 
-    OutlinedTextField(
-        value = pickedTime,
-        onValueChange = { onValueChanged(it) },
-        modifier = modifier
-            .onFocusChanged { isClicked = it.hasFocus }
-            .clickable { isClicked = true },
-        readOnly = true,
-        label = label,
-        trailingIcon = {
-            Icon(
-                imageVector = Icons.Filled.Schedule,
-                contentDescription = null,
-                modifier = Modifier.clickable { isClicked = true }
-            )
-        }
-    )
+    Column(modifier = modifier.fillMaxWidth()) {
+        OutlinedTextField(
+            value = pickedTime,
+            onValueChange = { onValueChanged(it) },
+            modifier = Modifier
+                .onFocusChanged { isClicked = it.hasFocus }
+                .clickable { isClicked = true },
+            readOnly = true,
+            label = label,
+            trailingIcon = {
+                Icon(
+                    imageVector = Icons.Filled.Schedule,
+                    contentDescription = null,
+                    modifier = Modifier.clickable { isClicked = true }
+                )
+            }
+        )
+        ErrorTextMessage(errorText = errorText)
+    }
 }
 
 @Composable

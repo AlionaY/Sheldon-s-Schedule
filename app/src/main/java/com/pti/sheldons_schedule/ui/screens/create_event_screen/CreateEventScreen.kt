@@ -1,6 +1,5 @@
 package com.pti.sheldons_schedule.ui.screens.create_event_screen
 
-import androidx.compose.animation.scaleIn
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.Text
@@ -77,7 +76,7 @@ fun CreateEventScreen(
                         .padding(horizontal = 15.dp)
                         .focusRequester(focusRequester)
                         .onFocusChanged { viewModel.onFocusChanged(it.hasFocus) },
-                    errorText = state.errorText.orEmpty(),
+                    errorText = state.titleErrorText.orEmpty(),
                 )
                 HeightSpacer()
                 DefaultTextField(
@@ -127,6 +126,7 @@ fun CreateEventScreen(
                     TimePickerField(
                         pickedTime = state.formattedStartTime,
                         calendar = state.startDate,
+                        errorText = state.startTimeErrorText.orEmpty(),
                         onTimePicked = { hour, minutes ->
                             viewModel.onTimeStartPicked(hour, minutes)
                         },
@@ -141,6 +141,7 @@ fun CreateEventScreen(
                     TimePickerField(
                         pickedTime = state.formattedEndTime,
                         calendar = state.endDate,
+                        errorText = state.endTimeErrorText.orEmpty(),
                         onTimePicked = { hour, minutes ->
                             viewModel.onTimeEndPicked(hour, minutes)
                         },

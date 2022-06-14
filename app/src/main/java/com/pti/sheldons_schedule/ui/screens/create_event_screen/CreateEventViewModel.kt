@@ -59,19 +59,43 @@ class CreateEventViewModel @Inject constructor(
 
     fun onTimeStartPicked(hour: Int, minutes: Int) {
         createEventScreenState.update {
-            it.copy(startDate = (it.startDate.clone() as Calendar).apply {
-                set(Calendar.HOUR_OF_DAY, hour)
-                set(Calendar.MINUTE, minutes)
-            })
+            it.copy(
+                startDate = (it.startDate.clone() as Calendar).apply {
+                    set(Calendar.HOUR_OF_DAY, hour)
+                    set(Calendar.MINUTE, minutes)
+                },
+                startTimeErrorText = gerTimePickerErrorText(hour)
+            )
         }
     }
 
     fun onTimeEndPicked(hour: Int, minutes: Int) {
-        createEventScreenState.update {
-            it.copy(endDate = (it.endDate.clone() as Calendar).apply {
-                set(Calendar.HOUR_OF_DAY, hour)
-                set(Calendar.MINUTE, minutes)
-            })
+        createEventScreenState.let { state ->
+            state.update {
+                it.copy(
+                    endDate = (it.endDate.clone() as Calendar).apply {
+                        set(Calendar.HOUR_OF_DAY, hour)
+                        set(Calendar.MINUTE, minutes)
+                    },
+                    endTimeErrorText = gerTimePickerErrorText(hour)
+                )
+            }
+        }
+    }
+
+    private fun gerTimePickerErrorText(hour: Int): String? {
+        createEventScreenState.let { state ->
+            val currentHour = state.value.calendar.get(Calendar.HOUR_OF_DAY)
+            val timeDifference =
+                state.value.endDate.timeInMillis - state.value.startDate.timeInMillis
+
+            val errorText =
+                if ((currentHour > hour) && timeDifference == 0L) {
+                    context.getString(R.string.time_picker_error_message)
+                } else {
+                    null
+                }
+            return errorText
         }
     }
 
@@ -123,7 +147,7 @@ class CreateEventViewModel @Inject constructor(
             null
         }
 
-        createEventScreenState.update { it.copy(errorText = errorText) }
+        createEventScreenState.update { it.copy(titleErrorText = errorText) }
     }
 
     private fun onStartDateGet() = viewModelScope.launch {

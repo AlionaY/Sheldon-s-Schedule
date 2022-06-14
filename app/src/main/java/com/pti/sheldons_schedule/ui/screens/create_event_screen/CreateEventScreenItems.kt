@@ -18,6 +18,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.pti.sheldons_schedule.R
@@ -85,14 +86,23 @@ fun DefaultTextField(
         )
 
         if (!errorText.isNullOrEmpty()) {
-            Text(
-                text = errorText.orEmpty(),
-                color = MaterialTheme.colors.error,
-                modifier = Modifier.padding(start = 16.dp),
-                fontSize = 13.sp
-            )
+            ErrorTextMessage(errorText, Modifier.padding(start = 16.dp))
         }
     }
+}
+
+@Composable
+fun ErrorTextMessage(
+    errorText: String?,
+    modifier: Modifier = Modifier,
+    textSize: TextUnit = 13.sp
+) {
+    Text(
+        text = errorText.orEmpty(),
+        color = MaterialTheme.colors.error,
+        modifier = modifier,
+        fontSize = textSize
+    )
 }
 
 @Composable
