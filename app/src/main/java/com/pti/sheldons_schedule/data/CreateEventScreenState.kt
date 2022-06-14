@@ -12,8 +12,8 @@ data class CreateEventScreenState(
     val title: String = "",
     val description: String = "",
     val options: List<Options>? = null,
-    val remind: Reminder? = null,
-    val repeat: Repeat? = null,
+    val remind: Reminder = Reminder.DontRemind,
+    val repeat: Repeat = Repeat.DontRepeat,
     val priority: Priority = Priority.Low,
     val errorText: String? = null
 ) {

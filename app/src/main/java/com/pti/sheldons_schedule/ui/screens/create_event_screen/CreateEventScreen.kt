@@ -9,7 +9,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.platform.LocalFocusManager
-import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -80,11 +79,7 @@ fun CreateEventScreen(
                     modifier = Modifier
                         .padding(horizontal = 15.dp)
                         .focusRequester(focusRequester),
-                    showError = state.showError,
-                    onFocusChanged = { viewModel.validateTitle(it) }
-                        .focusRequester(focusRequester)
-                        .onFocusChanged { viewModel.onFocusChanged(it.hasFocus) },
-                    errorText = state.errorText.orEmpty(),
+                    errorText = state.errorText.orEmpty()
                 )
                 HeightSpacer()
                 DefaultTextField(
@@ -158,31 +153,35 @@ fun CreateEventScreen(
                 }
                 HeightSpacer()
                 DefaultBottomSheetField(
-                    string = stringResource(id = state.repeat?.name ?: R.string.repeat),
+                    string = stringResource(id = state.repeat.name),
+                    label = stringResource(id = R.string.repeat),
                     onClick = { viewModel.onRepeatFieldClicked() },
                     modifier = Modifier
                         .padding(horizontal = 15.dp)
                         .fillMaxWidth()
-                        .height(50.dp),
+                        .wrapContentHeight(),
                     onValueChanged = { }
                 )
                 HeightSpacer()
                 DefaultBottomSheetField(
                     string = stringResource(id = state.priority.name),
+                    label = stringResource(id = R.string.priority),
                     onClick = { viewModel.onPriorityFieldClicked() },
                     modifier = Modifier
                         .padding(horizontal = 15.dp)
                         .fillMaxWidth()
-                        .height(50.dp),
-                    onValueChanged = {})
+                        .wrapContentHeight(),
+                    onValueChanged = {}
+                )
                 HeightSpacer()
                 DefaultBottomSheetField(
-                    string = stringResource(id = state.remind?.name ?: R.string.remind),
+                    string = stringResource(id = state.remind.name),
+                    label = stringResource(id = R.string.remind),
                     onClick = { viewModel.onRemindFieldClicked() },
                     modifier = Modifier
                         .padding(horizontal = 15.dp)
                         .fillMaxWidth()
-                        .height(50.dp),
+                        .wrapContentHeight(),
                     onValueChanged = { }
                 )
             }
