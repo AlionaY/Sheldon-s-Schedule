@@ -15,10 +15,12 @@ import androidx.compose.ui.res.stringResource
 import com.google.android.material.timepicker.MaterialTimePicker
 import com.google.android.material.timepicker.TimeFormat
 import com.pti.sheldons_schedule.R
+import java.util.*
 
 @Composable
 fun TimePickerField(
     pickedTime: String,
+    calendar: Calendar,
     onValueChanged: (String) -> Unit,
     onTimePicked: (hour: Int, minutes: Int) -> Unit,
     modifier: Modifier = Modifier,
@@ -27,7 +29,7 @@ fun TimePickerField(
     var isClicked by remember { mutableStateOf(false) }
 
     if (isClicked) {
-        TimePicker(onTimePicked)
+        TimePicker(calendar = calendar, onTimePicked = onTimePicked)
         isClicked = false
     }
 
@@ -50,13 +52,15 @@ fun TimePickerField(
 }
 
 @Composable
-fun TimePicker(onTimePicked: (hour: Int, minute: Int) -> Unit) {
+fun TimePicker(calendar: Calendar, onTimePicked: (hour: Int, minute: Int) -> Unit) {
     val activity = LocalContext.current as? AppCompatActivity
     val focusManager = LocalFocusManager.current
 
     MaterialTimePicker.Builder()
         .setTimeFormat(TimeFormat.CLOCK_24H)
         .setTitleText(stringResource(id = R.string.time_picker_title))
+        .setHour(calendar.get(Calendar.HOUR_OF_DAY))
+        .setMinute(calendar.get(Calendar.MINUTE))
         .build()
         .apply {
             activity?.supportFragmentManager?.let { show(it, this.toString()) }

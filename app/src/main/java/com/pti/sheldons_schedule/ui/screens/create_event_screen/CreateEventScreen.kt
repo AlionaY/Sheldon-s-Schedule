@@ -1,5 +1,6 @@
 package com.pti.sheldons_schedule.ui.screens.create_event_screen
 
+import androidx.compose.animation.scaleIn
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.Text
@@ -125,6 +126,7 @@ fun CreateEventScreen(
                 ) {
                     TimePickerField(
                         pickedTime = state.formattedStartTime,
+                        calendar = state.startDate,
                         onTimePicked = { hour, minutes ->
                             viewModel.onTimeStartPicked(hour, minutes)
                         },
@@ -138,6 +140,7 @@ fun CreateEventScreen(
                     Spacer(modifier = Modifier.width(30.dp))
                     TimePickerField(
                         pickedTime = state.formattedEndTime,
+                        calendar = state.endDate,
                         onTimePicked = { hour, minutes ->
                             viewModel.onTimeEndPicked(hour, minutes)
                         },
