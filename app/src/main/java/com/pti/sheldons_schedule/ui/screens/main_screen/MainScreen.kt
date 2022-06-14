@@ -2,6 +2,7 @@ package com.pti.sheldons_schedule.ui.screens.main_screen
 
 import androidx.compose.foundation.border
 import androidx.compose.foundation.gestures.scrollBy
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
@@ -30,9 +31,7 @@ import com.google.accompanist.pager.HorizontalPager
 import com.google.accompanist.pager.rememberPagerState
 import com.pti.sheldons_schedule.ui.navigation.NavDestination
 import com.pti.sheldons_schedule.ui.navigation.navigate
-import com.pti.sheldons_schedule.ui.theme.Black
-import com.pti.sheldons_schedule.ui.theme.LightSky
-import com.pti.sheldons_schedule.ui.theme.Teal200
+import com.pti.sheldons_schedule.ui.theme.*
 import com.pti.sheldons_schedule.util.horizontalPadding
 import kotlinx.coroutines.launch
 import java.util.*
@@ -105,9 +104,10 @@ fun MainScreen(
                         ) {
                             ConstraintLayout(modifier = Modifier.fillMaxSize()) {
                                 val (horizontalLine, hour, content) = createRefs()
+                                val dividerColor = if (isSystemInDarkTheme()) Steel else Graphite
 
                                 Divider(
-                                    color = LightSky,
+                                    color = dividerColor,
                                     modifier = Modifier
                                         .height(0.7.dp)
                                         .constrainAs(horizontalLine) {
@@ -126,7 +126,6 @@ fun MainScreen(
                                             end.linkTo(parent.end)
                                         }
                                         .padding(start = 60.dp)
-
                                 ) {
                                     currentWeek?.week?.forEach { dayOfWeek ->
                                         BoxWithConstraints(
@@ -138,7 +137,7 @@ fun MainScreen(
                                                     val y = size.height - strokeWidth
 
                                                     drawLine(
-                                                        color = LightSky,
+                                                        color = dividerColor,
                                                         start = Offset(0f, 0f),
                                                         end = Offset(0f, y),
                                                         strokeWidth = strokeWidth

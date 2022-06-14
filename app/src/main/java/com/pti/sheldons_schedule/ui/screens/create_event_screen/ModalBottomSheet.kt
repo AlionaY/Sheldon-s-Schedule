@@ -1,6 +1,5 @@
 package com.pti.sheldons_schedule.ui.screens.create_event_screen
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -8,8 +7,6 @@ import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
-import com.pti.sheldons_schedule.data.Options
-import com.pti.sheldons_schedule.ui.theme.LightSky
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterialApi::class)
@@ -27,11 +24,7 @@ fun <T> ModalBottomSheet(
 
     ModalBottomSheetLayout(
         sheetContent = {
-            Box(
-                modifier = modifier
-                    .navigationBarsPadding()
-                    .background(LightSky)
-            ) {
+            Box(modifier = modifier.navigationBarsPadding()) {
                 BottomSheetContent(
                     data = data,
                     header = header,
@@ -43,7 +36,7 @@ fun <T> ModalBottomSheet(
             }
         },
         sheetState = sheetState,
-        sheetBackgroundColor = LightSky,
+        sheetBackgroundColor = MaterialTheme.colors.background,
         sheetShape = RoundedCornerShape(3)
     ) {
         content(sheetState)

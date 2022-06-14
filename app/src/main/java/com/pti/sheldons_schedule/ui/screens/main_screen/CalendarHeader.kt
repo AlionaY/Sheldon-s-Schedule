@@ -3,6 +3,7 @@ package com.pti.sheldons_schedule.ui.screens.main_screen
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -13,9 +14,6 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.pti.sheldons_schedule.data.Week
-import com.pti.sheldons_schedule.ui.theme.Black
-import com.pti.sheldons_schedule.ui.theme.LightSky
-import com.pti.sheldons_schedule.ui.theme.Teal200
 
 @Composable
 fun CalendarHeader(currentWeek: Week?, height: Dp) {
@@ -23,7 +21,7 @@ fun CalendarHeader(currentWeek: Week?, height: Dp) {
         modifier = Modifier
             .fillMaxWidth()
             .height(height)
-            .background(LightSky),
+            .background(MaterialTheme.colors.surface),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.Center
     ) {
@@ -34,8 +32,17 @@ fun CalendarHeader(currentWeek: Week?, height: Dp) {
         )
 
         currentWeek?.week?.forEach { day ->
-            val textColor = if (day.isCurrent) Teal200 else Black
-            val backgroundColor = if (day.isCurrent) Teal200 else Color.Transparent
+            val textColor = if (day.isCurrent) {
+                MaterialTheme.colors.secondary
+            } else {
+                MaterialTheme.colors.onBackground
+            }
+
+            val backgroundColor = if (day.isCurrent) {
+                MaterialTheme.colors.secondary
+            } else {
+                Color.Transparent
+            }
 
             Column(
                 modifier = Modifier

@@ -1,18 +1,19 @@
 package com.pti.sheldons_schedule.ui.screens.create_event_screen
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
+import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.pti.sheldons_schedule.R
-import com.pti.sheldons_schedule.ui.theme.LightSky
 import kotlinx.coroutines.launch
 
 private const val PADDING_WIDTH_SUM = 60
@@ -38,6 +39,7 @@ fun CreateEventScreen(
     ) { sheetState ->
 
         val scope = rememberCoroutineScope()
+        val focusRequester = remember { FocusRequester() }
 
         LaunchedEffect(key1 = state.options) {
             if (!state.options.isNullOrEmpty()) {
@@ -47,11 +49,11 @@ fun CreateEventScreen(
             }
         }
 
-        BoxWithConstraints(
-            modifier = Modifier
-                .fillMaxSize()
-                .background(LightSky)
-        ) {
+        LaunchedEffect(key1 = Unit) {
+            focusRequester.requestFocus()
+        }
+
+        BoxWithConstraints(modifier = Modifier.fillMaxSize()) {
             val halfFieldWidth = (this.maxWidth.value.toInt() - PADDING_WIDTH_SUM) / FIELD_COUNT
 
             Column(modifier = Modifier.fillMaxSize()) {
@@ -70,14 +72,18 @@ fun CreateEventScreen(
                     value = state.title,
                     onValueChanged = { viewModel.onTitleEdited(it) },
                     label = stringResource(id = R.string.title),
-                    modifier = Modifier.padding(horizontal = 15.dp)
+                    modifier = Modifier
+                        .padding(horizontal = 15.dp)
+                        .focusRequester(focusRequester)
+                        .onFocusChanged { viewModel.onFocusChanged(it.hasFocus) },
+                    errorText = state.errorText.orEmpty(),
                 )
                 HeightSpacer()
                 DefaultTextField(
                     value = state.description,
                     onValueChanged = { viewModel.onDescriptionEdited(it) },
                     label = stringResource(id = R.string.description),
-                    modifier = Modifier.padding(horizontal = 15.dp)
+                    modifier = Modifier.padding(horizontal = 15.dp),
                 )
                 HeightSpacer()
                 Row(
@@ -126,7 +132,7 @@ fun CreateEventScreen(
                             .padding(start = 15.dp)
                             .width(halfFieldWidth.dp)
                             .wrapContentHeight(),
-                        label = { Text(text = stringResource(id = R.string.start_time))},
+                        label = { Text(text = stringResource(id = R.string.start_time)) },
                         onValueChanged = {}
                     )
                     Spacer(modifier = Modifier.width(30.dp))
@@ -139,30 +145,39 @@ fun CreateEventScreen(
                             .padding(end = 15.dp)
                             .width(halfFieldWidth.dp)
                             .wrapContentHeight(),
-                        label = { Text(text = stringResource(id = R.string.end_time))},
+                        label = { Text(text = stringResource(id = R.string.end_time)) },
                         onValueChanged = {}
                     )
                 }
                 HeightSpacer()
                 DefaultBottomSheetField(
-                    string = stringResource(
-                        id = state.repeat?.name ?: R.string.repeat
-                    )
-                ) {
-                    viewModel.onRepeatFieldClicked()
-                }
-                HeightSpacer()
-                DefaultBottomSheetField(string = stringResource(id = state.priority.name)) {
-                    viewModel.onPriorityFieldClicked()
-                }
+                    string = stringResource(id = state.repeat?.name ?: R.string.repeat),
+                    onClick = { viewModel.onRepeatFieldClicked() },
+                    modifier = Modifier
+                        .padding(horizontal = 15.dp)
+                        .fillMaxWidth()
+                        .height(50.dp),
+                    onValueChanged = { }
+                )
                 HeightSpacer()
                 DefaultBottomSheetField(
-                    string = stringResource(
-                        id = state.remind?.name ?: R.string.remind
-                    )
-                ) {
-                    viewModel.onRemindFieldClicked()
-                }
+                    string = stringResource(id = state.priority.name),
+                    onClick = { viewModel.onPriorityFieldClicked() },
+                    modifier = Modifier
+                        .padding(horizontal = 15.dp)
+                        .fillMaxWidth()
+                        .height(50.dp),
+                    onValueChanged = {})
+                HeightSpacer()
+                DefaultBottomSheetField(
+                    string = stringResource(id = state.remind?.name ?: R.string.remind),
+                    onClick = { viewModel.onRemindFieldClicked() },
+                    modifier = Modifier
+                        .padding(horizontal = 15.dp)
+                        .fillMaxWidth()
+                        .height(50.dp),
+                    onValueChanged = { }
+                )
             }
         }
     }
