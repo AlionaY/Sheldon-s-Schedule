@@ -1,6 +1,7 @@
 package com.pti.sheldons_schedule.ui.screens.create_event_screen
 
 import android.content.Context
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.pti.sheldons_schedule.R
@@ -63,8 +64,7 @@ class CreateEventViewModel @Inject constructor(
                 startDate = (it.startDate.clone() as Calendar).apply {
                     set(Calendar.HOUR_OF_DAY, hour)
                     set(Calendar.MINUTE, minutes)
-                },
-                startTimeErrorText = gerTimePickerErrorText(hour)
+                }
             )
         }
     }
@@ -76,25 +76,22 @@ class CreateEventViewModel @Inject constructor(
                     endDate = (it.endDate.clone() as Calendar).apply {
                         set(Calendar.HOUR_OF_DAY, hour)
                         set(Calendar.MINUTE, minutes)
-                    },
-                    endTimeErrorText = gerTimePickerErrorText(hour)
+                    }
                 )
             }
         }
     }
 
-    private fun gerTimePickerErrorText(hour: Int): String? {
+    private fun gerTimePickerErrorText(hourValidated: Boolean): String? {
         createEventScreenState.let { state ->
-            val currentHour = state.value.calendar.get(Calendar.HOUR_OF_DAY)
-            val timeDifference =
-                state.value.endDate.timeInMillis - state.value.startDate.timeInMillis
+            val isTheSameDay =
+                state.value.formattedEndDate == state.value.formattedStartDate
 
-            val errorText =
-                if ((currentHour > hour) && timeDifference == 0L) {
-                    context.getString(R.string.time_picker_error_message)
-                } else {
-                    null
-                }
+            val errorText = if (hourValidated && isTheSameDay) {
+                context.getString(R.string.time_picker_error_message)
+            } else {
+                null
+            }
             return errorText
         }
     }
@@ -157,6 +154,20 @@ class CreateEventViewModel @Inject constructor(
             calendar.timeInMillis = state.startDate.timeInMillis
             calendar.add(Calendar.DAY_OF_YEAR, -1)
             createEventScreenState.update { it.copy(datePickerStartDate = calendar.timeInMillis) }
+
+
+            val currentHour = createEventScreenState.value.calendar.get(Calendar.HOUR_OF_DAY)
+            val startHour = createEventScreenState.value.startDate.get(Calendar.HOUR_OF_DAY)
+            val endHour = createEventScreenState.value.endDate.get(Calendar.HOUR_OF_DAY)
+            val startHourValidated = currentHour > startHour
+            val endTimeValidated = currentHour > endHour || startHour > endHour
+
+            createEventScreenState.update {
+                it.copy(
+                    endTimeErrorText = gerTimePickerErrorText(endTimeValidated),
+                    startTimeErrorText = gerTimePickerErrorText(startHourValidated)
+                )
+            }
         }
     }
 }
