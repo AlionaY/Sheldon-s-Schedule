@@ -1,6 +1,6 @@
 package com.pti.sheldons_schedule.ui.screens.main_screen
 
-import androidx.compose.foundation.border
+import android.util.Log
 import androidx.compose.foundation.gestures.scrollBy
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.*
@@ -14,7 +14,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.layout.positionInParent
 import androidx.compose.ui.platform.LocalConfiguration
@@ -31,7 +30,9 @@ import com.google.accompanist.pager.HorizontalPager
 import com.google.accompanist.pager.rememberPagerState
 import com.pti.sheldons_schedule.ui.navigation.NavDestination
 import com.pti.sheldons_schedule.ui.navigation.navigate
-import com.pti.sheldons_schedule.ui.theme.*
+import com.pti.sheldons_schedule.ui.theme.Graphite
+import com.pti.sheldons_schedule.ui.theme.Steel
+import com.pti.sheldons_schedule.ui.theme.Teal200
 import com.pti.sheldons_schedule.util.horizontalPadding
 import kotlinx.coroutines.launch
 import java.util.*
@@ -83,11 +84,6 @@ fun MainScreen(
                 Column(
                     modifier = Modifier
                         .fillMaxSize()
-                        .border(
-                            width = 0.5.dp,
-                            shape = RectangleShape,
-                            color = LightSky
-                        )
                         .verticalScroll(scrollState)
                 ) {
                     val config = LocalConfiguration.current
@@ -181,7 +177,7 @@ fun MainScreen(
                                     },
                                     textAlign = TextAlign.Center,
                                     fontSize = 13.sp,
-                                    color = Black
+                                    color = MaterialTheme.colors.onBackground
                                 )
                             }
                         }
