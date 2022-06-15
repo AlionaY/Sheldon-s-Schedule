@@ -95,14 +95,9 @@ class CreateEventViewModel @Inject constructor(
         createEventScreenState.update { it.copy(description = string) }
     }
 
-    fun onSaveEventClicked() = viewModelScope.launch {
-        createEventScreenState.value.let { state ->
-            val currentDate = Calendar.getInstance().formatDate(Constants.DATE_FORMAT)
-            val duration = state.endDate.timeInMillis - state.startDate.timeInMillis
-            repository.saveEvent(
-                state.toEvent(currentDate, duration)
-            )
-        }
+    fun onSaveEventClicked() {
+        val isEventValidated = createEventScreenState.value.title.isNotEmpty()
+        createEventScreenState.update { it.copy(isEventValidated = isEventValidated) }
     }
 
     fun onSelected(options: Options) {
@@ -136,6 +131,18 @@ class CreateEventViewModel @Inject constructor(
             calendar.timeInMillis = state.startDate.timeInMillis
             calendar.add(Calendar.DAY_OF_YEAR, -1)
             createEventScreenState.update { it.copy(datePickerStartDate = calendar.timeInMillis) }
+
+            saveEvent(state)
+        }
+    }
+
+    private suspend fun saveEvent(state: CreateEventScreenState) {
+        val currentDate = Calendar.getInstance().formatDate(Constants.DATE_FORMAT)
+        val duration = state.endDate.timeInMillis - state.startDate.timeInMillis
+        if (state.isEventValidated) {
+            repository.saveEvent(
+                state.toEvent(currentDate, duration)
+            )
         }
     }
 }

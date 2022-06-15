@@ -16,7 +16,8 @@ data class CreateEventScreenState(
     val repeat: Repeat? = null,
     val priority: Priority = Priority.Low,
     val datePickerStartDate: Long = Calendar.getInstance().timeInMillis,
-    val errorText: String? = null
+    val errorText: String? = null,
+    val isEventValidated: Boolean = false
 ) {
     val formattedStartDate: String = startDate.formatDate(DATE_FORMAT)
     val formattedEndDate: String = endDate.formatDate(DATE_FORMAT)
