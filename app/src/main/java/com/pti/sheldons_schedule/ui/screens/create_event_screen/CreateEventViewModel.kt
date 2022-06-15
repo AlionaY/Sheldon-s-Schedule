@@ -96,10 +96,13 @@ class CreateEventViewModel @Inject constructor(
     }
 
     fun onSaveEventClicked() = viewModelScope.launch {
-        val currentDate = Calendar.getInstance().formatDate(Constants.DATE_FORMAT)
-        repository.saveEvent(
-            createEventScreenState.value.toEvent(currentDate)
-        )
+        createEventScreenState.value.let { state ->
+            val currentDate = Calendar.getInstance().formatDate(Constants.DATE_FORMAT)
+            val duration = state.endDate.timeInMillis - state.startDate.timeInMillis
+            repository.saveEvent(
+                state.toEvent(currentDate, duration)
+            )
+        }
     }
 
     fun onSelected(options: Options) {

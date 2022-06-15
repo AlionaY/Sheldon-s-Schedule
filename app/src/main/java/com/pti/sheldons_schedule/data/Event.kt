@@ -27,8 +27,7 @@ data class Event(
     val reminder: Reminder? = null
 )
 
-//todo: calculate duration
-fun CreateEventScreenState.toEvent(creationDate: String, duration: Long? = null) = Event(
+fun CreateEventScreenState.toEvent(creationDate: String, duration: Long) = Event(
     creationDate = creationDate,
     title = this.title,
     description = this.description,
