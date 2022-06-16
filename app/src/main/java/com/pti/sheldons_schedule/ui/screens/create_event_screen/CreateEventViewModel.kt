@@ -34,7 +34,7 @@ class CreateEventViewModel @Inject constructor(
 
 
     init {
-        onStartDateGet()
+        observeScreenState()
     }
 
     fun onStartDatePicked(calendar: Calendar) {
@@ -146,26 +146,36 @@ class CreateEventViewModel @Inject constructor(
         createEventScreenState.update { it.copy(titleErrorText = errorText) }
     }
 
-    private fun onStartDateGet() = viewModelScope.launch {
+    private fun observeScreenState() = viewModelScope.launch {
         val calendar = Calendar.getInstance()
 
         createEventScreenState.collect { state ->
-            calendar.timeInMillis = state.startDate.timeInMillis
-            calendar.add(Calendar.DAY_OF_YEAR, -1)
-            createEventScreenState.update { it.copy(datePickerStartDate = calendar.timeInMillis) }
+            updateDatePickerStartDate(calendar, state)
+            validatePickedTime()
+        }
+    }
 
-            val currentHour = createEventScreenState.value.calendar.formatDate(Constants.TIME_FORMAT)
-            val startHour = createEventScreenState.value.formattedStartTime
-            val endHour = createEventScreenState.value.formattedEndTime
-            val isStartHourValid = currentHour > startHour
-            val isEndTimeValid = currentHour > endHour || startHour > endHour
+    private fun updateDatePickerStartDate(
+        calendar: Calendar,
+        state: CreateEventScreenState
+    ) {
+        calendar.timeInMillis = state.startDate.timeInMillis
+        calendar.add(Calendar.DAY_OF_YEAR, -1)
+        createEventScreenState.update { it.copy(datePickerStartDate = calendar.timeInMillis) }
+    }
 
-            createEventScreenState.update {
-                it.copy(
-                    endTimeErrorText = gerTimePickerErrorText(isEndTimeValid),
-                    startTimeErrorText = gerTimePickerErrorText(isStartHourValid)
-                )
-            }
+    private fun validatePickedTime() {
+        val currentHour = createEventScreenState.value.calendar.formatDate(Constants.TIME_FORMAT)
+        val startHour = createEventScreenState.value.formattedStartTime
+        val endHour = createEventScreenState.value.formattedEndTime
+        val isStartHourValid = currentHour > startHour
+        val isEndTimeValid = currentHour > endHour || startHour > endHour
+
+        createEventScreenState.update {
+            it.copy(
+                endTimeErrorText = gerTimePickerErrorText(isEndTimeValid),
+                startTimeErrorText = gerTimePickerErrorText(isStartHourValid)
+            )
         }
     }
 }
