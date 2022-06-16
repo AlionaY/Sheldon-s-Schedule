@@ -20,6 +20,7 @@
     <string name="repeat_monthly">Monthly</string>
     <string name="repeat_annually">Annually</string>
     <string name="repeat_custom">Custom</string>
+    <string name="dont_repeat">Don`t repeat</string>
 
     <string name="priority">Priority</string>
     <string name="priority_high">High</string>
@@ -31,6 +32,7 @@
     <string name="remind_15_min_before">15 minutes before</string>
     <string name="remind_30_min_before">30 minutes before</string>
     <string name="remind_1_hour_before">1 hour before</string>
+    <string name="dont_remind">Don`t remind</string>
 
     <string name="title_error_message">"The field cannot be empty"</string>
     <string name="time_picker_error_message">Invalid time</string>

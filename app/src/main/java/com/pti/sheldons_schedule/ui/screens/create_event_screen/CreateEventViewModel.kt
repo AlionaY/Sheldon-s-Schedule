@@ -27,8 +27,12 @@ class CreateEventViewModel @Inject constructor(
 
     val createEventScreenState = MutableStateFlow(
         CreateEventScreenState(
-            startDate = Calendar.getInstance(),
-            endDate = Calendar.getInstance()
+            startDate = Calendar.getInstance().apply {
+                add(Calendar.MINUTE, 10)
+            },
+            endDate = Calendar.getInstance().apply {
+                add(Calendar.MINUTE, 30)
+            }
         )
     )
 
@@ -63,6 +67,11 @@ class CreateEventViewModel @Inject constructor(
                 startDate = (it.startDate.clone() as Calendar).apply {
                     set(Calendar.HOUR_OF_DAY, hour)
                     set(Calendar.MINUTE, minutes)
+                },
+                endDate = (it.endDate.clone() as Calendar).apply {
+                    set(Calendar.HOUR_OF_DAY, hour)
+                    set(Calendar.MINUTE, minutes)
+                    add(Calendar.MINUTE, 30)
                 }
             )
         }

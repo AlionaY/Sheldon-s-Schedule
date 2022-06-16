@@ -26,12 +26,14 @@ import com.pti.sheldons_schedule.R
 @Composable
 fun DefaultBottomSheetField(
     string: String,
+    label: String,
     onClick: () -> Unit,
     onValueChanged: (String) -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     OutlinedTextField(
         value = string,
+        label = { Text(label) },
         onValueChange = { onValueChanged(it) },
         modifier = modifier
             .onFocusChanged { if (it.hasFocus) onClick() }

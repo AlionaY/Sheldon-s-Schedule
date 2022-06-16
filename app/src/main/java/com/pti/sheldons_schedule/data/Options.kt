@@ -23,13 +23,15 @@ sealed class Options(val title: Int, val nameId: Int) {
         object Min15 : Reminder(R.string.remind_15_min_before, "min_15")
         object Min30 : Reminder(R.string.remind_30_min_before, "min_30")
         object Min60 : Reminder(R.string.remind_1_hour_before, "min_60")
+        object DontRemind: Reminder(R.string.dont_remind, "dont_remind")
 
         companion object {
             fun values(): List<Reminder> = listOf(
                 Min10,
                 Min15,
                 Min30,
-                Min60
+                Min60,
+                DontRemind
             )
         }
     }
@@ -42,6 +44,7 @@ sealed class Options(val title: Int, val nameId: Int) {
         object Monthly : Repeat(R.string.repeat_monthly, "monthly")
         object Annually : Repeat(R.string.repeat_annually, "annually")
         object Custom : Repeat(R.string.repeat_custom, "custom")
+        object DontRepeat: Repeat(R.string.dont_repeat, "dont_repeat")
 
         companion object {
             fun values(): List<Repeat> = listOf(
@@ -50,7 +53,8 @@ sealed class Options(val title: Int, val nameId: Int) {
                 Weekly,
                 Monthly,
                 Annually,
-                Custom
+                Custom,
+                DontRepeat
             )
         }
     }
