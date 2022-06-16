@@ -60,8 +60,9 @@ fun CreateEventScreen(
                 SaveOrCloseCreatingEvent(
                     onCloseIconClicked = { navController.popBackStack() },
                     onSaveIconClicked = {
-                        viewModel.onSaveEventClicked()
-                        if (state.isEventValidated) navController.popBackStack()
+                        viewModel.onSaveEventClicked {
+                            if (it) navController.popBackStack()
+                        }
                     },
                     modifier = Modifier
                         .height(58.dp)
