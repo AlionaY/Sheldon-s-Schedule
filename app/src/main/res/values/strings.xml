@@ -35,4 +35,7 @@
     <string name="dont_remind">Don`t remind</string>
 
     <string name="title_error_message">"The field cannot be empty"</string>
+
+    <string name="notification_channel_name">Events notification channel</string>
+    <string name="notification_channel_description">Notification description</string>
 </resources>

@@ -63,7 +63,7 @@ fun DefaultTextField(
     Column(modifier = modifier.fillMaxWidth()) {
         OutlinedTextField(
             value = value,
-            onValueChange = { onValueChanged(it.trim()) },
+            onValueChange = { onValueChanged(it) },
             trailingIcon = {
                 if (!errorText.isNullOrEmpty()) {
                     Icon(

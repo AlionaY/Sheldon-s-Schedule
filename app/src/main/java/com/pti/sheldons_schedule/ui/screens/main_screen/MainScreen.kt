@@ -1,6 +1,5 @@
 package com.pti.sheldons_schedule.ui.screens.main_screen
 
-import android.util.Log
 import androidx.compose.foundation.gestures.scrollBy
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.*

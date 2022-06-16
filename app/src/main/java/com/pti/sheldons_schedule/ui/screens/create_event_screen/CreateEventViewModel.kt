@@ -99,11 +99,11 @@ class CreateEventViewModel @Inject constructor(
     }
 
     fun onTitleEdited(string: String) {
-        createEventScreenState.update { it.copy(title = string) }
+        createEventScreenState.update { it.copy(title = string.trim()) }
     }
 
     fun onDescriptionEdited(string: String) {
-        createEventScreenState.update { it.copy(description = string) }
+        createEventScreenState.update { it.copy(description = string.trim()) }
     }
 
     fun onSaveEventClicked() = viewModelScope.launch {

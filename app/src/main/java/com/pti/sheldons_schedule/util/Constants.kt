@@ -7,4 +7,6 @@ object Constants {
     const val DAY_NAME_FORMAT = "EEEE"
 
     const val WEEK_LENGTH = 7
+
+    const val CHANNEL_ID = "Events notification channel"
 }
