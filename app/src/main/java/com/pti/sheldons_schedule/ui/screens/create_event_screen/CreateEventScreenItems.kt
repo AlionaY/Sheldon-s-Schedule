@@ -56,8 +56,7 @@ fun DefaultTextField(
     label: String,
     onValueChanged: (String) -> Unit,
     modifier: Modifier = Modifier,
-    errorText: String? = null,
-    borderColor: Color = MaterialTheme.colors.onSurface.copy(alpha = ContentAlpha.disabled)
+    errorText: String? = null
 ) {
     val focusManager = LocalFocusManager.current
 
@@ -80,11 +79,10 @@ fun DefaultTextField(
                 onNext = { focusManager.moveFocus(FocusDirection.Down) }
             ),
             keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
-            colors = TextFieldDefaults.outlinedTextFieldColors(
+            colors = TextFieldDefaults.textFieldColors(
                 textColor = MaterialTheme.colors.onBackground,
                 cursorColor = MaterialTheme.colors.onBackground,
-                backgroundColor = Color.Transparent,
-                unfocusedBorderColor = borderColor
+                backgroundColor = Color.Transparent
             )
         )
 
