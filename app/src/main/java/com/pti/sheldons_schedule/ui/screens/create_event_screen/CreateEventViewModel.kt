@@ -1,7 +1,6 @@
 package com.pti.sheldons_schedule.ui.screens.create_event_screen
 
 import android.content.Context
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.pti.sheldons_schedule.R
@@ -82,12 +81,12 @@ class CreateEventViewModel @Inject constructor(
         }
     }
 
-    private fun gerTimePickerErrorText(hourValidated: Boolean): String? {
+    private fun gerTimePickerErrorText(isHourValid: Boolean): String? {
         createEventScreenState.let { state ->
             val isTheSameDay =
                 state.value.formattedEndDate == state.value.formattedStartDate
 
-            val errorText = if (hourValidated && isTheSameDay) {
+            val errorText = if (isHourValid && isTheSameDay) {
                 context.getString(R.string.time_picker_error_message)
             } else {
                 null
@@ -155,17 +154,16 @@ class CreateEventViewModel @Inject constructor(
             calendar.add(Calendar.DAY_OF_YEAR, -1)
             createEventScreenState.update { it.copy(datePickerStartDate = calendar.timeInMillis) }
 
-
-            val currentHour = createEventScreenState.value.calendar.get(Calendar.HOUR_OF_DAY)
-            val startHour = createEventScreenState.value.startDate.get(Calendar.HOUR_OF_DAY)
-            val endHour = createEventScreenState.value.endDate.get(Calendar.HOUR_OF_DAY)
-            val startHourValidated = currentHour > startHour
-            val endTimeValidated = currentHour > endHour || startHour > endHour
+            val currentHour = createEventScreenState.value.calendar.formatDate(Constants.TIME_FORMAT)
+            val startHour = createEventScreenState.value.formattedStartTime
+            val endHour = createEventScreenState.value.formattedEndTime
+            val isStartHourValid = currentHour > startHour
+            val isEndTimeValid = currentHour > endHour || startHour > endHour
 
             createEventScreenState.update {
                 it.copy(
-                    endTimeErrorText = gerTimePickerErrorText(endTimeValidated),
-                    startTimeErrorText = gerTimePickerErrorText(startHourValidated)
+                    endTimeErrorText = gerTimePickerErrorText(isEndTimeValid),
+                    startTimeErrorText = gerTimePickerErrorText(isStartHourValid)
                 )
             }
         }
