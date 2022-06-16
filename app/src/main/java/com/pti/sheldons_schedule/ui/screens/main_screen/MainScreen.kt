@@ -1,6 +1,5 @@
 package com.pti.sheldons_schedule.ui.screens.main_screen
 
-import androidx.compose.foundation.border
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
@@ -13,7 +12,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.layout.positionInRoot
 import androidx.compose.ui.platform.LocalDensity
@@ -30,7 +28,9 @@ import com.google.accompanist.pager.HorizontalPager
 import com.google.accompanist.pager.rememberPagerState
 import com.pti.sheldons_schedule.ui.navigation.NavDestination
 import com.pti.sheldons_schedule.ui.navigation.navigate
-import com.pti.sheldons_schedule.ui.theme.*
+import com.pti.sheldons_schedule.ui.theme.Graphite
+import com.pti.sheldons_schedule.ui.theme.Steel
+import com.pti.sheldons_schedule.ui.theme.Teal200
 import com.pti.sheldons_schedule.util.horizontalPadding
 import kotlinx.coroutines.launch
 import java.util.*
@@ -87,11 +87,6 @@ fun MainScreen(
                 Column(
                     modifier = Modifier
                         .fillMaxSize()
-                        .border(
-                            width = 0.5.dp,
-                            shape = RectangleShape,
-                            color = LightSky
-                        )
                         .verticalScroll(scrollState)
                 ) {
                     (0 until HOURS_COUNT).forEach { hourItem ->
@@ -183,7 +178,7 @@ fun MainScreen(
                                     },
                                     textAlign = TextAlign.Center,
                                     fontSize = 13.sp,
-                                    color = Black
+                                    color = MaterialTheme.colors.onBackground
                                 )
                             }
                         }

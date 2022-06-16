@@ -27,14 +27,18 @@ class CreateEventViewModel @Inject constructor(
 
     val createEventScreenState = MutableStateFlow(
         CreateEventScreenState(
-            startDate = Calendar.getInstance(),
-            endDate = Calendar.getInstance()
+            startDate = Calendar.getInstance().apply {
+                add(Calendar.MINUTE, 10)
+            },
+            endDate = Calendar.getInstance().apply {
+                add(Calendar.MINUTE, 30)
+            }
         )
     )
 
 
     init {
-        onStartDateGet()
+        observeScreenState()
     }
 
     fun onStartDatePicked(calendar: Calendar) {
@@ -59,10 +63,17 @@ class CreateEventViewModel @Inject constructor(
 
     fun onTimeStartPicked(hour: Int, minutes: Int) {
         createEventScreenState.update {
-            it.copy(startDate = (it.startDate.clone() as Calendar).apply {
-                set(Calendar.HOUR_OF_DAY, hour)
-                set(Calendar.MINUTE, minutes)
-            })
+            it.copy(
+                startDate = (it.startDate.clone() as Calendar).apply {
+                    set(Calendar.HOUR_OF_DAY, hour)
+                    set(Calendar.MINUTE, minutes)
+                },
+                endDate = (it.endDate.clone() as Calendar).apply {
+                    set(Calendar.HOUR_OF_DAY, hour)
+                    set(Calendar.MINUTE, minutes)
+                    add(Calendar.MINUTE, 30)
+                }
+            )
         }
     }
 
@@ -126,13 +137,20 @@ class CreateEventViewModel @Inject constructor(
         createEventScreenState.update { it.copy(errorText = errorText) }
     }
 
-    private fun onStartDateGet() = viewModelScope.launch {
+    private fun observeScreenState() = viewModelScope.launch {
         val calendar = Calendar.getInstance()
 
         createEventScreenState.collect { state ->
-            calendar.timeInMillis = state.startDate.timeInMillis
-            calendar.add(Calendar.DAY_OF_YEAR, -1)
-            createEventScreenState.update { it.copy(datePickerStartDate = calendar.timeInMillis) }
+            updateDatePickerStartDate(calendar, state)
         }
+    }
+
+    private fun updateDatePickerStartDate(
+        calendar: Calendar,
+        state: CreateEventScreenState
+    ) {
+        calendar.timeInMillis = state.startDate.timeInMillis
+        calendar.add(Calendar.DAY_OF_YEAR, -1)
+        createEventScreenState.update { it.copy(datePickerStartDate = calendar.timeInMillis) }
     }
 }
