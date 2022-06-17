@@ -1,7 +1,5 @@
 package com.pti.sheldons_schedule.ui.screens.main_screen
 
-import android.util.Log
-import androidx.compose.foundation.gestures.scrollBy
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
@@ -15,8 +13,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.layout.onGloballyPositioned
-import androidx.compose.ui.layout.positionInParent
-import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.layout.positionInRoot
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -57,10 +55,15 @@ fun MainScreen(
     val calendar = Calendar.getInstance()
     val currentHour = calendar.get(Calendar.HOUR_OF_DAY)
 
-    Box(
+    BoxWithConstraints(
         modifier = Modifier.fillMaxSize(),
         contentAlignment = Alignment.Center
     ) {
+        val heightPx = with(LocalDensity.current) {
+            maxHeight.value.dp.toPx()
+        }
+        val centerOfCalendar = heightPx / 2
+
         HorizontalPager(
             count = weeks.itemCount,
             modifier = Modifier.fillMaxSize(),
@@ -86,10 +89,6 @@ fun MainScreen(
                         .fillMaxSize()
                         .verticalScroll(scrollState)
                 ) {
-                    val config = LocalConfiguration.current
-                    val centerOfCalendar =
-                        config.screenHeightDp.toFloat() / 2 + CONTENT_BOX_HEIGHT + CALENDAR_HEADER_HEIGHT
-
                     (0 until HOURS_COUNT).forEach { hourItem ->
                         val isCurrentHour = currentHour == hourItem
 
@@ -151,11 +150,13 @@ fun MainScreen(
                                                         .onGloballyPositioned { coordinates ->
                                                             if (
                                                                 isCurrentHour &&
-                                                                coordinates.positionInParent().y != centerOfCalendar &&
+                                                                coordinates.positionInRoot().y != centerOfCalendar &&
                                                                 !scrollState.isScrollInProgress
                                                             ) {
                                                                 scope.launch {
-                                                                    scrollState.scrollBy(centerOfCalendar)
+                                                                    scrollState.scrollTo(
+                                                                        centerOfCalendar.toInt()
+                                                                    )
                                                                 }
                                                             }
                                                         },
