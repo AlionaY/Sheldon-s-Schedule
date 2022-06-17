@@ -17,7 +17,7 @@ data class CreateEventScreenState(
     val priority: Priority = Priority.Low,
     val datePickerStartDate: Long = Calendar.getInstance().timeInMillis,
     val titleErrorText: String? = null,
-    val titleBorderColor: TitleBorderColor = TitleBorderColor.Normal
+    val titleFieldState: TitleFieldState = TitleFieldState.Normal
 ) {
     val formattedStartDate: String = startDate.formatDate(DATE_FORMAT)
     val formattedEndDate: String = endDate.formatDate(DATE_FORMAT)

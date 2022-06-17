@@ -17,7 +17,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.pti.sheldons_schedule.R
-import com.pti.sheldons_schedule.data.TitleBorderColor
+import com.pti.sheldons_schedule.data.TitleFieldState
 import kotlinx.coroutines.launch
 
 private const val PADDING_WIDTH_SUM = 60
@@ -33,9 +33,9 @@ fun CreateEventScreen(
     val state by viewModel.createEventScreenState.collectAsState()
     val focusManager = LocalFocusManager.current
 
-    val titleBorderColor = when (state.titleBorderColor) {
-        TitleBorderColor.Normal -> MaterialTheme.colors.onSurface.copy(alpha = ContentAlpha.disabled)
-        TitleBorderColor.Error -> MaterialTheme.colors.error
+    val titleBorderColor = when (state.titleFieldState) {
+        TitleFieldState.Normal -> MaterialTheme.colors.onSurface.copy(alpha = ContentAlpha.disabled)
+        TitleFieldState.Error -> MaterialTheme.colors.error
     }
 
     ModalBottomSheet(

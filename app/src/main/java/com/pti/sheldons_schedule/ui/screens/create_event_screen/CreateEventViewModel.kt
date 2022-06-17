@@ -7,7 +7,7 @@ import com.pti.sheldons_schedule.R
 import com.pti.sheldons_schedule.data.CreateEventScreenState
 import com.pti.sheldons_schedule.data.Options
 import com.pti.sheldons_schedule.data.Options.*
-import com.pti.sheldons_schedule.data.TitleBorderColor
+import com.pti.sheldons_schedule.data.TitleFieldState
 import com.pti.sheldons_schedule.data.toEvent
 import com.pti.sheldons_schedule.db.EventRepository
 import com.pti.sheldons_schedule.util.Constants
@@ -144,16 +144,16 @@ class CreateEventViewModel @Inject constructor(
                 null
             }
 
-            val titleBorderColor = if (state.value.title.isEmpty() && !hasFocus) {
-                TitleBorderColor.Error
+            val titleFieldState = if (state.value.title.isEmpty() && !hasFocus) {
+                TitleFieldState.Error
             } else {
-                TitleBorderColor.Normal
+                TitleFieldState.Normal
             }
 
             state.update {
                 it.copy(
                     titleErrorText = titleErrorText,
-                    titleBorderColor = titleBorderColor
+                    titleFieldState = titleFieldState
                 )
             }
         }
