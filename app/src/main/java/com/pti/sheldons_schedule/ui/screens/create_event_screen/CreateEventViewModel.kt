@@ -7,6 +7,7 @@ import com.pti.sheldons_schedule.R
 import com.pti.sheldons_schedule.data.CreateEventScreenState
 import com.pti.sheldons_schedule.data.Options
 import com.pti.sheldons_schedule.data.Options.*
+import com.pti.sheldons_schedule.data.TitleBorderColor
 import com.pti.sheldons_schedule.data.toEvent
 import com.pti.sheldons_schedule.db.EventRepository
 import com.pti.sheldons_schedule.util.Constants
@@ -136,13 +137,26 @@ class CreateEventViewModel @Inject constructor(
     }
 
     fun onFocusChanged(hasFocus: Boolean) {
-        val errorText = if (createEventScreenState.value.title.isEmpty() && !hasFocus) {
-            context.getText(R.string.title_error_message).toString()
-        } else {
-            null
-        }
+        createEventScreenState.let { state ->
+            val titleErrorText = if (state.value.title.isEmpty() && !hasFocus) {
+                context.getText(R.string.title_error_message).toString()
+            } else {
+                null
+            }
 
-        createEventScreenState.update { it.copy(errorText = errorText) }
+            val titleBorderColor = if (state.value.title.isEmpty() && !hasFocus) {
+                TitleBorderColor.Error
+            } else {
+                TitleBorderColor.Normal
+            }
+
+            state.update {
+                it.copy(
+                    titleErrorText = titleErrorText,
+                    titleBorderColor = titleBorderColor
+                )
+            }
+        }
     }
 
     private fun observeScreenState() = viewModelScope.launch {

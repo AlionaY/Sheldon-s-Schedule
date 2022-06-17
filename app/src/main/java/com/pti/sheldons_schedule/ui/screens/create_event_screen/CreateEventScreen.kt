@@ -17,6 +17,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.pti.sheldons_schedule.R
+import com.pti.sheldons_schedule.data.TitleBorderColor
 import kotlinx.coroutines.launch
 
 private const val PADDING_WIDTH_SUM = 60
@@ -31,6 +32,11 @@ fun CreateEventScreen(
 
     val state by viewModel.createEventScreenState.collectAsState()
     val focusManager = LocalFocusManager.current
+
+    val titleBorderColor = when (state.titleBorderColor) {
+        TitleBorderColor.Normal -> MaterialTheme.colors.onSurface.copy(alpha = ContentAlpha.disabled)
+        TitleBorderColor.Error -> MaterialTheme.colors.error
+    }
 
     ModalBottomSheet(
         modifier = Modifier
@@ -63,13 +69,6 @@ fun CreateEventScreen(
         BoxWithConstraints(modifier = Modifier.fillMaxSize()) {
             val halfFieldWidth = (this.maxWidth.value.toInt() - PADDING_WIDTH_SUM) / FIELD_COUNT
 
-            var hasFocus by remember { mutableStateOf(false) }
-            val titleBorderColor = if (hasFocus) {
-                MaterialTheme.colors.onSurface.copy(alpha = ContentAlpha.disabled)
-            } else {
-                MaterialTheme.colors.error
-            }
-
             Column(modifier = Modifier.fillMaxSize()) {
                 SaveOrCloseCreatingEvent(
                     onCloseIconClicked = { navController.popBackStack() },
@@ -91,9 +90,8 @@ fun CreateEventScreen(
                         .focusRequester(focusRequester)
                         .onFocusChanged {
                             viewModel.onFocusChanged(it.hasFocus)
-                            hasFocus = it.hasFocus
                         },
-                    errorText = state.errorText.orEmpty(),
+                    errorText = state.titleErrorText.orEmpty(),
                     borderColor = titleBorderColor
                 )
                 HeightSpacer()
