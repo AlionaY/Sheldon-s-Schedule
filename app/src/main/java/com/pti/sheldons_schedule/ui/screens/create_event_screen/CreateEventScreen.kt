@@ -1,19 +1,23 @@
 package com.pti.sheldons_schedule.ui.screens.create_event_screen
 
 import androidx.compose.foundation.layout.*
+import androidx.compose.material.ContentAlpha
 import androidx.compose.material.ExperimentalMaterialApi
+import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
+import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.pti.sheldons_schedule.R
+import com.pti.sheldons_schedule.data.TitleFieldState
 import kotlinx.coroutines.launch
 
 private const val PADDING_WIDTH_SUM = 60
@@ -28,6 +32,11 @@ fun CreateEventScreen(
 
     val state by viewModel.createEventScreenState.collectAsState()
     val focusManager = LocalFocusManager.current
+
+    val titleBorderColor = when (state.titleFieldState) {
+        TitleFieldState.Normal -> MaterialTheme.colors.onSurface.copy(alpha = ContentAlpha.disabled)
+        TitleFieldState.Error -> MaterialTheme.colors.error
+    }
 
     ModalBottomSheet(
         modifier = Modifier
@@ -78,8 +87,12 @@ fun CreateEventScreen(
                     label = stringResource(id = R.string.title),
                     modifier = Modifier
                         .padding(horizontal = 15.dp)
-                        .focusRequester(focusRequester),
-                    errorText = state.errorText.orEmpty()
+                        .focusRequester(focusRequester)
+                        .onFocusChanged {
+                            viewModel.onFocusChanged(it.hasFocus)
+                        },
+                    errorText = state.titleErrorText.orEmpty(),
+                    borderColor = titleBorderColor
                 )
                 HeightSpacer()
                 DefaultTextField(
