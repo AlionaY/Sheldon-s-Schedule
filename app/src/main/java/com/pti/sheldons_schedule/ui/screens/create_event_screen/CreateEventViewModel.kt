@@ -7,6 +7,7 @@ import com.pti.sheldons_schedule.R
 import com.pti.sheldons_schedule.data.CreateEventScreenState
 import com.pti.sheldons_schedule.data.Options
 import com.pti.sheldons_schedule.data.Options.*
+import com.pti.sheldons_schedule.data.TitleFieldState
 import com.pti.sheldons_schedule.data.toEvent
 import com.pti.sheldons_schedule.db.EventRepository
 import com.pti.sheldons_schedule.util.Constants
@@ -124,10 +125,18 @@ class CreateEventViewModel @Inject constructor(
         createEventScreenState.update { it.copy(description = string) }
     }
 
-    fun onSaveEventClicked() = viewModelScope.launch {
-        val currentDate = Calendar.getInstance().formatDate(Constants.DATE_FORMAT)
+    fun onSaveEventClicked() {
+        createEventScreenState.value.let { state ->
+            val currentDate = Calendar.getInstance().formatDate(Constants.DATE_FORMAT)
+            val duration = state.endDate.timeInMillis - state.startDate.timeInMillis
+
+            if (state.title.isNotEmpty()) saveEvent(currentDate, duration)
+        }
+    }
+
+    private fun saveEvent(currentDate: String, duration: Long) = viewModelScope.launch {
         repository.saveEvent(
-            createEventScreenState.value.toEvent(currentDate)
+            createEventScreenState.value.toEvent(currentDate, duration)
         )
     }
 
@@ -146,13 +155,26 @@ class CreateEventViewModel @Inject constructor(
     }
 
     fun onFocusChanged(hasFocus: Boolean) {
-        val errorText = if (createEventScreenState.value.title.isEmpty() && !hasFocus) {
-            context.getText(R.string.title_error_message).toString()
-        } else {
-            null
-        }
+        createEventScreenState.let { state ->
+            val titleErrorText = if (state.value.title.isEmpty() && !hasFocus) {
+                context.getText(R.string.title_error_message).toString()
+            } else {
+                null
+            }
 
-        createEventScreenState.update { it.copy(titleErrorText = errorText) }
+            val titleFieldState = if (state.value.title.isEmpty() && !hasFocus) {
+                TitleFieldState.Error
+            } else {
+                TitleFieldState.Normal
+            }
+
+            state.update {
+                it.copy(
+                    titleErrorText = titleErrorText,
+                    titleFieldState = titleFieldState
+                )
+            }
+        }
     }
 
     private fun observeScreenState() = viewModelScope.launch {
