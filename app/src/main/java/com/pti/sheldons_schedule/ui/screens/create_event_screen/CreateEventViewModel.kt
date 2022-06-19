@@ -44,23 +44,43 @@ class CreateEventViewModel @Inject constructor(
         observeScreenState()
     }
 
-    fun onStartDatePicked(calendar: Calendar) {
+    fun onStartDatePicked(pickedDate: Calendar) {
+        createEventScreenState.let { state ->
+            val endDate = if (pickedDate > state.value.endDate) {
+                pickedDate.apply {
+                    set(Calendar.HOUR_OF_DAY, state.value.calendar.get(Calendar.HOUR_OF_DAY))
+                    set(Calendar.MINUTE, state.value.calendar.get(Calendar.MINUTE))
+                    add(Calendar.MINUTE, 40)
+                }
+            } else {
+                state.value.endDate
+            }
+
+            val startDate = (state.value.startDate.clone() as Calendar).apply {
+                set(Calendar.YEAR, pickedDate.get(Calendar.YEAR))
+                set(Calendar.MONTH, pickedDate.get(Calendar.MONTH))
+                set(Calendar.DAY_OF_MONTH, pickedDate.get(Calendar.DAY_OF_MONTH))
+            }
+
+            updateCalendar(startDate, endDate)
+        }
+    }
+
+    private fun updateCalendar(startDate: Calendar, endDate: Calendar) {
         createEventScreenState.update {
-            it.copy(startDate = (it.startDate.clone() as Calendar).apply {
-                set(Calendar.YEAR, calendar.get(Calendar.YEAR))
-                set(Calendar.MONTH, calendar.get(Calendar.MONTH))
-                set(Calendar.DAY_OF_MONTH, calendar.get(Calendar.DAY_OF_MONTH))
-            })
+            it.copy(startDate = startDate, endDate = endDate)
         }
     }
 
     fun onEndDatePicked(calendar: Calendar) {
-        createEventScreenState.update {
-            it.copy(endDate = (it.endDate.clone() as Calendar).apply {
+        createEventScreenState.value.let { state ->
+            val endDate = (state.endDate.clone() as Calendar).apply {
                 set(Calendar.YEAR, calendar.get(Calendar.YEAR))
                 set(Calendar.MONTH, calendar.get(Calendar.MONTH))
                 set(Calendar.DAY_OF_MONTH, calendar.get(Calendar.DAY_OF_MONTH))
-            })
+            }
+
+            updateCalendar(startDate = state.startDate, endDate = endDate)
         }
     }
 
