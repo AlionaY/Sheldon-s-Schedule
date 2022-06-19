@@ -47,23 +47,47 @@ class CreateEventViewModel @Inject constructor(
     fun onStartDatePicked(pickedDate: Calendar) {
         createEventScreenState.let { state ->
             val endDate = if (pickedDate > state.value.endDate) {
-                pickedDate.apply {
-                    set(Calendar.HOUR_OF_DAY, state.value.calendar.get(Calendar.HOUR_OF_DAY))
-                    set(Calendar.MINUTE, state.value.calendar.get(Calendar.MINUTE))
-                    add(Calendar.MINUTE, 40)
-                }
+                getDateWithUpdatedTime(
+                    date = pickedDate,
+                    hour = state.value.calendar.get(Calendar.HOUR_OF_DAY),
+                    minutes = state.value.calendar.get(Calendar.MINUTE),
+                    minutesToAdd = 40
+                )
             } else {
                 state.value.endDate
             }
 
-            val startDate = (state.value.startDate.clone() as Calendar).apply {
-                set(Calendar.YEAR, pickedDate.get(Calendar.YEAR))
-                set(Calendar.MONTH, pickedDate.get(Calendar.MONTH))
-                set(Calendar.DAY_OF_MONTH, pickedDate.get(Calendar.DAY_OF_MONTH))
-            }
+            val startDate = getCalendarWithUpdatedDate(
+                date = state.value.startDate,
+                year = pickedDate.get(Calendar.YEAR),
+                month = pickedDate.get(Calendar.MONTH),
+                dayOfMonth = pickedDate.get(Calendar.DAY_OF_MONTH)
+            )
 
             updateCalendar(startDate, endDate)
         }
+    }
+
+    private fun getDateWithUpdatedTime(
+        date: Calendar,
+        hour: Int,
+        minutes: Int,
+        minutesToAdd: Int? = null
+    ) = (date.clone() as Calendar).apply {
+        set(Calendar.HOUR_OF_DAY, hour)
+        set(Calendar.MINUTE, minutes)
+        if (minutesToAdd != null) add(Calendar.MINUTE, minutesToAdd)
+    }
+
+    private fun getCalendarWithUpdatedDate(
+        date: Calendar,
+        year: Int,
+        month: Int,
+        dayOfMonth: Int
+    ) = (date.clone() as Calendar).apply {
+        set(Calendar.YEAR, year)
+        set(Calendar.MONTH, month)
+        set(Calendar.DAY_OF_MONTH, dayOfMonth)
     }
 
     private fun updateCalendar(startDate: Calendar, endDate: Calendar) {
@@ -74,22 +98,64 @@ class CreateEventViewModel @Inject constructor(
 
     fun onEndDatePicked(calendar: Calendar) {
         createEventScreenState.value.let { state ->
-            val endDate = (state.endDate.clone() as Calendar).apply {
-                set(Calendar.YEAR, calendar.get(Calendar.YEAR))
-                set(Calendar.MONTH, calendar.get(Calendar.MONTH))
-                set(Calendar.DAY_OF_MONTH, calendar.get(Calendar.DAY_OF_MONTH))
-            }
+            val endDate = getCalendarWithUpdatedDate(
+                date = state.endDate,
+                year = calendar.get(Calendar.YEAR),
+                month = calendar.get(Calendar.MONTH),
+                dayOfMonth = calendar.get(Calendar.DAY_OF_MONTH)
+            )
 
             updateCalendar(startDate = state.startDate, endDate = endDate)
         }
     }
 
     fun onTimeStartPicked(hour: Int, minutes: Int) {
-        validateStartPickedTime(hour, minutes)
+        createEventScreenState.value.let { state ->
+            val currentTime = state.calendar
+            val pickedTime = getDateWithUpdatedTime(
+                date = state.startDate,
+                hour = hour,
+                minutes = minutes
+            )
+            val isStartTimeValid = currentTime < pickedTime
+            val endDate = if (isStartTimeValid) {
+                getDateWithUpdatedTime(
+                    date = state.endDate,
+                    hour = hour,
+                    minutes = minutes,
+                    minutesToAdd = 30
+                )
+            } else {
+                state.endDate
+            }
+            val startDate = if (isStartTimeValid) pickedTime else state.startDate
+
+            validatePickedTime(
+                isTimeValid = isStartTimeValid,
+                startDate = startDate,
+                endDate = endDate
+            )
+        }
     }
 
     fun onTimeEndPicked(hour: Int, minutes: Int) {
-        validateEndPickedTime(hour, minutes)
+        createEventScreenState.value.let { state ->
+            val currentTime = state.calendar
+            val pickedTime = getDateWithUpdatedTime(
+                date = state.endDate,
+                hour = hour,
+                minutes = minutes
+            )
+            val isEndTimeValid = currentTime < pickedTime ||
+                    state.startDate < pickedTime
+            val endDate = if (isEndTimeValid) pickedTime else state.endDate
+
+            validatePickedTime(
+                isTimeValid = isEndTimeValid,
+                startDate = state.startDate,
+                endDate = endDate
+            )
+        }
     }
 
     fun onRepeatFieldClicked() = viewModelScope.launch {
