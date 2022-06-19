@@ -35,5 +35,6 @@
     <string name="dont_remind">Don`t remind</string>
 
     <string name="title_error_message">"The field cannot be empty"</string>
-    <string name="time_picker_error_message">Invalid time</string>
+    <string name="time_picker_error_message">Please, select valid time.</string>
+    <string name="snackbar_action">Select time</string>
 </resources>

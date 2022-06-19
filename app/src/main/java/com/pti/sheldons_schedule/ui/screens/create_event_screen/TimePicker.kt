@@ -23,15 +23,15 @@ import java.util.*
 fun TimePickerField(
     pickedTime: String,
     calendar: Calendar,
-    errorText: String,
     onValueChanged: (String) -> Unit,
     onTimePicked: (hour: Int, minutes: Int) -> Unit,
     modifier: Modifier = Modifier,
-    label: @Composable (() -> Unit)? = null
+    label: @Composable (() -> Unit)? = null,
+    isTimePickerVisible: Boolean = false
 ) {
     var isClicked by remember { mutableStateOf(false) }
 
-    if (isClicked) {
+    if (isTimePickerVisible || isClicked) {
         TimePicker(calendar = calendar, onTimePicked = onTimePicked)
         isClicked = false
     }
@@ -53,7 +53,6 @@ fun TimePickerField(
                 )
             }
         )
-        ErrorTextMessage(errorText = errorText)
     }
 }
 

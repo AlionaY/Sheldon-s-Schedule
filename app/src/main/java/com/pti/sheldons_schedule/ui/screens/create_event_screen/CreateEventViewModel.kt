@@ -14,6 +14,7 @@ import com.pti.sheldons_schedule.util.Constants
 import com.pti.sheldons_schedule.util.formatDate
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -32,10 +33,11 @@ class CreateEventViewModel @Inject constructor(
                 add(Calendar.MINUTE, 10)
             },
             endDate = Calendar.getInstance().apply {
-                add(Calendar.MINUTE, 30)
+                add(Calendar.MINUTE, 40)
             }
         )
     )
+    val showTimePicker = MutableSharedFlow<Boolean>()
 
 
     init {
@@ -63,46 +65,11 @@ class CreateEventViewModel @Inject constructor(
     }
 
     fun onTimeStartPicked(hour: Int, minutes: Int) {
-        createEventScreenState.update {
-            it.copy(
-                startDate = (it.startDate.clone() as Calendar).apply {
-                    set(Calendar.HOUR_OF_DAY, hour)
-                    set(Calendar.MINUTE, minutes)
-                },
-                endDate = (it.endDate.clone() as Calendar).apply {
-                    set(Calendar.HOUR_OF_DAY, hour)
-                    set(Calendar.MINUTE, minutes)
-                    add(Calendar.MINUTE, 30)
-                }
-            )
-        }
+        validateStartPickedTime(hour, minutes)
     }
 
     fun onTimeEndPicked(hour: Int, minutes: Int) {
-        createEventScreenState.let { state ->
-            state.update {
-                it.copy(
-                    endDate = (it.endDate.clone() as Calendar).apply {
-                        set(Calendar.HOUR_OF_DAY, hour)
-                        set(Calendar.MINUTE, minutes)
-                    }
-                )
-            }
-        }
-    }
-
-    private fun gerTimePickerErrorText(isHourValid: Boolean): String? {
-        createEventScreenState.let { state ->
-            val isTheSameDay =
-                state.value.formattedEndDate == state.value.formattedStartDate
-
-            val errorText = if (isHourValid && isTheSameDay) {
-                context.getString(R.string.time_picker_error_message)
-            } else {
-                null
-            }
-            return errorText
-        }
+        validateEndPickedTime(hour, minutes)
     }
 
     fun onRepeatFieldClicked() = viewModelScope.launch {
@@ -182,7 +149,6 @@ class CreateEventViewModel @Inject constructor(
 
         createEventScreenState.collect { state ->
             updateDatePickerStartDate(calendar, state)
-            validatePickedTime()
         }
     }
 
@@ -195,18 +161,69 @@ class CreateEventViewModel @Inject constructor(
         createEventScreenState.update { it.copy(datePickerStartDate = calendar.timeInMillis) }
     }
 
-    private fun validatePickedTime() {
-        val currentHour = createEventScreenState.value.calendar.formatDate(Constants.TIME_FORMAT)
-        val startHour = createEventScreenState.value.formattedStartTime
-        val endHour = createEventScreenState.value.formattedEndTime
-        val isStartHourValid = currentHour > startHour
-        val isEndTimeValid = currentHour > endHour || startHour > endHour
+    private fun validateStartPickedTime(hour: Int, minutes: Int) {
+        createEventScreenState.let { state ->
+            val currentTime = state.value.calendar.formatDate(Constants.TIME_FORMAT)
+            val isTheSameDay = state.value.formattedEndDate == state.value.formattedStartDate
+            val pickedTime = "$hour:$minutes"
+            val isStartTimeValid = currentTime < pickedTime && isTheSameDay
 
-        createEventScreenState.update {
-            it.copy(
-                endTimeErrorText = gerTimePickerErrorText(isEndTimeValid),
-                startTimeErrorText = gerTimePickerErrorText(isStartHourValid)
-            )
+            val startDate = if (isStartTimeValid) {
+                (state.value.startDate.clone() as Calendar).apply {
+                    set(Calendar.HOUR_OF_DAY, hour)
+                    set(Calendar.MINUTE, minutes)
+                }
+            } else {
+                state.value.startDate
+            }
+
+            val endDate = if (isStartTimeValid) {
+                (state.value.endDate.clone() as Calendar).apply {
+                    set(Calendar.HOUR_OF_DAY, hour)
+                    set(Calendar.MINUTE, minutes)
+                    add(Calendar.MINUTE, 30)
+                }
+            } else {
+                state.value.endDate
+            }
+
+            createEventScreenState.update {
+                it.copy(
+                    startDate = startDate,
+                    endDate = endDate,
+                    isPickedTimeValid = isStartTimeValid
+                )
+            }
         }
+    }
+
+    private fun validateEndPickedTime(hour: Int, minutes: Int) {
+        createEventScreenState.let { state ->
+            val currentTime = state.value.calendar.formatDate(Constants.TIME_FORMAT)
+            val isTheSameDay = state.value.formattedEndDate == state.value.formattedStartDate
+            val pickedTime = "$hour:$minutes"
+            val isEndTimeValid = (currentTime > pickedTime ||
+                    state.value.formattedStartTime > pickedTime) &&
+                    isTheSameDay
+            val endDate = if (isEndTimeValid) {
+                (state.value.endDate.clone() as Calendar).apply {
+                    set(Calendar.HOUR_OF_DAY, hour)
+                    set(Calendar.MINUTE, minutes)
+                }
+            } else {
+                state.value.endDate
+            }
+
+            createEventScreenState.update {
+                it.copy(
+                    isPickedTimeValid = isEndTimeValid,
+                    endDate = endDate
+                )
+            }
+        }
+    }
+
+    fun onSnakbarActionClicked() = viewModelScope.launch {
+        showTimePicker.emit(true)
     }
 }

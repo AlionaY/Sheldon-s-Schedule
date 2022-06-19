@@ -1,10 +1,7 @@
 package com.pti.sheldons_schedule.ui.screens.create_event_screen
 
 import androidx.compose.foundation.layout.*
-import androidx.compose.material.ContentAlpha
-import androidx.compose.material.ExperimentalMaterialApi
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Text
+import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -31,8 +28,11 @@ fun CreateEventScreen(
 ) {
 
     val state by viewModel.createEventScreenState.collectAsState()
+    val showTimePicker by viewModel.showTimePicker.collectAsState(initial = false)
     val focusManager = LocalFocusManager.current
 
+    val snackbarMessage = stringResource(R.string.time_picker_error_message)
+    val snackbarAction = stringResource(id = R.string.snackbar_action)
     val titleBorderColor = when (state.titleFieldState) {
         TitleFieldState.Normal -> MaterialTheme.colors.onSurface.copy(alpha = ContentAlpha.disabled)
         TitleFieldState.Error -> MaterialTheme.colors.error
@@ -53,6 +53,7 @@ fun CreateEventScreen(
 
         val scope = rememberCoroutineScope()
         val focusRequester = remember { FocusRequester() }
+        val snackbarHostState = remember { SnackbarHostState() }
 
         LaunchedEffect(key1 = state.options) {
             if (!state.options.isNullOrEmpty()) {
@@ -64,6 +65,23 @@ fun CreateEventScreen(
 
         LaunchedEffect(key1 = Unit) {
             focusRequester.requestFocus()
+        }
+
+        LaunchedEffect(key1 = state.isPickedTimeValid) {
+            if (!state.isPickedTimeValid) {
+                scope.launch {
+                    val result = snackbarHostState.showSnackbar(
+                        message = snackbarMessage,
+                        actionLabel = snackbarAction
+                    )
+                    when (result) {
+                        SnackbarResult.ActionPerformed -> {
+                            viewModel.onSnakbarActionClicked()
+                        }
+                        SnackbarResult.Dismissed -> {}
+                    }
+                }
+            }
         }
 
         BoxWithConstraints(modifier = Modifier.fillMaxSize()) {
@@ -140,7 +158,7 @@ fun CreateEventScreen(
                     TimePickerField(
                         pickedTime = state.formattedStartTime,
                         calendar = state.startDate,
-                        errorText = state.startTimeErrorText.orEmpty(),
+                        isTimePickerVisible = showTimePicker,
                         onTimePicked = { hour, minutes ->
                             viewModel.onTimeStartPicked(hour, minutes)
                         },
@@ -155,7 +173,6 @@ fun CreateEventScreen(
                     TimePickerField(
                         pickedTime = state.formattedEndTime,
                         calendar = state.endDate,
-                        errorText = state.endTimeErrorText.orEmpty(),
                         onTimePicked = { hour, minutes ->
                             viewModel.onTimeEndPicked(hour, minutes)
                         },
@@ -201,6 +218,11 @@ fun CreateEventScreen(
                     onValueChanged = { }
                 )
             }
+
+            SnackbarHost(
+                hostState = snackbarHostState,
+                modifier = Modifier.align(Alignment.BottomCenter)
+            )
         }
     }
 }
