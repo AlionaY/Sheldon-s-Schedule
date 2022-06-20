@@ -27,11 +27,10 @@ fun TimePickerField(
     onTimePicked: (hour: Int, minutes: Int) -> Unit,
     modifier: Modifier = Modifier,
     label: @Composable (() -> Unit)? = null,
-    isTimePickerVisible: Boolean = false
 ) {
     var isClicked by remember { mutableStateOf(false) }
 
-    if (isTimePickerVisible || isClicked) {
+    if (isClicked) {
         TimePicker(calendar = calendar, onTimePicked = onTimePicked)
         isClicked = false
     }

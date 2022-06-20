@@ -37,7 +37,6 @@ class CreateEventViewModel @Inject constructor(
             }
         )
     )
-    val showTimePicker = MutableSharedFlow<Boolean>()
 
 
     init {
@@ -271,7 +270,6 @@ class CreateEventViewModel @Inject constructor(
     }
 
     fun onSnakbarActionClicked() = viewModelScope.launch {
-        showTimePicker.emit(true)
     }
 
     fun resetTimeValidation() {

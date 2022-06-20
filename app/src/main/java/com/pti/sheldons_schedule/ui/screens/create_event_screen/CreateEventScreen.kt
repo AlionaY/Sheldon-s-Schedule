@@ -28,7 +28,6 @@ fun CreateEventScreen(
 ) {
 
     val state by viewModel.createEventScreenState.collectAsState()
-    val showTimePicker by viewModel.showTimePicker.collectAsState(initial = false)
     val focusManager = LocalFocusManager.current
 
     val snackbarMessage = stringResource(R.string.time_picker_error_message)
@@ -159,7 +158,6 @@ fun CreateEventScreen(
                     TimePickerField(
                         pickedTime = state.formattedStartTime,
                         calendar = state.startDate,
-                        isTimePickerVisible = showTimePicker,
                         onTimePicked = { hour, minutes ->
                             viewModel.onTimeStartPicked(hour, minutes)
                         },
