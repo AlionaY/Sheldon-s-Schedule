@@ -81,6 +81,7 @@ fun CreateEventScreen(
                         SnackbarResult.Dismissed -> {}
                     }
                 }
+                viewModel.resetTimeValidation()
             }
         }
 
