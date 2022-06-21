@@ -26,10 +26,8 @@ fun CreateEventScreen(
     navController: NavController,
     viewModel: CreateEventViewModel = hiltViewModel()
 ) {
-
     val state by viewModel.createEventScreenState.collectAsState()
     val isPickedTimeValid by viewModel.isPickedTimeValid.collectAsState(initial = true)
-    val isSnackbarActionClicked by viewModel.isSnackbarActionClicked.collectAsState(initial = false)
     val focusManager = LocalFocusManager.current
 
     val snackbarMessage = stringResource(R.string.time_picker_error_message)
@@ -38,6 +36,7 @@ fun CreateEventScreen(
         TitleFieldState.Normal -> MaterialTheme.colors.onSurface.copy(alpha = ContentAlpha.disabled)
         TitleFieldState.Error -> MaterialTheme.colors.error
     }
+    var isSnackbarActionClicked by remember { mutableStateOf(false) }
 
     if (state.pickedStartTime != state.startDate && isSnackbarActionClicked) {
         TimePicker(
@@ -46,6 +45,7 @@ fun CreateEventScreen(
                 viewModel.onTimeStartPicked(hour = hour, minutes = minutes)
             }
         )
+        isSnackbarActionClicked = false
     }
 
     if (state.pickedEndTime != state.endDate &&
@@ -58,6 +58,7 @@ fun CreateEventScreen(
                 viewModel.onTimeEndPicked(hour = hour, minutes = minutes)
             }
         )
+        isSnackbarActionClicked = false
     }
 
     ModalBottomSheet(
@@ -98,7 +99,7 @@ fun CreateEventScreen(
                     )
                     when (result) {
                         SnackbarResult.ActionPerformed -> {
-                            viewModel.onSnakbarActionClicked()
+                            isSnackbarActionClicked = true
                         }
                         SnackbarResult.Dismissed -> {}
                     }

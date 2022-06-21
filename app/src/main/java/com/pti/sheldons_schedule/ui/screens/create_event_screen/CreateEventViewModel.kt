@@ -294,10 +294,6 @@ class CreateEventViewModel @Inject constructor(
         }
     }
 
-    fun onSnakbarActionClicked() = viewModelScope.launch {
-        isSnackbarActionClicked.emit(true)
-    }
-
     fun resetTimeValidationValue() = viewModelScope.launch {
         isPickedTimeValid.emit(true)
     }
