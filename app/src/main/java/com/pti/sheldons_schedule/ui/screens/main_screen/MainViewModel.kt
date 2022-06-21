@@ -42,9 +42,4 @@ class MainViewModel @Inject constructor(
         val currentMinutesInPercent = (currentMinutes / MINUTES_IN_HOUR_FLOAT)
         currentMinutesInPercent
     }
-
-
-    init {
-        notificationController.createNotificationChannel()
-    }
 }

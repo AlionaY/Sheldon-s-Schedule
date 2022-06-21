@@ -18,7 +18,11 @@ class NotificationController @Inject constructor(
     @ApplicationContext val context: Context
 ) {
 
-    fun createNotificationChannel() {
+    init {
+        createNotificationChannel()
+    }
+
+    private fun createNotificationChannel() {
         val name = context.getString(R.string.notification_channel_name)
         val descriptionText = context.getString(R.string.notification_channel_description)
         val importance = NotificationManager.IMPORTANCE_DEFAULT
@@ -26,7 +30,7 @@ class NotificationController @Inject constructor(
             description = descriptionText
         }
 
-        val notificationManager: NotificationManager? = context.getSystemService<NotificationManager>()
+        val notificationManager = context.getSystemService<NotificationManager>()
         notificationManager?.createNotificationChannel(channel)
     }
 
