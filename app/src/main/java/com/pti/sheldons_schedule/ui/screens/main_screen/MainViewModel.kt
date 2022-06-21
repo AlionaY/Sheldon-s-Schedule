@@ -5,6 +5,8 @@ import androidx.lifecycle.viewModelScope
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.cachedIn
+import com.pti.sheldons_schedule.db.EventRepository
+import com.pti.sheldons_schedule.service.NotificationController
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ObsoleteCoroutinesApi
 import kotlinx.coroutines.channels.ticker
@@ -16,7 +18,10 @@ import javax.inject.Inject
 
 @OptIn(ObsoleteCoroutinesApi::class)
 @HiltViewModel
-class MainViewModel @Inject constructor() : ViewModel() {
+class MainViewModel @Inject constructor(
+    private val repository: EventRepository,
+    private val notificationController: NotificationController
+) : ViewModel() {
 
     companion object {
         private const val MINUTES_IN_HOUR_FLOAT = 60f
