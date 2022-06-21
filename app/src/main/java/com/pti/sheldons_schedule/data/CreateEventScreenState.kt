@@ -19,7 +19,9 @@ data class CreateEventScreenState(
     val datePickerStartDate: Long = Calendar.getInstance().timeInMillis,
     val titleErrorText: String? = null,
     val titleFieldState: TitleFieldState = TitleFieldState.Normal,
-    val isPickedTimeValid: Boolean = true
+    val isPickedTimeValid: Boolean = true,
+    val pickedStartTime: Calendar,
+    val pickedEndTime: Calendar
 ) {
     val formattedStartDate: String = startDate.formatDate(DATE_FORMAT)
     val formattedEndDate: String = endDate.formatDate(DATE_FORMAT)

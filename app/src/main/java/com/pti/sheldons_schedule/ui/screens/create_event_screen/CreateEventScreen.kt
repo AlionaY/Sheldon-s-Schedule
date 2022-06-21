@@ -28,6 +28,7 @@ fun CreateEventScreen(
 ) {
 
     val state by viewModel.createEventScreenState.collectAsState()
+    val isPickedTimeValid by viewModel.isPickedTimeValid.collectAsState(initial = true)
     val focusManager = LocalFocusManager.current
 
     val snackbarMessage = stringResource(R.string.time_picker_error_message)
@@ -66,8 +67,8 @@ fun CreateEventScreen(
             focusRequester.requestFocus()
         }
 
-        LaunchedEffect(key1 = state.isPickedTimeValid) {
-            if (!state.isPickedTimeValid) {
+        LaunchedEffect(key1 = isPickedTimeValid) {
+            if (!isPickedTimeValid) {
                 scope.launch {
                     val result = snackbarHostState.showSnackbar(
                         message = snackbarMessage,
@@ -80,7 +81,7 @@ fun CreateEventScreen(
                         SnackbarResult.Dismissed -> {}
                     }
                 }
-                viewModel.resetTimeValidation()
+                viewModel.resetTimeValidationValue()
             }
         }
 
