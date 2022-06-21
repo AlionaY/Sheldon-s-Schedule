@@ -45,7 +45,7 @@ class CreateEventViewModel @Inject constructor(
     )
 
     val isPickedTimeValid = MutableSharedFlow<Boolean>()
-    val snackbarClicked = MutableSharedFlow<Boolean>()
+    val isSnackbarActionClicked = MutableSharedFlow<Boolean>()
 
 
     init {
@@ -295,6 +295,7 @@ class CreateEventViewModel @Inject constructor(
     }
 
     fun onSnakbarActionClicked() = viewModelScope.launch {
+        isSnackbarActionClicked.emit(true)
     }
 
     fun resetTimeValidationValue() = viewModelScope.launch {

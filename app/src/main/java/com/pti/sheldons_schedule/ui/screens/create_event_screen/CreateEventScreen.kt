@@ -29,6 +29,7 @@ fun CreateEventScreen(
 
     val state by viewModel.createEventScreenState.collectAsState()
     val isPickedTimeValid by viewModel.isPickedTimeValid.collectAsState(initial = true)
+    val isSnackbarActionClicked by viewModel.isSnackbarActionClicked.collectAsState(initial = false)
     val focusManager = LocalFocusManager.current
 
     val snackbarMessage = stringResource(R.string.time_picker_error_message)
@@ -36,6 +37,27 @@ fun CreateEventScreen(
     val titleBorderColor = when (state.titleFieldState) {
         TitleFieldState.Normal -> MaterialTheme.colors.onSurface.copy(alpha = ContentAlpha.disabled)
         TitleFieldState.Error -> MaterialTheme.colors.error
+    }
+
+    if (state.pickedStartTime != state.startDate && isSnackbarActionClicked) {
+        TimePicker(
+            calendar = state.startDate,
+            onTimePicked = { hour, minutes ->
+                viewModel.onTimeStartPicked(hour = hour, minutes = minutes)
+            }
+        )
+    }
+
+    if (state.pickedEndTime != state.endDate &&
+        isSnackbarActionClicked &&
+        state.startDate == state.pickedStartTime
+    ) {
+        TimePicker(
+            calendar = state.endDate,
+            onTimePicked = { hour, minutes ->
+                viewModel.onTimeEndPicked(hour = hour, minutes = minutes)
+            }
+        )
     }
 
     ModalBottomSheet(
