@@ -36,9 +36,6 @@
 
     <string name="title_error_message">"The field cannot be empty"</string>
 
-    <string name="notification_channel_name">Events notification channel</string>
-    <string name="notification_channel_description">Notification description</string>
-
     <string name="time_picker_error_message">Please, select valid time.</string>
     <string name="snackbar_action">Select time</string>
 </resources>
