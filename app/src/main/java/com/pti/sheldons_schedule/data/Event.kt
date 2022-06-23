@@ -13,7 +13,7 @@ import kotlinx.serialization.Serializable
 @TypeConverters(OptionsTypeConverter::class)
 data class Event(
     @PrimaryKey(autoGenerate = false)
-    val creationDate: String,
+    val creationDate: Long,
     val title: String = "",
     val description: String = "",
     val startDate: String,
@@ -27,7 +27,7 @@ data class Event(
     val reminder: Reminder? = null
 )
 
-fun CreateEventScreenState.toEvent(creationDate: String, duration: Long) = Event(
+fun CreateEventScreenState.toEvent(creationDate: Long, duration: Long) = Event(
     creationDate = creationDate,
     title = this.title,
     description = this.description,

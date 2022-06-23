@@ -24,8 +24,4 @@ object AppModule {
     @Provides
     @Singleton
     fun provideEventsRepository(eventDao: EventDao): EventRepository = EventRepositoryImpl(eventDao)
-
-    @Singleton
-    @Provides
-    fun provideNotificationController(@ApplicationContext context: Context) = NotificationController(context)
 }

@@ -14,4 +14,7 @@ interface EventDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertEvent(event: Event)
+
+    @Query("SELECT * FROM EventTable WHERE creationDate=:id ")
+    fun getEvent(id: String): Event
 }

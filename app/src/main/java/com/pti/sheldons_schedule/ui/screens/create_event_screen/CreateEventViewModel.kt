@@ -1,6 +1,11 @@
 package com.pti.sheldons_schedule.ui.screens.create_event_screen
 
+import android.app.AlarmManager
 import android.app.Application
+import android.app.PendingIntent
+import android.content.Intent
+import android.util.Log
+import androidx.core.content.getSystemService
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.pti.sheldons_schedule.R
@@ -10,8 +15,9 @@ import com.pti.sheldons_schedule.data.Options.*
 import com.pti.sheldons_schedule.data.TitleFieldState
 import com.pti.sheldons_schedule.data.toEvent
 import com.pti.sheldons_schedule.db.EventRepository
-import com.pti.sheldons_schedule.util.Constants.DATE_FORMAT
-import com.pti.sheldons_schedule.util.formatDate
+import com.pti.sheldons_schedule.service.AlarmReceiver
+import com.pti.sheldons_schedule.service.NotificationController
+import com.pti.sheldons_schedule.util.Constants
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -166,17 +172,18 @@ class CreateEventViewModel @Inject constructor(
 
     fun onSaveEventClicked() {
         createEventScreenState.value.let { state ->
-            val currentDate = Calendar.getInstance().formatDate(DATE_FORMAT)
+            val currentDate = Calendar.getInstance().timeInMillis
             val duration = state.endDate.timeInMillis - state.startDate.timeInMillis
 
-            if (state.title.isNotEmpty()) saveEvent(currentDate, duration)
+            if (state.title.isNotEmpty()) saveEvent(currentDate, duration, state.calendar.timeInMillis)
         }
     }
 
-    private fun saveEvent(currentDate: String, duration: Long) = viewModelScope.launch {
+    private fun saveEvent(currentDate: Long, duration: Long, creationDateInMillis: Long) = viewModelScope.launch {
         repository.saveEvent(
             createEventScreenState.value.toEvent(currentDate, duration)
         )
+        setReminderAlarm(creationDateInMillis)
     }
 
     fun onSelected(options: Options) {
@@ -280,5 +287,28 @@ class CreateEventViewModel @Inject constructor(
 
     fun resetTimeValidationValue() = viewModelScope.launch {
         isPickedTimeValid.emit(true)
+    }
+
+    private fun getEvent(id: Long) = repository.getEvent(id.toString())
+
+    private fun setReminderAlarm(eventId: Long) {
+        val alarmManager = context.getSystemService<AlarmManager>()
+        val notificationController = NotificationController(context) {
+            getEvent(it ?: 0)
+        }
+        val reminderIntent = Intent(context, AlarmReceiver::class.java).apply {
+            putExtra(Constants.REMINDER_ID, eventId.toString())
+            putExtra(Constants.IS_SERVICE_RUNNING, notificationController.isServiceRunning)
+        }
+        val pendingIntent = PendingIntent.getBroadcast(
+            context,
+            eventId.toInt(),
+            reminderIntent,
+            PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
+        )
+//        todo: set time in millis when alarm
+        alarmManager?.setAndAllowWhileIdle(
+            AlarmManager.RTC_WAKEUP, 0, pendingIntent
+        )
     }
 }
