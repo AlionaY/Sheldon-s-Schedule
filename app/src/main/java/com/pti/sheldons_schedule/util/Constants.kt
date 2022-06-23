@@ -12,5 +12,5 @@ object Constants {
     const val REMINDER_ID = "reminderId"
     const val FROM = "from"
     const val NOTIFICATION = "Notification"
-    const val IS_SERVICE_RUNNING = "isServiceRunning"
+    const val EVENT = "event"
 }

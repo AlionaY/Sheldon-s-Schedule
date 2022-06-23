@@ -4,16 +4,16 @@ import android.app.AlarmManager
 import android.app.Application
 import android.app.PendingIntent
 import android.content.Intent
-import android.util.Log
+import android.os.Parcelable
 import androidx.core.content.getSystemService
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.pti.sheldons_schedule.R
 import com.pti.sheldons_schedule.data.*
 import com.pti.sheldons_schedule.data.Options.*
+import com.pti.sheldons_schedule.data.Options.Reminder.*
 import com.pti.sheldons_schedule.db.EventRepository
 import com.pti.sheldons_schedule.service.AlarmReceiver
-import com.pti.sheldons_schedule.service.NotificationController
 import com.pti.sheldons_schedule.util.Constants
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -46,19 +46,12 @@ class CreateEventViewModel @Inject constructor(
             }
         )
     )
-
-    val firstEvent = MutableStateFlow<Event?>(null)
     val isPickedTimeValid = MutableSharedFlow<Boolean>()
 
+    private val newEvent = MutableStateFlow<Event?>(null)
 
     init {
         observeScreenState()
-        getFirstEvent()
-        val notificationController = NotificationController()
-        Log.d("$$$", "notif VM is running ${notificationController.isServiceRunning}}")
-        viewModelScope.launch {
-            Log.d("###", "allevents ${repository.getAllEvents()}")
-        }
     }
 
     fun onStartDatePicked(pickedDate: Calendar) {
@@ -181,36 +174,38 @@ class CreateEventViewModel @Inject constructor(
             val duration = state.endDate.timeInMillis - state.startDate.timeInMillis
 
             if (state.title.isNotEmpty()) {
-                val remind = when(state.remind) {
-                    Reminder.DontRemind -> 0
-                    Reminder.Min10 -> TimeUnit.MINUTES.toMillis(10)
-                    Reminder.Min15 -> TimeUnit.MINUTES.toMillis(15)
-                    Reminder.Min30 -> TimeUnit.MINUTES.toMillis(30)
-                    Reminder.Min60 -> TimeUnit.MINUTES.toMillis(60)
-                }
-
-                val remindAt = state.startDate.timeInMillis - remind
+                val remindTime = getRemindTimeInMillis(state)
+                val remindAt = state.startDate.timeInMillis - remindTime
 
                 saveEvent(
                     currentDate,
                     duration,
-                    state.calendar.timeInMillis,
                     remindAt
                 )
             }
         }
     }
 
+    private fun getRemindTimeInMillis(state: CreateEventScreenState) =
+        when (state.remind) {
+            DontRemind -> DontRemind.value
+            Min10 -> TimeUnit.MINUTES.toMillis(Min10.value)
+            Min15 -> TimeUnit.MINUTES.toMillis(Min15.value)
+            Min30 -> TimeUnit.MINUTES.toMillis(Min30.value)
+            Min60 -> TimeUnit.MINUTES.toMillis(Min60.value)
+        }
+
     private fun saveEvent(
         currentDate: Long,
         duration: Long,
-        creationDateInMillis: Long,
         remind: Long
     ) = viewModelScope.launch {
-        repository.saveEvent(
-            createEventScreenState.value.toEvent(currentDate, duration)
-        )
-        setReminderAlarm(creationDateInMillis, remind)
+        newEvent.value = createEventScreenState.value.toEvent(currentDate, duration)
+        newEvent.value?.let {
+            repository.saveEvent(it)
+        }
+
+        setReminderAlarm(remind)
     }
 
     fun onSelected(options: Options) {
@@ -316,31 +311,21 @@ class CreateEventViewModel @Inject constructor(
         isPickedTimeValid.emit(true)
     }
 
-    private fun getEvent(id: Long) = repository.getEvent(id.toString())
-    private fun getFirstEvent() = viewModelScope.launch {
-        firstEvent.value = repository.getAllEvents()[0]
-    }
-
-    private fun setReminderAlarm(eventId: Long, remind: Long) {
-        Log.d("###", "notif VM setReminderAlarm $eventId")
-
+    private fun setReminderAlarm(remindTime: Long) {
+        val id = newEvent.value?.creationDate
         val alarmManager = context.getSystemService<AlarmManager>()
-        val notificationController = NotificationController()
-
         val reminderIntent = Intent(context, AlarmReceiver::class.java).apply {
-            putExtra(Constants.REMINDER_ID, firstEvent.value?.creationDate?.toString())
-            putExtra(Constants.IS_SERVICE_RUNNING, notificationController.isServiceRunning)
+            putExtra(Constants.REMINDER_ID, id)
+            putExtra(Constants.EVENT, newEvent.value as Parcelable)
         }
-        Log.d("$####", "setReminderAlarm event id $eventId, is running ${notificationController.isServiceRunning}")
         val pendingIntent = PendingIntent.getBroadcast(
             context,
-            firstEvent.value?.creationDate?.toInt() ?: 0,
+            id?.toInt() ?: 0,
             reminderIntent,
             PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
         )
-//        todo: set time in millis when alarm
         alarmManager?.setAndAllowWhileIdle(
-            AlarmManager.RTC_WAKEUP, 30000, pendingIntent
+            AlarmManager.RTC_WAKEUP, remindTime, pendingIntent
         )
     }
 }

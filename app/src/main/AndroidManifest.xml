@@ -24,10 +24,6 @@
             </intent-filter>
         </activity>
 
-        <service android:name=".service.NotificationController"
-            android:enabled="true"
-            android:exported="false"/>
-
         <receiver
             android:name=".service.AlarmReceiver"
             android:enabled="true"
