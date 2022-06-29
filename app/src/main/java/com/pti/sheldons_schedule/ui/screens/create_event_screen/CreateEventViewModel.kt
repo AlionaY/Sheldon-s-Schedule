@@ -13,7 +13,7 @@ import com.pti.sheldons_schedule.data.*
 import com.pti.sheldons_schedule.data.Options.*
 import com.pti.sheldons_schedule.data.Options.Reminder.*
 import com.pti.sheldons_schedule.db.EventRepository
-import com.pti.sheldons_schedule.service.AlarmReceiver
+import com.pti.sheldons_schedule.service.AlarmBroadcastReceiver
 import com.pti.sheldons_schedule.util.Constants
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -314,7 +314,7 @@ class CreateEventViewModel @Inject constructor(
     private fun setReminderAlarm(remindTime: Long) {
         val id = newEvent.value?.creationDate
         val alarmManager = context.getSystemService<AlarmManager>()
-        val reminderIntent = Intent(context, AlarmReceiver::class.java).apply {
+        val reminderIntent = Intent(context, AlarmBroadcastReceiver::class.java).apply {
             putExtra(Constants.REMINDER_ID, id)
             putExtra(Constants.EVENT, newEvent.value as Parcelable)
         }

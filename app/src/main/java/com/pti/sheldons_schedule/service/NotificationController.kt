@@ -12,6 +12,7 @@ import com.pti.sheldons_schedule.MainActivity
 import com.pti.sheldons_schedule.R
 import com.pti.sheldons_schedule.data.Event
 import com.pti.sheldons_schedule.util.Constants
+import com.pti.sheldons_schedule.util.Constants.EVENT
 import com.pti.sheldons_schedule.util.Constants.FROM
 import com.pti.sheldons_schedule.util.Constants.NOTIFICATION
 import com.pti.sheldons_schedule.util.Constants.REMINDER_ID
@@ -38,35 +39,34 @@ class NotificationController @Inject constructor(
         notificationManager?.createNotificationChannel(channel)
     }
 
-    fun createNotification(event: Event) {
+    fun createNotification(event: Event?) {
         context?.let {
-            createNotificationChannel(event.creationDate)
+            createNotificationChannel(event?.creationDate ?: 0)
 
             val intent = Intent(it, MainActivity::class.java).apply {
                 flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-                putExtra(REMINDER_ID, event.creationDate)
-                putExtra(Constants.EVENT, event)
+                putExtra(REMINDER_ID, event?.creationDate ?: 0)
+                putExtra(EVENT, event)
                 putExtra(FROM, NOTIFICATION)
             }
             val pendingIntent = PendingIntent.getActivity(
                 context,
-                event.creationDate.toInt(),
+                event?.creationDate?.toInt() ?: 0,
                 intent,
                 PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
             )
-            val builder =
-                NotificationCompat.Builder(it, Constants.CHANNEL_ID)
+            val builder = NotificationCompat.Builder(it, Constants.CHANNEL_ID)
                     .setSmallIcon(R.drawable.ic_baseline_schedule_24)
-                    .setContentTitle(event.title)
+                    .setContentTitle(event?.title.orEmpty())
                     .setContentText("Date")
-                    .setSubText(event.description)
+                    .setSubText(event?.description.orEmpty())
                     .setPriority(NotificationCompat.PRIORITY_DEFAULT)
                     .setContentIntent(pendingIntent)
                     .setAutoCancel(true)
 
 
             with(NotificationManagerCompat.from(it)) {
-                notify(event.creationDate.toInt(), builder.build())
+                notify(event?.creationDate?.toInt() ?: 0, builder.build())
             }
         }
     }

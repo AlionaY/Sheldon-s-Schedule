@@ -25,7 +25,7 @@
         </activity>
 
         <receiver
-            android:name=".service.AlarmReceiver"
+            android:name=".service.AlarmBroadcastReceiver"
             android:enabled="true"
             android:label="AlarmReceiver" />
 
