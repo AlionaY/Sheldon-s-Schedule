@@ -319,16 +319,4 @@ class CreateEventViewModel @Inject constructor(
             AlarmManager.RTC_WAKEUP, remindTime, pendingIntent
         )
     }
-
-    private fun getRepeatTimeInMillis(repeat: Repeat) =
-        when (repeat) {
-//            todo: set right time to repeat
-            Daily -> AlarmManager.INTERVAL_FIFTEEN_MINUTES
-            WeekDay -> TimeUnit.DAYS.toMillis(0) /* будні */
-            Weekly -> TimeUnit.DAYS.toMillis(7)
-            Monthly -> TimeUnit.DAYS.toMillis(30)
-            Annually -> TimeUnit.DAYS.toMillis(366)
-            Custom -> 0L
-            DontRepeat -> 0L
-        }
 }
