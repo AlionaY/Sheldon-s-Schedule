@@ -15,13 +15,7 @@ class AlarmBroadcastReceiver : BroadcastReceiver() {
 
     override fun onReceive(context: Context?, intent: Intent?) {
         notificationController = NotificationController(context)
-        val reminderId = intent?.getLongExtra(REMINDER_ID, 0)
         val event = intent?.getParcelableExtra<Event?>(EVENT)
-        val reminderServiceIntent = Intent(context, NotificationController::class.java).apply {
-            putExtra(REMINDER_ID, reminderId)
-            putExtra(EVENT, event)
-        }
-        context?.startService(reminderServiceIntent)
         notificationController.createNotification(event)
     }
 }

@@ -62,20 +62,18 @@ class CreateEventViewModel @Inject constructor(
                 month = pickedDate.get(Calendar.MONTH),
                 dayOfMonth = pickedDate.get(Calendar.DAY_OF_MONTH)
             )
+            state.update { it.copy(startDate = startDate) }
+
             val endDate = if (startDate > state.value.endDate) {
                 (state.value.endDate.clone() as Calendar).apply {
-                    set(Calendar.YEAR, startDate.get(Calendar.YEAR))
-                    set(Calendar.MONTH, startDate.get(Calendar.MONTH))
-                    set(Calendar.DAY_OF_MONTH, startDate.get(Calendar.DAY_OF_MONTH))
-                    set(Calendar.HOUR_OF_DAY, state.value.startDate.get(Calendar.HOUR_OF_DAY))
-                    set(Calendar.MINUTE, state.value.startDate.get(Calendar.MINUTE))
+                    time = state.value.startDate.time
                     add(Calendar.MINUTE, 30)
                 }
             } else {
                 state.value.endDate
             }
+            state.update { it.copy(endDate = endDate) }
 
-            state.update { it.copy(startDate = startDate, endDate = endDate) }
             onTimeStartPicked(
                 hour = startDate.get(Calendar.HOUR_OF_DAY),
                 minutes = startDate.get(Calendar.MINUTE)
