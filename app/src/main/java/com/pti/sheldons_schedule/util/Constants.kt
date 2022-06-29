@@ -9,4 +9,8 @@ object Constants {
     const val WEEK_LENGTH = 7
 
     const val CHANNEL_ID = "Events notification channel"
+    const val REMINDER_ID = "reminderId"
+    const val FROM = "from"
+    const val NOTIFICATION = "Notification"
+    const val EVENT = "event"
 }

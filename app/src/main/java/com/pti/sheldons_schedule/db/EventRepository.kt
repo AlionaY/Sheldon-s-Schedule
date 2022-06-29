@@ -7,4 +7,6 @@ interface EventRepository {
     suspend fun getAllEvents(): List<Event>
 
     suspend fun saveEvent(event: Event)
+
+    fun getEvent(id: String): Event
 }
