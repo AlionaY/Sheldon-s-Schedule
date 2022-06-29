@@ -8,6 +8,7 @@ import com.pti.sheldons_schedule.data.Options.*
 import com.pti.sheldons_schedule.db.OptionsTypeConverter
 import kotlinx.parcelize.Parcelize
 import kotlinx.serialization.SerialName
+import java.util.*
 
 @Parcelize
 @Entity(tableName = "EventTable")
@@ -19,6 +20,7 @@ data class Event(
     val description: String = "",
     val startDate: String,
     val endDate: String,
+    val startTime: String,
     val duration: Long? = null,
     @SerialName("repeat")
     val repeat: Repeat? = null,
@@ -34,6 +36,7 @@ fun CreateEventScreenState.toEvent(creationDate: Long, duration: Long) = Event(
     description = this.description,
     startDate = this.formattedStartDate,
     endDate = this.formattedEndDate,
+    startTime = this.formattedStartTime,
     duration = duration,
     repeat = this.repeat,
     priority = this.priority,

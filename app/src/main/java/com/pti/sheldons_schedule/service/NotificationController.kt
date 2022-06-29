@@ -1,5 +1,6 @@
 package com.pti.sheldons_schedule.service
 
+import android.app.AlarmManager
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.app.PendingIntent
@@ -11,12 +12,14 @@ import androidx.core.content.getSystemService
 import com.pti.sheldons_schedule.MainActivity
 import com.pti.sheldons_schedule.R
 import com.pti.sheldons_schedule.data.Event
+import com.pti.sheldons_schedule.data.Options
 import com.pti.sheldons_schedule.util.Constants
 import com.pti.sheldons_schedule.util.Constants.EVENT
 import com.pti.sheldons_schedule.util.Constants.FROM
 import com.pti.sheldons_schedule.util.Constants.NOTIFICATION
 import com.pti.sheldons_schedule.util.Constants.REMINDER_ID
 import dagger.hilt.android.qualifiers.ApplicationContext
+import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 class NotificationController @Inject constructor(
@@ -55,11 +58,12 @@ class NotificationController @Inject constructor(
                 intent,
                 PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
             )
+            val content = "${event?.startTime}  ${event?.description.orEmpty()}"
+
             val builder = NotificationCompat.Builder(it, Constants.CHANNEL_ID)
                     .setSmallIcon(R.drawable.ic_baseline_schedule_24)
                     .setContentTitle(event?.title.orEmpty())
-                    .setContentText("Date")
-                    .setSubText(event?.description.orEmpty())
+                    .setContentText(content)
                     .setPriority(NotificationCompat.PRIORITY_DEFAULT)
                     .setContentIntent(pendingIntent)
                     .setAutoCancel(true)

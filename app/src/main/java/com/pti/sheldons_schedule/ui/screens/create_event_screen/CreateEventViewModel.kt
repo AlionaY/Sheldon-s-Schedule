@@ -12,6 +12,7 @@ import com.pti.sheldons_schedule.R
 import com.pti.sheldons_schedule.data.*
 import com.pti.sheldons_schedule.data.Options.*
 import com.pti.sheldons_schedule.data.Options.Reminder.*
+import com.pti.sheldons_schedule.data.Options.Repeat.*
 import com.pti.sheldons_schedule.db.EventRepository
 import com.pti.sheldons_schedule.service.AlarmBroadcastReceiver
 import com.pti.sheldons_schedule.util.Constants
@@ -168,24 +169,12 @@ class CreateEventViewModel @Inject constructor(
 
     fun onSaveEventClicked() {
         createEventScreenState.value.let { state ->
-            val currentDate = Calendar.getInstance().timeInMillis
-            val duration = state.endDate.timeInMillis - state.startDate.timeInMillis
-
-            if (state.title.isNotEmpty()) {
-                val remindTime = getRemindTimeInMillis(state)
-                val remindAt = state.startDate.timeInMillis - remindTime
-
-                saveEvent(
-                    currentDate,
-                    duration,
-                    remindAt
-                )
-            }
+            if (state.title.isNotEmpty()) saveEvent(state)
         }
     }
 
-    private fun getRemindTimeInMillis(state: CreateEventScreenState) =
-        when (state.remind) {
+    private fun getRemindTimeInMillis(reminder: Reminder) =
+        when (reminder) {
             DontRemind -> DontRemind.value
             Min10 -> TimeUnit.MINUTES.toMillis(Min10.value)
             Min15 -> TimeUnit.MINUTES.toMillis(Min15.value)
@@ -194,16 +183,20 @@ class CreateEventViewModel @Inject constructor(
         }
 
     private fun saveEvent(
-        currentDate: Long,
-        duration: Long,
-        remind: Long
+        state: CreateEventScreenState
     ) = viewModelScope.launch {
-        newEvent.value = createEventScreenState.value.toEvent(currentDate, duration)
+        val currentDate = Calendar.getInstance()
+        val duration = state.endDate.timeInMillis - state.startDate.timeInMillis
+        val remindTime = currentDate.apply {
+            timeInMillis = state.startDate.timeInMillis - getRemindTimeInMillis(state.remind)
+        }
+
+        newEvent.value = createEventScreenState.value.toEvent(currentDate.timeInMillis, duration)
         newEvent.value?.let {
             repository.saveEvent(it)
         }
 
-        setReminderAlarm(remind)
+        setReminderAlarm(remindTime.timeInMillis)
     }
 
     fun onSelected(options: Options) {
@@ -326,4 +319,16 @@ class CreateEventViewModel @Inject constructor(
             AlarmManager.RTC_WAKEUP, remindTime, pendingIntent
         )
     }
+
+    private fun getRepeatTimeInMillis(repeat: Repeat) =
+        when (repeat) {
+//            todo: set right time to repeat
+            Daily -> AlarmManager.INTERVAL_FIFTEEN_MINUTES
+            WeekDay -> TimeUnit.DAYS.toMillis(0) /* будні */
+            Weekly -> TimeUnit.DAYS.toMillis(7)
+            Monthly -> TimeUnit.DAYS.toMillis(30)
+            Annually -> TimeUnit.DAYS.toMillis(366)
+            Custom -> 0L
+            DontRepeat -> 0L
+        }
 }

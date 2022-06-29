@@ -1,9 +1,6 @@
 package com.pti.sheldons_schedule.db
 
-import androidx.room.Dao
-import androidx.room.Insert
-import androidx.room.OnConflictStrategy
-import androidx.room.Query
+import androidx.room.*
 import com.pti.sheldons_schedule.data.Event
 
 @Dao
