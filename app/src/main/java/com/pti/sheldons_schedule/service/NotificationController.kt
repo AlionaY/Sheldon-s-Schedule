@@ -6,8 +6,8 @@ import android.app.NotificationManager
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
-import android.icu.util.Calendar
 import android.os.Parcelable
+import android.util.Log
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import androidx.core.content.getSystemService
@@ -18,11 +18,11 @@ import com.pti.sheldons_schedule.data.Options
 import com.pti.sheldons_schedule.data.Options.Repeat.*
 import com.pti.sheldons_schedule.util.Constants
 import com.pti.sheldons_schedule.util.Constants.EVENT
-import com.pti.sheldons_schedule.util.Constants.FROM
-import com.pti.sheldons_schedule.util.Constants.NOTIFICATION
+import com.pti.sheldons_schedule.util.formatDate
 import dagger.hilt.android.qualifiers.ApplicationContext
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
+import java.util.*
 import javax.inject.Inject
 
 class NotificationController @Inject constructor(
@@ -53,7 +53,6 @@ class NotificationController @Inject constructor(
             val intent = Intent(it, MainActivity::class.java).apply {
                 flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
                 putExtra(EVENT, event)
-                putExtra(FROM, NOTIFICATION)
             }
             val pendingIntent = PendingIntent.getActivity(
                 context,
@@ -89,20 +88,18 @@ class NotificationController @Inject constructor(
             reminderIntent,
             PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
         )
-        val dateFormatter = DateTimeFormatter.ofPattern(Constants.DATE_FORMAT)
-        val date = LocalDate.parse(event?.startDate, dateFormatter)
-        val parsedTime = event?.startTime?.split(":")
-
-        val calendar = Calendar.getInstance().apply {
-            set(Calendar.YEAR, date.year)
-            set(Calendar.MONTH, date.month.value)
-            set(Calendar.DAY_OF_MONTH, date.dayOfMonth)
-            set(Calendar.HOUR_OF_DAY, parsedTime?.get(0)?.toInt() ?: 0)
-            set(Calendar.MINUTE, parsedTime?.get(1)?.toInt() ?: 0)
-
+        val currentDate = Calendar.getInstance()
+        val pickedDate = getPickedDate(event)
+        val nextEventDate = if (currentDate < pickedDate) {
+            event?.repeat?.let { getNextEventDate(it, currentDate) } ?: currentDate
+        } else {
+            currentDate
         }
-        val repeatTime = event?.repeat?.let { getRepeatTimeInMillis(it, calendar) } ?: 0
+        val repeatTime = nextEventDate.timeInMillis - currentDate.timeInMillis
 
+        Log.d("###", "next date ${nextEventDate.formatDate(Constants.TIME_FORMAT)}, " +
+                "curr ${currentDate.formatDate(Constants.TIME_FORMAT)}," +
+                " picked ${pickedDate.formatDate(Constants.TIME_FORMAT)}")
         if (repeatTime != 0L) {
             alarmManager?.setAndAllowWhileIdle(
                 AlarmManager.RTC_WAKEUP, repeatTime, pendingIntent
@@ -110,21 +107,66 @@ class NotificationController @Inject constructor(
         }
     }
 
-    private fun getRepeatTimeInMillis(repeat: Options.Repeat, calendar: Calendar) =
+    private fun getPickedDate(event: Event?): Calendar {
+        val dateFormatter = DateTimeFormatter.ofPattern(Constants.DATE_FORMAT)
+        val date = LocalDate.parse(event?.startDate, dateFormatter)
+        val parsedTime = event?.startTime?.split(":")
+
+        val pickedDate = Calendar.getInstance().apply {
+            firstDayOfWeek = Calendar.MONDAY
+            set(Calendar.DAY_OF_WEEK, date.dayOfWeek.value)
+            set(Calendar.YEAR, date.year)
+            set(Calendar.MONTH, date.month.value - 1)
+            set(Calendar.DAY_OF_MONTH, date.dayOfMonth)
+            set(Calendar.HOUR_OF_DAY, parsedTime?.get(0)?.toInt() ?: 0)
+            set(Calendar.MINUTE, parsedTime?.get(1)?.toInt() ?: 0)
+        }
+        return pickedDate
+    }
+
+    private fun getNextEventDate(repeat: Options.Repeat, pickedDate: Calendar) =
         when (repeat) {
-//            todo: set right time to repeat
-            Daily -> AlarmManager.INTERVAL_DAY
-            WeekDay -> AlarmManager.INTERVAL_DAY * 5 /* будні */
-            Weekly -> (calendar.clone() as Calendar).apply {
+            Daily -> (pickedDate.clone() as Calendar).apply {
+                add(Calendar.DAY_OF_MONTH, 1)
+            }
+
+            Weekday -> getWeekdayRepeatTime(pickedDate)
+
+            Weekly -> (pickedDate.clone() as Calendar).apply {
                 add(Calendar.WEEK_OF_YEAR, 1)
-            }.timeInMillis
-            Monthly -> (calendar.clone() as Calendar).apply {
+            }
+
+            Monthly -> (pickedDate.clone() as Calendar).apply {
                 add(Calendar.MONTH, 1)
-            }.timeInMillis
-            Annually -> (calendar.clone() as Calendar).apply {
+            }
+
+            Annually -> (pickedDate.clone() as Calendar).apply {
                 add(Calendar.YEAR, 1)
-            }.timeInMillis
-            Custom -> 0L
-            DontRepeat -> 0L
+            }
+
+            Custom -> pickedDate
+
+            DontRepeat -> pickedDate
+        }
+
+    private fun getWeekdayRepeatTime(pickedDate: Calendar) =
+        when (pickedDate.get(Calendar.DAY_OF_WEEK)) {
+//                    mon, tue, wed, thur
+            2, 3, 4, 5 -> (pickedDate.clone() as Calendar).apply {
+                add(Calendar.DAY_OF_MONTH, 1)
+            }
+//                    fri
+            6 -> (pickedDate.clone() as Calendar).apply {
+                add(Calendar.DAY_OF_MONTH, 3)
+            }
+//                    sat
+            7 -> (pickedDate.clone() as Calendar).apply {
+                add(Calendar.DAY_OF_MONTH, 2)
+            }
+//                    sun
+            1 -> (pickedDate.clone() as Calendar).apply {
+                add(Calendar.DAY_OF_MONTH, 1)
+            }
+            else -> pickedDate
         }
 }

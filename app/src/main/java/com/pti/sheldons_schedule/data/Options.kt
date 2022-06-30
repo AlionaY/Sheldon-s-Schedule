@@ -40,7 +40,7 @@ sealed class Options(val title: Int, val nameId: Int) : Parcelable {
     @Parcelize
     sealed class Repeat(val name: Int, val alias: String) : Options(R.string.repeat, name) {
         object Daily : Repeat(R.string.repeat_daily, "daily")
-        object WeekDay : Repeat(R.string.repeat_week_day, "week_day")
+        object Weekday : Repeat(R.string.repeat_week_day, "week_day")
         object Weekly : Repeat(R.string.repeat_weekly, "weekly")
         object Monthly : Repeat(R.string.repeat_monthly, "monthly")
         object Annually : Repeat(R.string.repeat_annually, "annually")
@@ -50,7 +50,7 @@ sealed class Options(val title: Int, val nameId: Int) : Parcelable {
         companion object {
             fun values(): List<Repeat> = listOf(
                 Daily,
-                WeekDay,
+                Weekday,
                 Weekly,
                 Monthly,
                 Annually,
