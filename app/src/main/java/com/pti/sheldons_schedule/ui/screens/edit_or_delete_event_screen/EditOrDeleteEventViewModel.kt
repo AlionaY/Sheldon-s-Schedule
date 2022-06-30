@@ -10,6 +10,8 @@ import com.pti.sheldons_schedule.data.Event
 import com.pti.sheldons_schedule.data.Options
 import com.pti.sheldons_schedule.data.TitleFieldState
 import com.pti.sheldons_schedule.db.EventRepository
+import com.pti.sheldons_schedule.util.updateDate
+import com.pti.sheldons_schedule.util.updateTime
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -87,8 +89,7 @@ class EditOrDeleteEventViewModel @Inject constructor(
 
     fun onStartDatePicked(pickedDate: Calendar) {
         screenState.value?.let { state ->
-            val startDate = getCalendarWithUpdatedDate(
-                date = state.startDate,
+            val startDate = state.startDate.updateDate(
                 year = pickedDate.get(Calendar.YEAR),
                 month = pickedDate.get(Calendar.MONTH),
                 dayOfMonth = pickedDate.get(Calendar.DAY_OF_MONTH)
@@ -112,21 +113,9 @@ class EditOrDeleteEventViewModel @Inject constructor(
         }
     }
 
-    private fun getCalendarWithUpdatedDate(
-        date: Calendar,
-        year: Int,
-        month: Int,
-        dayOfMonth: Int
-    ) = (date.clone() as Calendar).apply {
-        set(Calendar.YEAR, year)
-        set(Calendar.MONTH, month)
-        set(Calendar.DAY_OF_MONTH, dayOfMonth)
-    }
-
     fun onTimeStartPicked(hour: Int, minutes: Int) {
         screenState.value?.let { state ->
-            val pickedTime = getDateWithUpdatedTime(
-                date = state.startDate,
+            val pickedTime = state.startDate.updateTime(
                 hour = hour,
                 minutes = minutes
             )
@@ -136,24 +125,12 @@ class EditOrDeleteEventViewModel @Inject constructor(
         }
     }
 
-    private fun getDateWithUpdatedTime(
-        date: Calendar,
-        hour: Int,
-        minutes: Int,
-        minutesToAdd: Int? = null
-    ) = (date.clone() as Calendar).apply {
-        set(Calendar.HOUR_OF_DAY, hour)
-        set(Calendar.MINUTE, minutes)
-        if (minutesToAdd != null) add(Calendar.MINUTE, minutesToAdd)
-    }
-
     private fun validatePickedStartTime(state: EditOrDeleteEventScreenState) {
         val currentTime = state.currentDate
         val isStartTimeValid = state.pickedStartTime > currentTime
         val startDate = if (isStartTimeValid) state.pickedStartTime else state.startDate
         val endDate = if (isStartTimeValid) {
-            getDateWithUpdatedTime(
-                date = state.endDate,
+            state.endDate.updateTime(
                 hour = state.pickedStartTime.get(Calendar.HOUR_OF_DAY),
                 minutes = state.pickedStartTime.get(Calendar.MINUTE),
                 minutesToAdd = 30
@@ -173,8 +150,7 @@ class EditOrDeleteEventViewModel @Inject constructor(
 
     fun onEndDatePicked(calendar: Calendar) {
         screenState.value?.let { state ->
-            val endDate = getCalendarWithUpdatedDate(
-                date = state.endDate,
+            val endDate = state.endDate.updateDate(
                 year = calendar.get(Calendar.YEAR),
                 month = calendar.get(Calendar.MONTH),
                 dayOfMonth = calendar.get(Calendar.DAY_OF_MONTH)
@@ -191,8 +167,7 @@ class EditOrDeleteEventViewModel @Inject constructor(
 
     fun onTimeEndPicked(hour: Int, minutes: Int) {
         screenState.value?.let { state ->
-            val pickedTime = getDateWithUpdatedTime(
-                date = state.endDate,
+            val pickedTime = state.endDate.updateTime(
                 hour = hour,
                 minutes = minutes
             )
