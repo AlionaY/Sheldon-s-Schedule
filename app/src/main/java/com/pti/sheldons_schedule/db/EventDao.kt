@@ -1,9 +1,6 @@
 package com.pti.sheldons_schedule.db
 
-import androidx.room.Dao
-import androidx.room.Insert
-import androidx.room.OnConflictStrategy
-import androidx.room.Query
+import androidx.room.*
 import com.pti.sheldons_schedule.data.Event
 
 @Dao
@@ -17,4 +14,10 @@ interface EventDao {
 
     @Query("SELECT * FROM EventTable WHERE creationDate=:id ")
     fun getEvent(id: String): Event
+
+    @Update
+    fun editEvent(event: Event)
+
+    @Delete
+    fun deleteEvent(event: Event)
 }
