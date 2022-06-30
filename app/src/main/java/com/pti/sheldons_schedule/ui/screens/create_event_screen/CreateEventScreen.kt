@@ -15,10 +15,9 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.pti.sheldons_schedule.R
 import com.pti.sheldons_schedule.data.TitleFieldState
+import com.pti.sheldons_schedule.util.Constants.PADDING_WIDTH_SUM
 import kotlinx.coroutines.launch
-
-private const val PADDING_WIDTH_SUM = 60
-private const val FIELD_COUNT = 2
+import java.util.Calendar.FIELD_COUNT
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
