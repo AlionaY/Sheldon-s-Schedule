@@ -13,4 +13,7 @@ object Constants {
     const val FROM = "from"
     const val NOTIFICATION = "Notification"
     const val EVENT = "event"
+
+    const val PADDING_WIDTH_SUM = 60
+    const val FIELD_COUNT = 2
 }
