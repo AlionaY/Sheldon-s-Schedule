@@ -12,4 +12,12 @@ class EventRepositoryImpl @Inject constructor(private val eventDao: EventDao) : 
     }
 
     override fun getEvent(id: String): Event = eventDao.getEvent(id)
+
+    override suspend fun editEvent(event: Event) {
+        eventDao.editEvent(event)
+    }
+
+    override suspend fun deleteEvent(event: Event) {
+        eventDao.deleteEvent(event)
+    }
 }
