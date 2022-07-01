@@ -1,4 +1,4 @@
-package com.pti.sheldons_schedule.ui.screens.create_event_screen
+package com.pti.sheldons_schedule.ui.common
 
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.foundation.clickable

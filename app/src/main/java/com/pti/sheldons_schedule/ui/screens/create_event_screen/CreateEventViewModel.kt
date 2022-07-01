@@ -15,6 +15,8 @@ import com.pti.sheldons_schedule.data.Options.Reminder.*
 import com.pti.sheldons_schedule.db.EventRepository
 import com.pti.sheldons_schedule.service.AlarmBroadcastReceiver
 import com.pti.sheldons_schedule.util.Constants
+import com.pti.sheldons_schedule.util.updateDate
+import com.pti.sheldons_schedule.util.updateTime
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -50,14 +52,14 @@ class CreateEventViewModel @Inject constructor(
 
     private val newEvent = MutableStateFlow<Event?>(null)
 
+
     init {
         observeScreenState()
     }
 
     fun onStartDatePicked(pickedDate: Calendar) {
         createEventScreenState.let { state ->
-            val startDate = getCalendarWithUpdatedDate(
-                date = state.value.startDate,
+            val startDate = state.value.startDate.updateDate(
                 year = pickedDate.get(Calendar.YEAR),
                 month = pickedDate.get(Calendar.MONTH),
                 dayOfMonth = pickedDate.get(Calendar.DAY_OF_MONTH)
@@ -83,8 +85,7 @@ class CreateEventViewModel @Inject constructor(
 
     fun onEndDatePicked(calendar: Calendar) {
         createEventScreenState.let { state ->
-            val endDate = getCalendarWithUpdatedDate(
-                date = state.value.endDate,
+            val endDate = state.value.endDate.updateDate(
                 year = calendar.get(Calendar.YEAR),
                 month = calendar.get(Calendar.MONTH),
                 dayOfMonth = calendar.get(Calendar.DAY_OF_MONTH)
@@ -98,32 +99,9 @@ class CreateEventViewModel @Inject constructor(
         }
     }
 
-    private fun getDateWithUpdatedTime(
-        date: Calendar,
-        hour: Int,
-        minutes: Int,
-        minutesToAdd: Int? = null
-    ) = (date.clone() as Calendar).apply {
-        set(Calendar.HOUR_OF_DAY, hour)
-        set(Calendar.MINUTE, minutes)
-        if (minutesToAdd != null) add(Calendar.MINUTE, minutesToAdd)
-    }
-
-    private fun getCalendarWithUpdatedDate(
-        date: Calendar,
-        year: Int,
-        month: Int,
-        dayOfMonth: Int
-    ) = (date.clone() as Calendar).apply {
-        set(Calendar.YEAR, year)
-        set(Calendar.MONTH, month)
-        set(Calendar.DAY_OF_MONTH, dayOfMonth)
-    }
-
     fun onTimeStartPicked(hour: Int, minutes: Int) {
         createEventScreenState.let { state ->
-            val pickedTime = getDateWithUpdatedTime(
-                date = state.value.startDate,
+            val pickedTime = state.value.startDate.updateTime(
                 hour = hour,
                 minutes = minutes
             )
@@ -135,8 +113,7 @@ class CreateEventViewModel @Inject constructor(
 
     fun onTimeEndPicked(hour: Int, minutes: Int) {
         createEventScreenState.let { state ->
-            val pickedTime = getDateWithUpdatedTime(
-                date = state.value.endDate,
+            val pickedTime = state.value.endDate.updateTime(
                 hour = hour,
                 minutes = minutes
             )
@@ -267,8 +244,7 @@ class CreateEventViewModel @Inject constructor(
         val isStartTimeValid = state.pickedStartTime > currentTime
         val startDate = if (isStartTimeValid) state.pickedStartTime else state.startDate
         val endDate = if (isStartTimeValid) {
-            getDateWithUpdatedTime(
-                date = state.endDate,
+            state.endDate.updateTime(
                 hour = state.pickedStartTime.get(Calendar.HOUR_OF_DAY),
                 minutes = state.pickedStartTime.get(Calendar.MINUTE),
                 minutesToAdd = 30
