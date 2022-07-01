@@ -202,4 +202,10 @@ class EditOrDeleteEventViewModel @Inject constructor(
             }
         }
     }
+
+    fun onSaveEventClicked() {
+    }
+
+    fun onDeleteEventClicked() {
+    }
 }
