@@ -11,8 +11,6 @@ import androidx.lifecycle.viewModelScope
 import com.pti.sheldons_schedule.R
 import com.pti.sheldons_schedule.data.*
 import com.pti.sheldons_schedule.data.Options.*
-import com.pti.sheldons_schedule.data.Options.Reminder.*
-import com.pti.sheldons_schedule.data.Options.Repeat.*
 import com.pti.sheldons_schedule.db.EventRepository
 import com.pti.sheldons_schedule.service.AlarmBroadcastReceiver
 import com.pti.sheldons_schedule.util.Constants
@@ -173,22 +171,13 @@ class CreateEventViewModel @Inject constructor(
         }
     }
 
-    private fun getRemindTimeInMillis(reminder: Reminder) =
-        when (reminder) {
-            DontRemind -> DontRemind.value
-            Min10 -> TimeUnit.MINUTES.toMillis(Min10.value)
-            Min15 -> TimeUnit.MINUTES.toMillis(Min15.value)
-            Min30 -> TimeUnit.MINUTES.toMillis(Min30.value)
-            Min60 -> TimeUnit.MINUTES.toMillis(Min60.value)
-        }
-
     private fun saveEvent(
         state: CreateEventScreenState
     ) = viewModelScope.launch {
         val currentDate = Calendar.getInstance()
         val duration = state.endDate.timeInMillis - state.startDate.timeInMillis
         val remindTime = currentDate.apply {
-            timeInMillis = state.startDate.timeInMillis - getRemindTimeInMillis(state.remind)
+            timeInMillis = state.startDate.timeInMillis - TimeUnit.MINUTES.toMillis(state.remind.value)
         }
 
         newEvent.value = createEventScreenState.value.toEvent(currentDate.timeInMillis, duration)

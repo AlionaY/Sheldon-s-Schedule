@@ -2,6 +2,7 @@ package com.pti.sheldons_schedule.data
 
 import com.pti.sheldons_schedule.data.Options.*
 import com.pti.sheldons_schedule.util.Constants.DATE_FORMAT
+import com.pti.sheldons_schedule.util.Constants.DATE_FORMAT_ISO_8601
 import com.pti.sheldons_schedule.util.Constants.TIME_FORMAT
 import com.pti.sheldons_schedule.util.formatDate
 import java.util.*
@@ -23,6 +24,8 @@ data class CreateEventScreenState(
     val pickedStartTime: Calendar,
     val pickedEndTime: Calendar
 ) {
+    val startDateISO = startDate.formatDate(DATE_FORMAT_ISO_8601)
+    val endDateISO = endDate.formatDate(DATE_FORMAT_ISO_8601)
     val formattedStartDate: String = startDate.formatDate(DATE_FORMAT)
     val formattedEndDate: String = endDate.formatDate(DATE_FORMAT)
     val formattedStartTime: String = startDate.formatDate(TIME_FORMAT)
