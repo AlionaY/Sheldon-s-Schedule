@@ -1,4 +1,4 @@
-package com.pti.sheldons_schedule.ui.screens.create_event_screen
+package com.pti.sheldons_schedule.ui.common
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.navigationBarsPadding
@@ -7,6 +7,7 @@ import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
+import com.pti.sheldons_schedule.ui.screens.create_event_screen.BottomSheetContent
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterialApi::class)

@@ -16,10 +16,11 @@ import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.pti.sheldons_schedule.R
 import com.pti.sheldons_schedule.data.TitleFieldState
-import com.pti.sheldons_schedule.ui.screens.create_event_screen.*
+import com.pti.sheldons_schedule.ui.common.*
 import com.pti.sheldons_schedule.util.Constants.FIELD_COUNT
 import com.pti.sheldons_schedule.util.Constants.PADDING_WIDTH_SUM
 import kotlinx.coroutines.launch
@@ -28,7 +29,7 @@ import kotlinx.coroutines.launch
 @Composable
 fun EditOrDeleteEventScreen(
     navController: NavController,
-    viewModel: EditOrDeleteEventViewModel
+    viewModel: EditOrDeleteEventViewModel = hiltViewModel()
 ) {
 
     val event by viewModel.pickedEvent.collectAsState(initial = null)
