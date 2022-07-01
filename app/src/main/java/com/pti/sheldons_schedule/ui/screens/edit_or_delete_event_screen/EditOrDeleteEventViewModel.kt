@@ -30,29 +30,6 @@ class EditOrDeleteEventViewModel @Inject constructor(
     val screenState = MutableStateFlow<EditOrDeleteEventScreenState?>(null)
     val isPickedTimeValid = MutableSharedFlow<Boolean>()
 
-    init {
-        viewModelScope.launch {
-            pickedEvent.collect { event ->
-
-                Log.d("###", "edit screen start ${event.startDate}, end ${event.endDate}")
-//                screenState.update {
-//                    it?.copy(
-//                        title = event.title,
-//                        description = event.description,
-//                        startDate = ,
-//                        endDate = ,
-//                        remind = event.reminder ?: Options.Reminder.DontRemind,
-//                        repeat = event.repeat ?: Options.Repeat.DontRepeat,
-//                        priority = event.priority
-//                    )
-//                }
-            }
-        }
-    }
-
-    fun getPickedEvent(id: String) = viewModelScope.launch {
-        pickedEvent.emit(repository.getEvent(id))
-    }
 
     fun onTitleEdited(string: String) {
         screenState.update { it?.copy(title = string) }

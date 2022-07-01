@@ -16,16 +16,14 @@ import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
-import androidx.compose.ui.res.stringResource
 import com.google.android.material.timepicker.MaterialTimePicker
 import com.google.android.material.timepicker.TimeFormat
-import com.pti.sheldons_schedule.R
 import java.util.*
 
 @Composable
 fun TimePickerField(
-    pickedTime: String,
-    calendar: Calendar,
+    pickedTime: String?,
+    calendar: Calendar?,
     onValueChanged: (String) -> Unit,
     onTimePicked: (hour: Int, minutes: Int) -> Unit,
     modifier: Modifier = Modifier,
@@ -40,7 +38,7 @@ fun TimePickerField(
 
     Column(modifier = modifier.fillMaxWidth()) {
         OutlinedTextField(
-            value = pickedTime,
+            value = pickedTime.orEmpty(),
             onValueChange = { onValueChanged(it) },
             modifier = Modifier
                 .onFocusChanged { isClicked = it.hasFocus }
@@ -64,15 +62,14 @@ fun TimePickerField(
 }
 
 @Composable
-fun TimePicker(calendar: Calendar, onTimePicked: (hour: Int, minute: Int) -> Unit) {
+fun TimePicker(calendar: Calendar?, onTimePicked: (hour: Int, minute: Int) -> Unit) {
     val activity = LocalContext.current as? AppCompatActivity
     val focusManager = LocalFocusManager.current
 
     MaterialTimePicker.Builder()
         .setTimeFormat(TimeFormat.CLOCK_24H)
-        .setTitleText(stringResource(id = R.string.time_picker_title))
-        .setHour(calendar.get(Calendar.HOUR_OF_DAY))
-        .setMinute(calendar.get(Calendar.MINUTE))
+        .setHour(calendar?.get(Calendar.HOUR_OF_DAY) ?: 0)
+        .setMinute(calendar?.get(Calendar.MINUTE) ?: 0)
         .build()
         .apply {
             activity?.supportFragmentManager?.let { show(it, this.toString()) }
