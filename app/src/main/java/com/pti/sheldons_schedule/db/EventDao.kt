@@ -14,4 +14,10 @@ interface EventDao {
 
     @Query("SELECT * FROM EventTable WHERE creationDate=:id ")
     fun getEvent(id: String): Event
+
+    @Update
+    fun editEvent(event: Event)
+
+    @Delete
+    fun deleteEvent(event: Event)
 }

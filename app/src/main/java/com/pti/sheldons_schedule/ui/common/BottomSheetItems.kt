@@ -1,4 +1,4 @@
-package com.pti.sheldons_schedule.ui.screens.create_event_screen
+package com.pti.sheldons_schedule.ui.common
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.fillMaxSize
@@ -15,7 +15,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.pti.sheldons_schedule.data.Options
 
 @Composable
 fun <T> BottomSheetContent(
