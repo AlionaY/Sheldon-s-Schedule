@@ -1,11 +1,10 @@
 package com.pti.sheldons_schedule.ui.screens.edit_or_delete_event_screen
 
 import android.app.Application
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.pti.sheldons_schedule.R
-import com.pti.sheldons_schedule.data.EditOrDeleteEventScreenState
+import com.pti.sheldons_schedule.data.EditEventScreenState
 import com.pti.sheldons_schedule.data.Event
 import com.pti.sheldons_schedule.data.Options
 import com.pti.sheldons_schedule.data.TitleFieldState
@@ -21,22 +20,22 @@ import java.util.*
 import javax.inject.Inject
 
 @HiltViewModel
-class EditOrDeleteEventViewModel @Inject constructor(
+class EditEventViewModel @Inject constructor(
     private val repository: EventRepository,
     private val context: Application
 ) : ViewModel() {
 
     val pickedEvent = MutableSharedFlow<Event>()
-    val screenState = MutableStateFlow<EditOrDeleteEventScreenState?>(null)
+    val screenState = MutableStateFlow<EditEventScreenState?>(null)
     val isPickedTimeValid = MutableSharedFlow<Boolean>()
 
 
-    fun onTitleEdited(string: String) {
-        screenState.update { it?.copy(title = string) }
+    fun onTitleEdited(title: String) {
+        screenState.update { it?.copy(title = title) }
     }
 
-    fun onDescriptionEdited(string: String) {
-        screenState.update { it?.copy(description = string) }
+    fun onDescriptionEdited(description: String) {
+        screenState.update { it?.copy(description = description) }
     }
 
     fun onFocusChanged(hasFocus: Boolean) {
@@ -102,7 +101,7 @@ class EditOrDeleteEventViewModel @Inject constructor(
         }
     }
 
-    private fun validatePickedStartTime(state: EditOrDeleteEventScreenState) {
+    private fun validatePickedStartTime(state: EditEventScreenState) {
         val currentTime = state.currentDate
         val isStartTimeValid = state.pickedStartTime > currentTime
         val startDate = if (isStartTimeValid) state.pickedStartTime else state.startDate
@@ -154,7 +153,7 @@ class EditOrDeleteEventViewModel @Inject constructor(
         }
     }
 
-    private fun validatePickedEndTime(state: EditOrDeleteEventScreenState) {
+    private fun validatePickedEndTime(state: EditEventScreenState) {
         val isPickedEndTimeValid = state.pickedEndTime > state.currentDate &&
                 state.pickedEndTime > state.startDate &&
                 state.pickedStartTime < state.pickedEndTime

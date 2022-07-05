@@ -6,7 +6,7 @@ import com.pti.sheldons_schedule.util.Constants.TIME_FORMAT
 import com.pti.sheldons_schedule.util.formatDate
 import java.util.*
 
-data class EditOrDeleteEventScreenState(
+data class EditEventScreenState(
     val title: String,
     val currentDate: Calendar = Calendar.getInstance(),
     val startDate: Calendar,

@@ -2,23 +2,68 @@ package com.pti.sheldons_schedule.ui.common
 
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.material.Icon
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.OutlinedTextField
-import androidx.compose.material.TextFieldDefaults
+import androidx.compose.foundation.layout.*
+import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Schedule
 import androidx.compose.runtime.*
+import androidx.compose.runtime.R
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.dp
 import com.google.android.material.timepicker.MaterialTimePicker
 import com.google.android.material.timepicker.TimeFormat
+import com.pti.sheldons_schedule.data.EditEventScreenState
 import java.util.*
+
+@Composable
+fun TimePickerRow(
+    screenState: EditEventScreenState?,
+    fieldWidth: Dp,
+    onStartTimePicked: (Int, Int) -> Unit,
+    onEndTimePicked: (Int, Int) -> Unit
+) {
+    Row(
+        modifier = Modifier.fillMaxWidth(),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.Center
+    ) {
+        TimePickerField(
+            pickedTime = screenState?.formattedStartTime,
+            calendar = screenState?.startDate,
+            onTimePicked = { hour, minutes ->
+                onStartTimePicked(hour, minutes)
+            },
+            modifier = Modifier
+                .padding(start = 15.dp)
+                .width(fieldWidth)
+                .wrapContentHeight(),
+            label = { Text(text = stringResource(id = com.pti.sheldons_schedule.R.string.start_time)) },
+            onValueChanged = {}
+        )
+        Spacer(modifier = Modifier.width(30.dp))
+        TimePickerField(
+            pickedTime = screenState?.formattedEndTime,
+            calendar = screenState?.endDate,
+            onTimePicked = { hour, minutes ->
+                onEndTimePicked(hour, minutes)
+            },
+            modifier = Modifier
+                .padding(end = 15.dp)
+                .width(fieldWidth)
+                .wrapContentHeight(),
+            label = { Text(text = stringResource(id = com.pti.sheldons_schedule.R.string.end_time)) },
+            onValueChanged = {}
+        )
+    }
+}
+
 
 @Composable
 fun TimePickerField(

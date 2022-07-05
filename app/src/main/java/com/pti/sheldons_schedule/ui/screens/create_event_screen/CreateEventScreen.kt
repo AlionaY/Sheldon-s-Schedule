@@ -209,7 +209,7 @@ fun CreateEventScreen(
                 }
                 HeightSpacer()
                 DefaultBottomSheetField(
-                    string = stringResource(id = state.repeat.name),
+                    text = stringResource(id = state.repeat.name),
                     label = stringResource(id = R.string.repeat),
                     onClick = { viewModel.onRepeatFieldClicked() },
                     modifier = Modifier
@@ -220,7 +220,7 @@ fun CreateEventScreen(
                 )
                 HeightSpacer()
                 DefaultBottomSheetField(
-                    string = stringResource(id = state.priority.name),
+                    text = stringResource(id = state.priority.name),
                     label = stringResource(id = R.string.priority),
                     onClick = { viewModel.onPriorityFieldClicked() },
                     modifier = Modifier
@@ -231,7 +231,7 @@ fun CreateEventScreen(
                 )
                 HeightSpacer()
                 DefaultBottomSheetField(
-                    string = stringResource(id = state.remind.name),
+                    text = stringResource(id = state.remind.name),
                     label = stringResource(id = R.string.remind),
                     onClick = { viewModel.onRemindFieldClicked() },
                     modifier = Modifier

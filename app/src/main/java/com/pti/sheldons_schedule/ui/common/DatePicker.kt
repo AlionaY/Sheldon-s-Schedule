@@ -2,25 +2,66 @@ package com.pti.sheldons_schedule.ui.common
 
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.*
 import androidx.compose.material.Icon
 import androidx.compose.material.OutlinedTextField
+import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.dp
 import com.google.android.material.datepicker.CalendarConstraints
 import com.google.android.material.datepicker.DateValidatorPointForward
 import com.google.android.material.datepicker.MaterialDatePicker
 import com.pti.sheldons_schedule.R
+import com.pti.sheldons_schedule.data.EditEventScreenState
 import com.pti.sheldons_schedule.util.Constants
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 import java.util.*
 
+@Composable
+fun DatePickedRow(
+    screenState: EditEventScreenState?,
+    fieldWidth: Dp,
+    onStartDatePicked: (Calendar?) -> Unit,
+    onEndDatePicked: (Calendar?) -> Unit,
+) {
+    Row(
+        modifier = Modifier.fillMaxWidth(),
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        DatePickerField(
+            pickedDate = screenState?.formattedStartDate,
+            onPickedDate = { onStartDatePicked(it) },
+            modifier = Modifier
+                .padding(start = 15.dp)
+                .width(fieldWidth)
+                .wrapContentHeight(),
+            label = { Text(stringResource(id = R.string.start_date)) },
+            onValueChanged = { }
+        )
+        Spacer(modifier = Modifier.width(30.dp))
+        DatePickerField(
+            pickedDate = screenState?.formattedEndDate,
+            onPickedDate = { onEndDatePicked(it) },
+            modifier = Modifier
+                .padding(end = 15.dp)
+                .width(fieldWidth)
+                .wrapContentHeight(),
+            label = { Text(text = stringResource(id = R.string.end_date)) },
+            onValueChanged = { },
+            startDate = screenState?.datePickerStartDate
+        )
+    }
+}
 
 @Composable
 fun DatePickerField(

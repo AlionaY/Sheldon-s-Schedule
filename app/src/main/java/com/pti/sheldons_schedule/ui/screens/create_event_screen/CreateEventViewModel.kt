@@ -49,6 +49,7 @@ class CreateEventViewModel @Inject constructor(
         )
     )
     val isPickedTimeValid = MutableSharedFlow<Boolean>()
+    val pickedEvent = MutableSharedFlow<Event>()
 
     private val newEvent = MutableStateFlow<Event?>(null)
 
@@ -135,12 +136,12 @@ class CreateEventViewModel @Inject constructor(
         createEventScreenState.update { it.copy(options = Reminder.values()) }
     }
 
-    fun onTitleEdited(string: String) {
-        createEventScreenState.update { it.copy(title = string) }
+    fun onTitleEdited(title: String) {
+        createEventScreenState.update { it.copy(title = title) }
     }
 
-    fun onDescriptionEdited(string: String) {
-        createEventScreenState.update { it.copy(description = string) }
+    fun onDescriptionEdited(description: String) {
+        createEventScreenState.update { it.copy(description = description) }
     }
 
     fun onSaveEventClicked() {
