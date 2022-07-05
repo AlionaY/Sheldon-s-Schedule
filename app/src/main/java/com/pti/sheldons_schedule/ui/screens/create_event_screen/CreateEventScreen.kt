@@ -8,17 +8,21 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.focus.onFocusChanged
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.pti.sheldons_schedule.R
+import com.pti.sheldons_schedule.data.CreateEventScreenState
 import com.pti.sheldons_schedule.data.TitleFieldState
 import com.pti.sheldons_schedule.ui.common.*
 import com.pti.sheldons_schedule.util.Constants.FIELD_COUNT
 import com.pti.sheldons_schedule.util.Constants.PADDING_WIDTH_SUM
 import kotlinx.coroutines.launch
+import java.util.*
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
@@ -112,7 +116,7 @@ fun CreateEventScreen(
             val halfFieldWidth = (this.maxWidth.value.toInt() - PADDING_WIDTH_SUM) / FIELD_COUNT
 
             Column(modifier = Modifier.fillMaxSize()) {
-                SaveOrCloseCreatingEvent(
+                TopToolbar(
                     onCloseIconClicked = { navController.popBackStack() },
                     onSaveIconClicked = {
                         viewModel.onSaveEventClicked()
@@ -122,123 +126,25 @@ fun CreateEventScreen(
                         .height(58.dp)
                         .fillMaxWidth()
                 )
-                HeightSpacer()
-                DefaultTextField(
-                    value = state.title,
-                    onValueChanged = { viewModel.onTitleEdited(it) },
-                    label = stringResource(id = R.string.title),
-                    modifier = Modifier
-                        .padding(horizontal = 15.dp)
-                        .focusRequester(focusRequester)
-                        .onFocusChanged { viewModel.onFocusChanged(it.hasFocus) },
-                    errorText = state.titleErrorText.orEmpty(),
-                    borderColor = titleBorderColor
-                )
-                HeightSpacer()
-                DefaultTextField(
-                    value = state.description,
-                    onValueChanged = { viewModel.onDescriptionEdited(it) },
-                    label = stringResource(id = R.string.description),
-                    modifier = Modifier.padding(horizontal = 15.dp),
-                )
-                HeightSpacer()
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    verticalAlignment = Alignment.CenterVertically,
-                ) {
-                    DatePickerField(
-                        pickedDate = state.formattedStartDate,
-                        onPickedDate = { calendar ->
-                            calendar?.let { it -> viewModel.onStartDatePicked(it) }
-                        },
-                        modifier = Modifier
-                            .padding(start = 15.dp)
-                            .width(halfFieldWidth.dp)
-                            .wrapContentHeight(),
-                        label = { Text(stringResource(id = R.string.start_date)) },
-                        onValueChanged = { }
-                    )
-                    Spacer(modifier = Modifier.width(30.dp))
-                    DatePickerField(
-                        pickedDate = state.formattedEndDate,
-                        onPickedDate = { calendar ->
-                            calendar?.let { it -> viewModel.onEndDatePicked(it) }
-                        },
-                        modifier = Modifier
-                            .padding(end = 15.dp)
-                            .width(halfFieldWidth.dp)
-                            .wrapContentHeight(),
-                        label = { Text(text = stringResource(id = R.string.end_date)) },
-                        onValueChanged = { },
-                        startDate = state.datePickerStartDate
-                    )
-                }
-                HeightSpacer()
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.Center
-                ) {
-                    TimePickerField(
-                        pickedTime = state.formattedStartTime,
-                        calendar = state.startDate,
-                        onTimePicked = { hour, minutes ->
-                            viewModel.onTimeStartPicked(hour, minutes)
-                        },
-                        modifier = Modifier
-                            .padding(start = 15.dp)
-                            .width(halfFieldWidth.dp)
-                            .wrapContentHeight(),
-                        label = { Text(text = stringResource(id = R.string.start_time)) },
-                        onValueChanged = {}
-                    )
-                    Spacer(modifier = Modifier.width(30.dp))
-                    TimePickerField(
-                        pickedTime = state.formattedEndTime,
-                        calendar = state.endDate,
-                        onTimePicked = { hour, minutes ->
-                            viewModel.onTimeEndPicked(hour, minutes)
-                        },
-                        modifier = Modifier
-                            .padding(end = 15.dp)
-                            .width(halfFieldWidth.dp)
-                            .wrapContentHeight(),
-                        label = { Text(text = stringResource(id = R.string.end_time)) },
-                        onValueChanged = {}
-                    )
-                }
-                HeightSpacer()
-                DefaultBottomSheetField(
-                    string = stringResource(id = state.repeat.name),
-                    label = stringResource(id = R.string.repeat),
-                    onClick = { viewModel.onRepeatFieldClicked() },
-                    modifier = Modifier
-                        .padding(horizontal = 15.dp)
-                        .fillMaxWidth()
-                        .wrapContentHeight(),
-                    onValueChanged = { }
-                )
-                HeightSpacer()
-                DefaultBottomSheetField(
-                    string = stringResource(id = state.priority.name),
-                    label = stringResource(id = R.string.priority),
-                    onClick = { viewModel.onPriorityFieldClicked() },
-                    modifier = Modifier
-                        .padding(horizontal = 15.dp)
-                        .fillMaxWidth()
-                        .wrapContentHeight(),
-                    onValueChanged = {}
-                )
-                HeightSpacer()
-                DefaultBottomSheetField(
-                    string = stringResource(id = state.remind.name),
-                    label = stringResource(id = R.string.remind),
-                    onClick = { viewModel.onRemindFieldClicked() },
-                    modifier = Modifier
-                        .padding(horizontal = 15.dp)
-                        .fillMaxWidth()
-                        .wrapContentHeight(),
-                    onValueChanged = { }
+                ScreenContent(
+                    state = state,
+                    focusRequester = focusRequester,
+                    titleBorderColor = titleBorderColor,
+                    fieldWidth = halfFieldWidth.dp,
+                    onTitleEdited = { viewModel.onTitleEdited(it) },
+                    onDescriptionEdited = { viewModel.onDescriptionEdited(it) },
+                    onFocusChanged = { viewModel.onFocusChanged(it) },
+                    onStartDatePicked = { viewModel.onStartDatePicked(it) },
+                    onEndDatePicked = { viewModel.onEndDatePicked(it) },
+                    onTimeStartPicked = { hour, minutes ->
+                        viewModel.onTimeStartPicked(hour, minutes)
+                    },
+                    onTimeEndPicked = { hour, minutes ->
+                        viewModel.onTimeEndPicked(hour, minutes)
+                    },
+                    onRepeatFieldClicked = { viewModel.onRepeatFieldClicked() },
+                    onPriorityFieldClicked = { viewModel.onPriorityFieldClicked() },
+                    onRemindFieldClicked = { viewModel.onRemindFieldClicked() }
                 )
             }
 
@@ -248,4 +154,94 @@ fun CreateEventScreen(
             )
         }
     }
+}
+
+@Composable
+private fun ScreenContent(
+    state: CreateEventScreenState,
+    focusRequester: FocusRequester,
+    titleBorderColor: Color,
+    fieldWidth: Dp,
+    onTitleEdited: (String) -> Unit,
+    onFocusChanged: (Boolean) -> Unit,
+    onDescriptionEdited: (String) -> Unit,
+    onStartDatePicked: (Calendar) -> Unit,
+    onEndDatePicked: (Calendar) -> Unit,
+    onTimeStartPicked: (Int, Int) -> Unit,
+    onTimeEndPicked: (Int, Int) -> Unit,
+    onRepeatFieldClicked: () -> Unit,
+    onPriorityFieldClicked: () -> Unit,
+    onRemindFieldClicked: () -> Unit
+) {
+    DefaultTextField(
+        value = state.title,
+        onValueChanged = { onTitleEdited(it) },
+        label = stringResource(id = R.string.title),
+        modifier = Modifier
+            .padding(horizontal = 15.dp)
+            .focusRequester(focusRequester)
+            .onFocusChanged { onFocusChanged(it.hasFocus) },
+        errorText = state.titleErrorText.orEmpty(),
+        borderColor = titleBorderColor
+    )
+    HeightSpacer()
+    DefaultTextField(
+        value = state.description,
+        onValueChanged = { onDescriptionEdited(it) },
+        label = stringResource(id = R.string.description),
+        modifier = Modifier.padding(horizontal = 15.dp),
+    )
+    HeightSpacer()
+    DatePickerRow(
+        state = state,
+        fieldWidth = fieldWidth,
+        onStartDatePicked = { onStartDatePicked(it) },
+        onEndDatePicked = { onEndDatePicked(it) },
+        modifier = Modifier.fillMaxWidth()
+    )
+    HeightSpacer()
+    TimePickerRow(
+        state = state,
+        fieldWidth = fieldWidth,
+        onTimeStartPicked = { hour, minutes ->
+            onTimeStartPicked(hour, minutes)
+        },
+        onTimeEndPicked = { hour, minutes ->
+            onTimeEndPicked(hour, minutes)
+        },
+        modifier = Modifier.fillMaxWidth()
+    )
+    HeightSpacer()
+    DefaultBottomSheetField(
+        string = stringResource(id = state.repeat.name),
+        label = stringResource(id = R.string.repeat),
+        onClick = { onRepeatFieldClicked() },
+        modifier = Modifier
+            .padding(horizontal = 15.dp)
+            .fillMaxWidth()
+            .wrapContentHeight(),
+        onValueChanged = { }
+    )
+    HeightSpacer()
+    DefaultBottomSheetField(
+        string = stringResource(id = state.priority.name),
+        label = stringResource(id = R.string.priority),
+        onClick = { onPriorityFieldClicked() },
+        modifier = Modifier
+            .padding(horizontal = 15.dp)
+            .fillMaxWidth()
+            .wrapContentHeight(),
+        onValueChanged = {}
+    )
+    HeightSpacer()
+    DefaultBottomSheetField(
+        string = stringResource(id = state.remind.name),
+        label = stringResource(id = R.string.remind),
+        onClick = { onRemindFieldClicked() },
+        modifier = Modifier
+            .padding(horizontal = 15.dp)
+            .fillMaxWidth()
+            .wrapContentHeight(),
+        onValueChanged = { }
+    )
 }
