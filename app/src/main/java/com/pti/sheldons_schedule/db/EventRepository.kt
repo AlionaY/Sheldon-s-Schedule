@@ -8,7 +8,7 @@ interface EventRepository {
 
     suspend fun saveEvent(event: Event)
 
-    fun getEvent(id: String): Event
+    suspend fun getEvent(id: Long): Event
 
     suspend fun editEvent(event: Event)
 

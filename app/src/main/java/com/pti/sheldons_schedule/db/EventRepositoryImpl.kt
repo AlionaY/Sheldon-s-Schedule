@@ -11,7 +11,7 @@ class EventRepositoryImpl @Inject constructor(private val eventDao: EventDao) : 
         eventDao.insertEvent(event)
     }
 
-    override fun getEvent(id: String): Event = eventDao.getEvent(id)
+    override suspend fun getEvent(id: Long): Event = eventDao.getEvent(id)
 
     override suspend fun editEvent(event: Event) {
         eventDao.editEvent(event)
