@@ -4,10 +4,7 @@ import android.app.Application
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.pti.sheldons_schedule.R
-import com.pti.sheldons_schedule.data.EditEventScreenState
-import com.pti.sheldons_schedule.data.Event
-import com.pti.sheldons_schedule.data.Options
-import com.pti.sheldons_schedule.data.TitleFieldState
+import com.pti.sheldons_schedule.data.*
 import com.pti.sheldons_schedule.db.EventRepository
 import com.pti.sheldons_schedule.util.updateDate
 import com.pti.sheldons_schedule.util.updateTime
@@ -26,7 +23,7 @@ class EditEventViewModel @Inject constructor(
 ) : ViewModel() {
 
     val pickedEvent = MutableSharedFlow<Event>()
-    val screenState = MutableStateFlow<EditEventScreenState?>(null)
+    val screenState = MutableStateFlow<ScreenState?>(null)
     val isPickedTimeValid = MutableSharedFlow<Boolean>()
 
 
@@ -101,7 +98,7 @@ class EditEventViewModel @Inject constructor(
         }
     }
 
-    private fun validatePickedStartTime(state: EditEventScreenState) {
+    private fun validatePickedStartTime(state: ScreenState) {
         val currentTime = state.currentDate
         val isStartTimeValid = state.pickedStartTime > currentTime
         val startDate = if (isStartTimeValid) state.pickedStartTime else state.startDate
@@ -153,7 +150,7 @@ class EditEventViewModel @Inject constructor(
         }
     }
 
-    private fun validatePickedEndTime(state: EditEventScreenState) {
+    private fun validatePickedEndTime(state: ScreenState) {
         val isPickedEndTimeValid = state.pickedEndTime > state.currentDate &&
                 state.pickedEndTime > state.startDate &&
                 state.pickedStartTime < state.pickedEndTime

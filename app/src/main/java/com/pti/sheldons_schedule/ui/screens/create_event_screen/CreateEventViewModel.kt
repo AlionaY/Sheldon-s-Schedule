@@ -32,8 +32,8 @@ class CreateEventViewModel @Inject constructor(
     private val repository: EventRepository
 ) : ViewModel() {
 
-    val createEventScreenState = MutableStateFlow(
-        CreateEventScreenState(
+    val screenState = MutableStateFlow(
+        ScreenState(
             startDate = Calendar.getInstance().apply {
                 add(Calendar.MINUTE, 10)
             },
@@ -59,7 +59,7 @@ class CreateEventViewModel @Inject constructor(
     }
 
     fun onStartDatePicked(pickedDate: Calendar) {
-        createEventScreenState.let { state ->
+        screenState.let { state ->
             val startDate = state.value.startDate.updateDate(
                 year = pickedDate.get(Calendar.YEAR),
                 month = pickedDate.get(Calendar.MONTH),
@@ -85,7 +85,7 @@ class CreateEventViewModel @Inject constructor(
     }
 
     fun onEndDatePicked(calendar: Calendar) {
-        createEventScreenState.let { state ->
+        screenState.let { state ->
             val endDate = state.value.endDate.updateDate(
                 year = calendar.get(Calendar.YEAR),
                 month = calendar.get(Calendar.MONTH),
@@ -101,7 +101,7 @@ class CreateEventViewModel @Inject constructor(
     }
 
     fun onTimeStartPicked(hour: Int, minutes: Int) {
-        createEventScreenState.let { state ->
+        screenState.let { state ->
             val pickedTime = state.value.startDate.updateTime(
                 hour = hour,
                 minutes = minutes
@@ -113,7 +113,7 @@ class CreateEventViewModel @Inject constructor(
     }
 
     fun onTimeEndPicked(hour: Int, minutes: Int) {
-        createEventScreenState.let { state ->
+        screenState.let { state ->
             val pickedTime = state.value.endDate.updateTime(
                 hour = hour,
                 minutes = minutes
@@ -125,27 +125,27 @@ class CreateEventViewModel @Inject constructor(
     }
 
     fun onRepeatFieldClicked() = viewModelScope.launch {
-        createEventScreenState.update { it.copy(options = Repeat.values()) }
+        screenState.update { it.copy(options = Repeat.values()) }
     }
 
     fun onPriorityFieldClicked() = viewModelScope.launch {
-        createEventScreenState.update { it.copy(options = Priority.values()) }
+        screenState.update { it.copy(options = Priority.values()) }
     }
 
     fun onRemindFieldClicked() = viewModelScope.launch {
-        createEventScreenState.update { it.copy(options = Reminder.values()) }
+        screenState.update { it.copy(options = Reminder.values()) }
     }
 
     fun onTitleEdited(title: String) {
-        createEventScreenState.update { it.copy(title = title) }
+        screenState.update { it.copy(title = title) }
     }
 
     fun onDescriptionEdited(description: String) {
-        createEventScreenState.update { it.copy(description = description) }
+        screenState.update { it.copy(description = description) }
     }
 
     fun onSaveEventClicked() {
-        createEventScreenState.value.let { state ->
+        screenState.value.let { state ->
             val currentDate = Calendar.getInstance().timeInMillis
             val duration = state.endDate.timeInMillis - state.startDate.timeInMillis
 
@@ -162,7 +162,7 @@ class CreateEventViewModel @Inject constructor(
         }
     }
 
-    private fun getRemindTimeInMillis(state: CreateEventScreenState) =
+    private fun getRemindTimeInMillis(state: ScreenState) =
         when (state.remind) {
             DontRemind -> DontRemind.value
             Min10 -> TimeUnit.MINUTES.toMillis(Min10.value)
@@ -176,7 +176,7 @@ class CreateEventViewModel @Inject constructor(
         duration: Long,
         remind: Long
     ) = viewModelScope.launch {
-        newEvent.value = createEventScreenState.value.toEvent(currentDate, duration)
+        newEvent.value = screenState.value.toEvent(currentDate, duration)
         newEvent.value?.let {
             repository.saveEvent(it)
         }
@@ -186,20 +186,20 @@ class CreateEventViewModel @Inject constructor(
 
     fun onSelected(options: Options) {
         when (options) {
-            is Repeat -> createEventScreenState.update {
+            is Repeat -> screenState.update {
                 it.copy(repeat = options, options = null)
             }
-            is Priority -> createEventScreenState.update {
+            is Priority -> screenState.update {
                 it.copy(priority = options, options = null)
             }
-            is Reminder -> createEventScreenState.update {
+            is Reminder -> screenState.update {
                 it.copy(remind = options, options = null)
             }
         }
     }
 
     fun onFocusChanged(hasFocus: Boolean) {
-        createEventScreenState.let { state ->
+        screenState.let { state ->
             val titleErrorText = if (state.value.title.isEmpty() && !hasFocus) {
                 context.getText(R.string.title_error_message).toString()
             } else {
@@ -226,22 +226,22 @@ class CreateEventViewModel @Inject constructor(
     private fun observeScreenState() = viewModelScope.launch {
         val calendar = Calendar.getInstance()
 
-        createEventScreenState.collect { state ->
+        screenState.collect { state ->
             updateDatePickerStartDate(calendar, state)
         }
     }
 
     private fun updateDatePickerStartDate(
         calendar: Calendar,
-        state: CreateEventScreenState
+        state: ScreenState
     ) {
         calendar.timeInMillis = state.startDate.timeInMillis
         calendar.add(Calendar.DAY_OF_YEAR, -1)
-        createEventScreenState.update { it.copy(datePickerStartDate = calendar.timeInMillis) }
+        screenState.update { it.copy(datePickerStartDate = calendar.timeInMillis) }
     }
 
-    private fun validatePickedStartTime(state: CreateEventScreenState) {
-        val currentTime = state.calendar
+    private fun validatePickedStartTime(state: ScreenState) {
+        val currentTime = state.currentDate
         val isStartTimeValid = state.pickedStartTime > currentTime
         val startDate = if (isStartTimeValid) state.pickedStartTime else state.startDate
         val endDate = if (isStartTimeValid) {
@@ -254,7 +254,7 @@ class CreateEventViewModel @Inject constructor(
             state.endDate
         }
 
-        createEventScreenState.update {
+        screenState.update {
             it.copy(startDate = startDate, endDate = endDate)
         }
 
@@ -263,8 +263,8 @@ class CreateEventViewModel @Inject constructor(
         }
     }
 
-    private fun validatePickedEndTime(state: CreateEventScreenState) {
-        val isPickedEndTimeValid = state.pickedEndTime > state.calendar &&
+    private fun validatePickedEndTime(state: ScreenState) {
+        val isPickedEndTimeValid = state.pickedEndTime > state.currentDate &&
                 state.pickedEndTime > state.startDate &&
                 state.pickedStartTime < state.pickedEndTime
         val endDate = if (isPickedEndTimeValid) {
@@ -275,7 +275,7 @@ class CreateEventViewModel @Inject constructor(
             }
         }
 
-        createEventScreenState.update { it.copy(endDate = endDate) }
+        screenState.update { it.copy(endDate = endDate) }
 
         viewModelScope.launch {
             isPickedTimeValid.emit(isPickedEndTimeValid)

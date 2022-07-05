@@ -7,7 +7,6 @@ import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Schedule
 import androidx.compose.runtime.*
-import androidx.compose.runtime.R
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.onFocusChanged
@@ -19,18 +18,19 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.google.android.material.timepicker.MaterialTimePicker
 import com.google.android.material.timepicker.TimeFormat
-import com.pti.sheldons_schedule.data.EditEventScreenState
+import com.pti.sheldons_schedule.data.ScreenState
 import java.util.*
 
 @Composable
 fun TimePickerRow(
-    screenState: EditEventScreenState?,
+    screenState: ScreenState?,
     fieldWidth: Dp,
     onStartTimePicked: (Int, Int) -> Unit,
-    onEndTimePicked: (Int, Int) -> Unit
+    onEndTimePicked: (Int, Int) -> Unit,
+    modifier: Modifier = Modifier
 ) {
     Row(
-        modifier = Modifier.fillMaxWidth(),
+        modifier = modifier,
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.Center
     ) {
@@ -66,7 +66,7 @@ fun TimePickerRow(
 
 
 @Composable
-fun TimePickerField(
+private fun TimePickerField(
     pickedTime: String?,
     calendar: Calendar?,
     onValueChanged: (String) -> Unit,

@@ -14,7 +14,7 @@ import androidx.compose.ui.unit.dp
 import com.pti.sheldons_schedule.R
 
 @Composable
-fun SaveOrCloseCreatingEvent(
+fun TopToolbar(
     onCloseIconClicked: () -> Unit,
     onSaveIconClicked: () -> Unit,
     modifier: Modifier = Modifier

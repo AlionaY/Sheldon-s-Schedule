@@ -8,7 +8,6 @@ import androidx.compose.material.SnackbarResult
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.focus.FocusManager
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.stringResource
@@ -16,20 +15,19 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.pti.sheldons_schedule.R
-import com.pti.sheldons_schedule.data.EditEventScreenState
-import com.pti.sheldons_schedule.ui.common.ContentColumn
+import com.pti.sheldons_schedule.ui.common.ScreenContent
 import com.pti.sheldons_schedule.ui.common.ModalBottomSheet
 import com.pti.sheldons_schedule.ui.common.TimePicker
 import com.pti.sheldons_schedule.util.Constants.FIELD_COUNT
 import com.pti.sheldons_schedule.util.Constants.PADDING_WIDTH_SUM
 import kotlinx.coroutines.launch
 
+@OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun EditEventScreen(
     navController: NavController,
     viewModel: EditEventViewModel = hiltViewModel()
 ) {
-
     val event by viewModel.pickedEvent.collectAsState(initial = null)
     val screenState by viewModel.screenState.collectAsState(initial = null)
     val isPickedTimeValid by viewModel.isPickedTimeValid.collectAsState(initial = true)
@@ -39,26 +37,6 @@ fun EditEventScreen(
     val snackbarMessage = stringResource(R.string.time_picker_error_message)
     val snackbarAction = stringResource(id = R.string.snackbar_action)
 
-    EditModalBottomSheet(
-        screenState,
-        focusManager,
-        isPickedTimeValid,
-        snackbarMessage,
-        snackbarAction,
-        navController
-    )
-}
-
-@OptIn(ExperimentalMaterialApi::class)
-@Composable
-private fun EditModalBottomSheet(
-    screenState: EditEventScreenState?,
-    focusManager: FocusManager,
-    isPickedTimeValid: Boolean,
-    snackbarMessage: String,
-    snackbarAction: String,
-    navController: NavController,
-) {
     var isSnackbarActionClicked by remember { mutableStateOf(false) }
 
     if (screenState?.pickedStartTime != screenState?.startDate && isSnackbarActionClicked) {
@@ -134,26 +112,29 @@ private fun EditModalBottomSheet(
         BoxWithConstraints(modifier = Modifier.fillMaxSize()) {
             val halfFieldWidth = (this.maxWidth.value.toInt() - PADDING_WIDTH_SUM) / FIELD_COUNT
 
-            ContentColumn(
-                screenState = screenState,
-                fieldWidth = halfFieldWidth,
-                focusRequester = focusRequester,
-                onToolbarClick = { navController.popBackStack() },
-                onTitleEdited = { viewModel.onTitleEdited(it) },
-                onFocusChanged = { viewModel.onFocusChanged(it) },
-                onDescriptionEdited = { viewModel.onDescriptionEdited(it) },
-                onStartDatePicked = { viewModel.onStartDatePicked(it) },
-                onEndDatePicked = { viewModel.onEndDatePicked(it) },
-                onStartTimePicked = { hour, minutes ->
-                    viewModel.onTimeStartPicked(hour, minutes)
-                },
-                onEndTimePicked = { hour, minutes ->
-                    viewModel.onTimeEndPicked(hour, minutes)
-                },
-                onRemindFieldClicked = { viewModel.onRemindFieldClicked() },
-                onRepeatFieldClicked = { viewModel.onRepeatFieldClicked() },
-                onPriorityFieldClicked = { viewModel.onPriorityFieldClicked() }
-            )
+            Column(modifier = Modifier.fillMaxSize()) {
+                TopToolbar(onClick = { navController.popBackStack() })
+
+                ScreenContent(
+                    screenState = screenState,
+                    fieldWidth = halfFieldWidth,
+                    focusRequester = focusRequester,
+                    onTitleEdited = { viewModel.onTitleEdited(it) },
+                    onFocusChanged = { viewModel.onFocusChanged(it) },
+                    onDescriptionEdited = { viewModel.onDescriptionEdited(it) },
+                    onStartDatePicked = { viewModel.onStartDatePicked(it) },
+                    onEndDatePicked = { viewModel.onEndDatePicked(it) },
+                    onStartTimePicked = { hour, minutes ->
+                        viewModel.onTimeStartPicked(hour, minutes)
+                    },
+                    onEndTimePicked = { hour, minutes ->
+                        viewModel.onTimeEndPicked(hour, minutes)
+                    },
+                    onRemindFieldClicked = { viewModel.onRemindFieldClicked() },
+                    onRepeatFieldClicked = { viewModel.onRepeatFieldClicked() },
+                    onPriorityFieldClicked = { viewModel.onPriorityFieldClicked() }
+                )
+            }
 
             BottomToolbar(
                 onSaveEventClicked = { viewModel.onSaveEventClicked() },

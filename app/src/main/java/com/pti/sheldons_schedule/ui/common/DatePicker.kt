@@ -21,7 +21,7 @@ import com.google.android.material.datepicker.CalendarConstraints
 import com.google.android.material.datepicker.DateValidatorPointForward
 import com.google.android.material.datepicker.MaterialDatePicker
 import com.pti.sheldons_schedule.R
-import com.pti.sheldons_schedule.data.EditEventScreenState
+import com.pti.sheldons_schedule.data.ScreenState
 import com.pti.sheldons_schedule.util.Constants
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
@@ -29,18 +29,19 @@ import java.util.*
 
 @Composable
 fun DatePickedRow(
-    screenState: EditEventScreenState?,
+    screenState: ScreenState?,
     fieldWidth: Dp,
-    onStartDatePicked: (Calendar?) -> Unit,
-    onEndDatePicked: (Calendar?) -> Unit,
+    onStartDatePicked: (Calendar) -> Unit,
+    onEndDatePicked: (Calendar) -> Unit,
+    modifier: Modifier = Modifier
 ) {
     Row(
-        modifier = Modifier.fillMaxWidth(),
+        modifier = modifier,
         verticalAlignment = Alignment.CenterVertically,
     ) {
         DatePickerField(
             pickedDate = screenState?.formattedStartDate,
-            onPickedDate = { onStartDatePicked(it) },
+            onPickedDate = { calendar -> calendar?.let { onStartDatePicked(it) } },
             modifier = Modifier
                 .padding(start = 15.dp)
                 .width(fieldWidth)
@@ -51,7 +52,7 @@ fun DatePickedRow(
         Spacer(modifier = Modifier.width(30.dp))
         DatePickerField(
             pickedDate = screenState?.formattedEndDate,
-            onPickedDate = { onEndDatePicked(it) },
+            onPickedDate = { calendar -> calendar?.let { onEndDatePicked(it) } },
             modifier = Modifier
                 .padding(end = 15.dp)
                 .width(fieldWidth)
@@ -64,7 +65,7 @@ fun DatePickedRow(
 }
 
 @Composable
-fun DatePickerField(
+private fun DatePickerField(
     pickedDate: String?,
     onPickedDate: (Calendar?) -> Unit,
     onValueChanged: (String) -> Unit,
