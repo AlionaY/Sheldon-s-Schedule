@@ -5,7 +5,6 @@ import android.app.PendingIntent
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
-import android.os.Parcelable
 import android.util.Log
 import androidx.core.content.getSystemService
 import com.pti.sheldons_schedule.data.Event
@@ -13,7 +12,6 @@ import com.pti.sheldons_schedule.data.Options
 import com.pti.sheldons_schedule.data.Options.Repeat
 import com.pti.sheldons_schedule.db.EventRepository
 import com.pti.sheldons_schedule.util.Constants.DATE_FORMAT_ISO_8601
-import com.pti.sheldons_schedule.util.Constants.EVENT
 import com.pti.sheldons_schedule.util.Constants.REMINDER_ID
 import com.pti.sheldons_schedule.util.formatDate
 import dagger.hilt.android.AndroidEntryPoint
