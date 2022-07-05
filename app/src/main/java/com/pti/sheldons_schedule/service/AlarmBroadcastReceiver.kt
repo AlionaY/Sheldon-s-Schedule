@@ -50,7 +50,7 @@ class AlarmBroadcastReceiver : BroadcastReceiver() {
     private fun repeatEvent(event: Event?, context: Context?) {
         val alarmManager = context?.getSystemService<AlarmManager>()
         val reminderIntent = Intent(context, AlarmBroadcastReceiver::class.java).apply {
-            putExtra(EVENT, event as Parcelable)
+            putExtra(REMINDER_ID, event?.creationDate)
         }
         val pendingIntent = PendingIntent.getBroadcast(
             context,
