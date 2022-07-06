@@ -1,28 +1,24 @@
 package com.pti.sheldons_schedule.ui.screens.create_event_screen
 
 import androidx.compose.foundation.layout.*
-import androidx.compose.material.*
+import androidx.compose.material.ExperimentalMaterialApi
+import androidx.compose.material.SnackbarHost
+import androidx.compose.material.SnackbarHostState
+import androidx.compose.material.SnackbarResult
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.focus.FocusRequester
-import androidx.compose.ui.focus.focusRequester
-import androidx.compose.ui.focus.onFocusChanged
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.pti.sheldons_schedule.R
-import com.pti.sheldons_schedule.data.CreateEventScreenState
-import com.pti.sheldons_schedule.data.TitleFieldState
-import com.pti.sheldons_schedule.ui.common.*
+import com.pti.sheldons_schedule.ui.common.ScreenContent
+import com.pti.sheldons_schedule.ui.common.TimePicker
 import com.pti.sheldons_schedule.util.Constants.FIELD_COUNT
 import com.pti.sheldons_schedule.util.Constants.PADDING_WIDTH_SUM
 import kotlinx.coroutines.launch
-import java.util.*
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
@@ -30,16 +26,12 @@ fun CreateEventScreen(
     navController: NavController,
     viewModel: CreateEventViewModel = hiltViewModel()
 ) {
-    val state by viewModel.createEventScreenState.collectAsState()
+    val state by viewModel.screenState.collectAsState()
     val isPickedTimeValid by viewModel.isPickedTimeValid.collectAsState(initial = true)
     val focusManager = LocalFocusManager.current
 
     val snackbarMessage = stringResource(R.string.time_picker_error_message)
     val snackbarAction = stringResource(id = R.string.snackbar_action)
-    val titleBorderColor = when (state.titleFieldState) {
-        TitleFieldState.Normal -> MaterialTheme.colors.onSurface.copy(alpha = ContentAlpha.disabled)
-        TitleFieldState.Error -> MaterialTheme.colors.error
-    }
     var isSnackbarActionClicked by remember { mutableStateOf(false) }
 
     if (state.pickedStartTime != state.startDate && isSnackbarActionClicked) {
@@ -79,7 +71,6 @@ fun CreateEventScreen(
     ) { sheetState ->
 
         val scope = rememberCoroutineScope()
-        val focusRequester = remember { FocusRequester() }
         val snackbarHostState = remember { SnackbarHostState() }
 
         LaunchedEffect(key1 = state.options) {
@@ -88,10 +79,6 @@ fun CreateEventScreen(
                     sheetState.show()
                 }
             }
-        }
-
-        LaunchedEffect(key1 = Unit) {
-            focusRequester.requestFocus()
         }
 
         LaunchedEffect(key1 = isPickedTimeValid) {
@@ -128,8 +115,6 @@ fun CreateEventScreen(
                 )
                 ScreenContent(
                     state = state,
-                    focusRequester = focusRequester,
-                    titleBorderColor = titleBorderColor,
                     fieldWidth = halfFieldWidth.dp,
                     onTitleEdited = { viewModel.onTitleEdited(it) },
                     onDescriptionEdited = { viewModel.onDescriptionEdited(it) },
@@ -154,94 +139,4 @@ fun CreateEventScreen(
             )
         }
     }
-}
-
-@Composable
-private fun ScreenContent(
-    state: CreateEventScreenState,
-    focusRequester: FocusRequester,
-    titleBorderColor: Color,
-    fieldWidth: Dp,
-    onTitleEdited: (String) -> Unit,
-    onFocusChanged: (Boolean) -> Unit,
-    onDescriptionEdited: (String) -> Unit,
-    onStartDatePicked: (Calendar) -> Unit,
-    onEndDatePicked: (Calendar) -> Unit,
-    onTimeStartPicked: (Int, Int) -> Unit,
-    onTimeEndPicked: (Int, Int) -> Unit,
-    onRepeatFieldClicked: () -> Unit,
-    onPriorityFieldClicked: () -> Unit,
-    onRemindFieldClicked: () -> Unit
-) {
-    DefaultTextField(
-        value = state.title,
-        onValueChanged = { onTitleEdited(it) },
-        label = stringResource(id = R.string.title),
-        modifier = Modifier
-            .padding(horizontal = 15.dp)
-            .focusRequester(focusRequester)
-            .onFocusChanged { onFocusChanged(it.hasFocus) },
-        errorText = state.titleErrorText.orEmpty(),
-        borderColor = titleBorderColor
-    )
-    HeightSpacer()
-    DefaultTextField(
-        value = state.description,
-        onValueChanged = { onDescriptionEdited(it) },
-        label = stringResource(id = R.string.description),
-        modifier = Modifier.padding(horizontal = 15.dp),
-    )
-    HeightSpacer()
-    DatePickerRow(
-        state = state,
-        fieldWidth = fieldWidth,
-        onStartDatePicked = { onStartDatePicked(it) },
-        onEndDatePicked = { onEndDatePicked(it) },
-        modifier = Modifier.fillMaxWidth()
-    )
-    HeightSpacer()
-    TimePickerRow(
-        state = state,
-        fieldWidth = fieldWidth,
-        onTimeStartPicked = { hour, minutes ->
-            onTimeStartPicked(hour, minutes)
-        },
-        onTimeEndPicked = { hour, minutes ->
-            onTimeEndPicked(hour, minutes)
-        },
-        modifier = Modifier.fillMaxWidth()
-    )
-    HeightSpacer()
-    DefaultBottomSheetField(
-        string = stringResource(id = state.repeat.name),
-        label = stringResource(id = R.string.repeat),
-        onClick = { onRepeatFieldClicked() },
-        modifier = Modifier
-            .padding(horizontal = 15.dp)
-            .fillMaxWidth()
-            .wrapContentHeight(),
-        onValueChanged = { }
-    )
-    HeightSpacer()
-    DefaultBottomSheetField(
-        string = stringResource(id = state.priority.name),
-        label = stringResource(id = R.string.priority),
-        onClick = { onPriorityFieldClicked() },
-        modifier = Modifier
-            .padding(horizontal = 15.dp)
-            .fillMaxWidth()
-            .wrapContentHeight(),
-        onValueChanged = {}
-    )
-    HeightSpacer()
-    DefaultBottomSheetField(
-        string = stringResource(id = state.remind.name),
-        label = stringResource(id = R.string.remind),
-        onClick = { onRemindFieldClicked() },
-        modifier = Modifier
-            .padding(horizontal = 15.dp)
-            .fillMaxWidth()
-            .wrapContentHeight(),
-        onValueChanged = { }
-    )
 }

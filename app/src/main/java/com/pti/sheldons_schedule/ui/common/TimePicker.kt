@@ -19,12 +19,12 @@ import androidx.compose.ui.unit.dp
 import com.google.android.material.timepicker.MaterialTimePicker
 import com.google.android.material.timepicker.TimeFormat
 import com.pti.sheldons_schedule.R
-import com.pti.sheldons_schedule.data.CreateEventScreenState
+import com.pti.sheldons_schedule.data.ScreenState
 import java.util.*
 
 @Composable
 fun TimePickerRow(
-    state: CreateEventScreenState,
+    state: ScreenState,
     fieldWidth: Dp,
     onTimeStartPicked: (Int, Int) -> Unit,
     onTimeEndPicked: (Int, Int) -> Unit,

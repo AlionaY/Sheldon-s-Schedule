@@ -21,7 +21,7 @@ import com.google.android.material.datepicker.CalendarConstraints
 import com.google.android.material.datepicker.DateValidatorPointForward
 import com.google.android.material.datepicker.MaterialDatePicker
 import com.pti.sheldons_schedule.R
-import com.pti.sheldons_schedule.data.CreateEventScreenState
+import com.pti.sheldons_schedule.data.ScreenState
 import com.pti.sheldons_schedule.util.Constants
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
@@ -30,7 +30,7 @@ import java.util.*
 
 @Composable
 fun DatePickerRow(
-    state: CreateEventScreenState,
+    state: ScreenState,
     fieldWidth: Dp,
     onStartDatePicked: (Calendar) -> Unit,
     onEndDatePicked: (Calendar) -> Unit,
