@@ -271,6 +271,7 @@ class CreateEventViewModel @Inject constructor(
         val alarmManager = context.getSystemService<AlarmManager>()
         val reminderIntent = Intent(context, AlarmBroadcastReceiver::class.java).apply {
             putExtra(Constants.REMINDER_ID, id)
+            putExtra("next_event", id)
         }
         val pendingIntent = PendingIntent.getBroadcast(
             context,
