@@ -1,5 +1,6 @@
 package com.pti.sheldons_schedule.ui.screens.create_event_screen
 
+import android.widget.TimePicker
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
 import androidx.compose.runtime.*
@@ -192,8 +193,8 @@ private fun ScreenContent(
         modifier = Modifier.padding(horizontal = 15.dp),
     )
     HeightSpacer()
-    DatePickedRow(
-        screenState = state,
+    DatePickerRow(
+        state = state,
         fieldWidth = fieldWidth,
         onStartDatePicked = { onStartDatePicked(it) },
         onEndDatePicked = { onEndDatePicked(it) },
@@ -201,12 +202,12 @@ private fun ScreenContent(
     )
     HeightSpacer()
     TimePickerRow(
-        screenState = state,
+        state = state,
         fieldWidth = fieldWidth,
-        onStartTimePicked = { hour, minutes ->
+        onTimeStartPicked = { hour, minutes ->
             onTimeStartPicked(hour, minutes)
         },
-        onEndTimePicked = { hour, minutes ->
+        onTimeEndPicked = { hour, minutes ->
             onTimeEndPicked(hour, minutes)
         },
         modifier = Modifier.fillMaxWidth()
