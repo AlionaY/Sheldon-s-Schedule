@@ -31,6 +31,9 @@ import com.pti.sheldons_schedule.ui.navigation.navigate
 import com.pti.sheldons_schedule.ui.theme.Graphite
 import com.pti.sheldons_schedule.ui.theme.Steel
 import com.pti.sheldons_schedule.ui.theme.Teal200
+import com.pti.sheldons_schedule.util.Constants
+import com.pti.sheldons_schedule.util.convertToCalendar
+import com.pti.sheldons_schedule.util.formatDate
 import com.pti.sheldons_schedule.util.horizontalPadding
 import kotlinx.coroutines.launch
 import java.util.*
@@ -48,6 +51,7 @@ fun MainScreen(
 ) {
     val weeks = viewModel.weeks.collectAsLazyPagingItems()
     val ticker by viewModel.ticker.collectAsState(initial = 0f)
+    val dayEvent by viewModel.dayEvent.collectAsState()
 
     val pagerState = rememberPagerState()
     val scope = rememberCoroutineScope()
@@ -72,6 +76,8 @@ fun MainScreen(
             var currentWeek = weeks.peek(page)
             val scrollState = rememberScrollState()
 
+//            viewModel.onWeekGet(currentWeek)
+
             LaunchedEffect(key1 = pagerState) {
                 snapshotFlow { pagerState.currentPage }.collect {
                     currentWeek = weeks[page]
@@ -80,7 +86,7 @@ fun MainScreen(
 
             Column(modifier = Modifier.fillMaxSize()) {
                 CalendarHeader(
-                    currentWeek = currentWeek,
+                    currentWeek = currentWeek?.week,
                     height = CALENDAR_HEADER_HEIGHT.dp
                 )
 
@@ -123,6 +129,8 @@ fun MainScreen(
                                         .padding(start = 60.dp)
                                 ) {
                                     currentWeek?.week?.forEach { dayOfWeek ->
+//                                        viewModel.onDayParamsGet(dayOfWeek, hourItem)
+
                                         BoxWithConstraints(
                                             modifier = Modifier
                                                 .fillMaxHeight()
@@ -140,6 +148,22 @@ fun MainScreen(
                                                 }
                                         ) {
                                             val padding = ticker * this.maxHeight.value
+                                            Column(modifier = Modifier.fillMaxSize()) {
+                                                currentWeek?.events?.filter {
+                                                    it.startDate.convertToCalendar()
+                                                        .formatDate(Constants.DATE_FORMAT) ==
+                                                            dayOfWeek.day.convertToCalendar()
+                                                                .formatDate(Constants.DATE_FORMAT) &&
+                                                            it.startDate.convertToCalendar().formatDate("HH").toInt() ==
+                                                            hourItem
+                                                }?.forEach { event ->
+                                                    Text(
+                                                        text = event.title,
+                                                        fontSize = 11.sp,
+                                                        color = MaterialTheme.colors.onBackground
+                                                    )
+                                                }
+                                            }
 
                                             if (dayOfWeek.isCurrent && isCurrentHour) {
                                                 Divider(

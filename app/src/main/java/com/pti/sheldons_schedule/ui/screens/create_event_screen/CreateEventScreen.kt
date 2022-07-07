@@ -19,6 +19,8 @@ import com.pti.sheldons_schedule.R
 import com.pti.sheldons_schedule.data.CreateEventScreenState
 import com.pti.sheldons_schedule.data.TitleFieldState
 import com.pti.sheldons_schedule.ui.common.*
+import com.pti.sheldons_schedule.ui.navigation.NavDestination
+import com.pti.sheldons_schedule.ui.navigation.NavDestination.*
 import com.pti.sheldons_schedule.util.Constants.FIELD_COUNT
 import com.pti.sheldons_schedule.util.Constants.PADDING_WIDTH_SUM
 import kotlinx.coroutines.launch
@@ -120,7 +122,7 @@ fun CreateEventScreen(
                     onCloseIconClicked = { navController.popBackStack() },
                     onSaveIconClicked = {
                         viewModel.onSaveEventClicked()
-                        navController.popBackStack()
+                        navController.navigate(EntryScreen.route)
                     },
                     modifier = Modifier
                         .height(58.dp)

@@ -12,5 +12,12 @@ data class Week(
 data class DayOfWeek(
     val dayOfMonth: Int,
     val weekDayName: String,
-    val isCurrent: Boolean = false
+    val isCurrent: Boolean = false,
+    val day: String
 ) : Parcelable
+
+@Parcelize
+data class WeekEvents(
+    val week: List<DayOfWeek>,
+    val events: List<Event>
+): Parcelable

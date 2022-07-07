@@ -13,10 +13,11 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.pti.sheldons_schedule.data.DayOfWeek
 import com.pti.sheldons_schedule.data.Week
 
 @Composable
-fun CalendarHeader(currentWeek: Week?, height: Dp) {
+fun CalendarHeader(currentWeek: List<DayOfWeek>?, height: Dp) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -31,7 +32,7 @@ fun CalendarHeader(currentWeek: Week?, height: Dp) {
                 .width(60.dp)
         )
 
-        currentWeek?.week?.forEach { day ->
+        currentWeek?.forEach { day ->
             val textColor = if (day.isCurrent) {
                 MaterialTheme.colors.secondary
             } else {
