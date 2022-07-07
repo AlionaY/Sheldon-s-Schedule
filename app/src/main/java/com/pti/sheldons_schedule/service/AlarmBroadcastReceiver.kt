@@ -12,7 +12,6 @@ import com.pti.sheldons_schedule.data.Options.Repeat
 import com.pti.sheldons_schedule.db.EventRepository
 import com.pti.sheldons_schedule.util.Constants.DATE_FORMAT_ISO_8601
 import com.pti.sheldons_schedule.util.Constants.REMINDER_ID
-import com.pti.sheldons_schedule.util.convertToCalendar
 import com.pti.sheldons_schedule.util.formatDate
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
@@ -20,7 +19,6 @@ import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.launch
 import java.util.*
 import java.util.Calendar.*
-import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -34,50 +32,30 @@ class AlarmBroadcastReceiver : BroadcastReceiver() {
 
     override fun onReceive(context: Context?, intent: Intent?) {
         val eventId = intent?.getLongExtra(REMINDER_ID, 0)
-        val nextEventDate = intent?.getLongExtra("next_event", 0)
 
         CoroutineScope(IO).launch {
             val event = eventId?.let { repository.getEvent(it) }
 
             notificationController.createNotification(event)
-            repeatEvent(event, context, nextEventDate)
+            repeatEvent(event, context)
         }
     }
 
-    private fun repeatEvent(event: Event?, context: Context?, nextEvent: Long?) {
-        val parsed = event?.startDate?.convertToCalendar()
-        parsed?.let { date ->
-            val pickedDate = getInstance().apply {
-                timeInMillis = nextEvent ?: date.timeInMillis
-            }
-            val nextEventDate = getNextEventDate(event, pickedDate)
-            val remindAt = nextEventDate?.timeInMillis?.minus(
-                TimeUnit.MINUTES.toMillis(
-                    event.reminder?.value ?: 0
-                )
-            ) ?: 0
+    private fun repeatEvent(event: Event?, context: Context?) {
+        val currentTime = getInstance()
+        val nextEventDate = getNextEventDate(event, currentTime)
 
-            Log.d("$$$", "picked date ${pickedDate.formatDate(DATE_FORMAT_ISO_8601)}, " +
-                    "next event date ${nextEventDate?.formatDate(DATE_FORMAT_ISO_8601)}")
-                setAlarmManager(
-                    eventId = event.creationDate,
-                    remindAt = remindAt,
-                    context = context,
-                    nextEventDate = nextEventDate?.timeInMillis ?: 0
-                )
-        }
+        setAlarmManager(
+            eventId = event?.creationDate,
+            remindAt = nextEventDate?.timeInMillis ?: 0,
+            context = context
+        )
     }
 
-    private fun setAlarmManager(eventId: Long?, remindAt: Long, context: Context?, nextEventDate: Long) {
-        Log.d("%%%", "alarm next ${
-            getInstance().apply { 
-            timeInMillis = nextEventDate
-        }.formatDate(DATE_FORMAT_ISO_8601)}")
-
+    private fun setAlarmManager(eventId: Long?, remindAt: Long, context: Context?) {
         val alarmManager = context?.getSystemService<AlarmManager>()
         val reminderIntent = Intent(context, AlarmBroadcastReceiver::class.java).apply {
             putExtra(REMINDER_ID, eventId)
-            putExtra("next_event", nextEventDate)
         }
         val pendingIntent = PendingIntent.getBroadcast(
             context,
@@ -125,8 +103,7 @@ class AlarmBroadcastReceiver : BroadcastReceiver() {
         }
 
         return (pickedDate.clone() as Calendar).apply {
-//            add(DAY_OF_MONTH, offset)
-            add(MINUTE, 2)
+            add(DAY_OF_MONTH, offset)
         }
     }
 }
