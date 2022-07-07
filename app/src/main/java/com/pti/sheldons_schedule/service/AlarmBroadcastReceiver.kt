@@ -92,15 +92,20 @@ class AlarmBroadcastReceiver : BroadcastReceiver() {
     }
 
     private fun getWeekdayRepeatTime(pickedDate: Calendar): Calendar {
-        val offset = when (pickedDate.get(DAY_OF_WEEK)) {
-            MONDAY, TUESDAY, WEDNESDAY, THURSDAY, SUNDAY -> 1
-            FRIDAY -> 3
-            SATURDAY -> 2
-            else -> 0
-        }
-
-        return (pickedDate.clone() as Calendar).apply {
-            add(DAY_OF_MONTH, offset)
+        return when (pickedDate.get(DAY_OF_WEEK)) {
+            MONDAY, TUESDAY, WEDNESDAY, THURSDAY, SUNDAY -> (pickedDate.clone() as Calendar).apply {
+                add(DAY_OF_MONTH, 1)
+            }
+            FRIDAY, SATURDAY -> (pickedDate.clone() as Calendar).apply {
+                add(WEEK_OF_YEAR, 1)
+                firstDayOfWeek = MONDAY
+                set(DAY_OF_WEEK, MONDAY)
+            }
+            else -> {
+                (pickedDate.clone() as Calendar).apply {
+                    add(DAY_OF_MONTH, 0)
+                }
+            }
         }
     }
 }
