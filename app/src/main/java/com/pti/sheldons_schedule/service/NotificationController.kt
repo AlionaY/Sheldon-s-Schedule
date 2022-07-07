@@ -1,6 +1,5 @@
 package com.pti.sheldons_schedule.service
 
-import android.app.AlarmManager
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.app.PendingIntent
@@ -12,18 +11,13 @@ import androidx.core.content.getSystemService
 import com.pti.sheldons_schedule.MainActivity
 import com.pti.sheldons_schedule.R
 import com.pti.sheldons_schedule.data.Event
-import com.pti.sheldons_schedule.data.Options.Repeat.*
 import com.pti.sheldons_schedule.util.Constants
-import com.pti.sheldons_schedule.util.Constants.DATE_FORMAT_ISO_8601
 import com.pti.sheldons_schedule.util.Constants.REMINDER_ID
 import com.pti.sheldons_schedule.util.Constants.TIME_FORMAT
 import com.pti.sheldons_schedule.util.convertToCalendar
 import com.pti.sheldons_schedule.util.formatDate
 import dagger.hilt.android.qualifiers.ApplicationContext
-import java.text.SimpleDateFormat
-import java.util.*
-import java.util.Calendar.*
-import java.util.concurrent.TimeUnit
+import java.util.Calendar.getInstance
 import javax.inject.Inject
 
 class NotificationController @Inject constructor(
@@ -34,8 +28,6 @@ class NotificationController @Inject constructor(
         const val CHANNEL_NAME = "Events notification channel"
         const val NOTIFICATION_DESCRIPTION = "Notification description"
     }
-
-    private var nextEvent: Calendar? = null
 
     private fun createNotificationChannel(id: Long) {
         val importance = NotificationManager.IMPORTANCE_DEFAULT
@@ -50,7 +42,6 @@ class NotificationController @Inject constructor(
     fun createNotification(event: Event?) {
         context?.let { context ->
             createNotificationChannel(event?.creationDate ?: 0)
-//            repeatEvent(event)
 
             val intent = Intent(context, MainActivity::class.java).apply {
                 flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
@@ -82,85 +73,6 @@ class NotificationController @Inject constructor(
                     notify(event.creationDate.toInt(), builder.build())
                 }
             }
-        }
-    }
-
-    private fun repeatEvent(event: Event?) {
-        val parsed = event?.startDate?.convertToCalendar()
-        parsed?.let { date ->
-            val pickedDate = getInstance().apply {
-                time = date.time
-            }
-            val remindAt = if (nextEvent == null) {
-                getNextEventDate(event, pickedDate)
-            } else {
-                nextEvent?.let { getNextEventDate(event, it) }
-            }
-
-            setAlarmManager(event.creationDate, remindAt ?: 0)
-
-        }
-    }
-
-    private fun setAlarmManager(eventId: Long?, remindAt: Long) {
-        val alarmManager = context?.getSystemService<AlarmManager>()
-        val reminderIntent = Intent(context, AlarmBroadcastReceiver::class.java).apply {
-            putExtra(REMINDER_ID, eventId)
-        }
-        val pendingIntent = PendingIntent.getBroadcast(
-            context,
-            eventId?.toInt() ?: 0,
-            reminderIntent,
-            PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
-        )
-        alarmManager?.setAndAllowWhileIdle(
-            AlarmManager.RTC_WAKEUP, remindAt, pendingIntent
-        )
-    }
-
-    private fun getNextEventDate(event: Event?, pickedDate: Calendar): Long {
-        val nextEventDate = when (event?.repeat) {
-            Daily -> (pickedDate.clone() as Calendar).apply {
-                add(DAY_OF_MONTH, 1)
-            }
-
-            Weekday -> getWeekdayRepeatTime(pickedDate)
-
-            Weekly -> (pickedDate.clone() as Calendar).apply {
-                add(WEEK_OF_YEAR, 1)
-            }
-
-            Monthly -> (pickedDate.clone() as Calendar).apply {
-                add(MONTH, 1)
-            }
-
-            Annually -> (pickedDate.clone() as Calendar).apply {
-                add(YEAR, 1)
-            }
-
-            else -> null
-        }
-
-        nextEvent = nextEventDate
-
-        return nextEvent?.timeInMillis?.minus(
-            TimeUnit.MINUTES.toMillis(
-                event?.reminder?.value ?: 0
-            )
-        ) ?: 0
-    }
-
-    private fun getWeekdayRepeatTime(pickedDate: Calendar): Calendar {
-        val offset = when (pickedDate.get(DAY_OF_WEEK)) {
-            MONDAY, TUESDAY, WEDNESDAY, THURSDAY, SUNDAY -> 1
-            FRIDAY -> 3
-            SATURDAY -> 2
-            else -> 0
-        }
-
-        return (pickedDate.clone() as Calendar).apply {
-//            add(DAY_OF_MONTH, offset)
-            add(MINUTE, 1)
         }
     }
 }
