@@ -10,9 +10,7 @@ import com.pti.sheldons_schedule.db.EventRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ObsoleteCoroutinesApi
 import kotlinx.coroutines.channels.ticker
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.receiveAsFlow
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import java.util.*
 import javax.inject.Inject
@@ -31,7 +29,7 @@ class MainViewModel @Inject constructor(
 
     private val allEvents = MutableStateFlow<List<Event>>(emptyList())
 
-    val weeks = Pager(PagingConfig(1)) {
+    var weeks = Pager(PagingConfig(1)) {
             WeekdaysPagingSource(allEvents.value)
         }.flow.cachedIn(viewModelScope)
 
@@ -48,8 +46,18 @@ class MainViewModel @Inject constructor(
 
 
     init {
+        getEventsList()
+    }
+
+    private fun getEventsList() {
         viewModelScope.launch {
             allEvents.value = repository.getAllEvents().sortedBy { it.startDate }
         }
+    }
+
+    fun reload() {
+        weeks = Pager(PagingConfig(1)) {
+            WeekdaysPagingSource(allEvents.value)
+        }.flow.cachedIn(viewModelScope)
     }
 }

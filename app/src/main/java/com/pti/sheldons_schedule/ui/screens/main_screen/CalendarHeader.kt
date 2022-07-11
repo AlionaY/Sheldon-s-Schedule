@@ -14,7 +14,6 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.pti.sheldons_schedule.data.DayOfWeek
-import com.pti.sheldons_schedule.data.Week
 
 @Composable
 fun CalendarHeader(currentWeek: List<DayOfWeek>?, height: Dp) {
