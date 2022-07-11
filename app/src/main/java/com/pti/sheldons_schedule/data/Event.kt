@@ -1,15 +1,15 @@
 package com.pti.sheldons_schedule.data
 
-import android.os.Parcelable
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import androidx.room.TypeConverters
 import com.pti.sheldons_schedule.data.Options.*
 import com.pti.sheldons_schedule.db.OptionsTypeConverter
-import kotlinx.parcelize.Parcelize
 import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 
-@Parcelize
+
+@Serializable
 @Entity(tableName = "EventTable")
 @TypeConverters(OptionsTypeConverter::class)
 data class Event(
@@ -26,7 +26,7 @@ data class Event(
     val priority: Priority = Priority.Low,
     @SerialName("reminder")
     val reminder: Reminder? = null
-) : Parcelable
+)
 
 fun CreateEventScreenState.toEvent(creationDate: Long, duration: Long) = Event(
     creationDate = creationDate,

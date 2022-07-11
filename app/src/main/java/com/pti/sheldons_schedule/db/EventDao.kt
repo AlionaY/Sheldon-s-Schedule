@@ -13,7 +13,7 @@ interface EventDao {
     suspend fun insertEvent(event: Event)
 
     @Query("SELECT * FROM EventTable WHERE creationDate=:id ")
-    fun getEvent(id: String): Event
+    suspend fun getEvent(id: Long): Event
 
     @Update
     fun editEvent(event: Event)
