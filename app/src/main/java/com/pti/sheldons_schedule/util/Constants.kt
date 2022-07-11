@@ -10,8 +10,6 @@ object Constants {
 
     const val CHANNEL_ID = "Events notification channel"
     const val REMINDER_ID = "reminderId"
-    const val FROM = "from"
-    const val NOTIFICATION = "Notification"
     const val EVENT = "event"
 
     const val PADDING_WIDTH_SUM = 60

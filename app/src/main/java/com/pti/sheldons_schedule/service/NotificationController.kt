@@ -12,11 +12,12 @@ import com.pti.sheldons_schedule.MainActivity
 import com.pti.sheldons_schedule.R
 import com.pti.sheldons_schedule.data.Event
 import com.pti.sheldons_schedule.util.Constants
-import com.pti.sheldons_schedule.util.Constants.EVENT
-import com.pti.sheldons_schedule.util.Constants.FROM
-import com.pti.sheldons_schedule.util.Constants.NOTIFICATION
 import com.pti.sheldons_schedule.util.Constants.REMINDER_ID
+import com.pti.sheldons_schedule.util.Constants.TIME_FORMAT
+import com.pti.sheldons_schedule.util.convertToCalendar
+import com.pti.sheldons_schedule.util.formatDate
 import dagger.hilt.android.qualifiers.ApplicationContext
+import java.util.*
 import javax.inject.Inject
 
 class NotificationController @Inject constructor(
@@ -27,7 +28,6 @@ class NotificationController @Inject constructor(
         const val CHANNEL_NAME = "Events notification channel"
         const val NOTIFICATION_DESCRIPTION = "Notification description"
     }
-
 
     private fun createNotificationChannel(id: Long) {
         val importance = NotificationManager.IMPORTANCE_DEFAULT
@@ -40,14 +40,12 @@ class NotificationController @Inject constructor(
     }
 
     fun createNotification(event: Event?) {
-        context?.let {
+        context?.let { context ->
             createNotificationChannel(event?.creationDate ?: 0)
 
-            val intent = Intent(it, MainActivity::class.java).apply {
+            val intent = Intent(context, MainActivity::class.java).apply {
                 flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-                putExtra(REMINDER_ID, event?.creationDate ?: 0)
-                putExtra(EVENT, event)
-                putExtra(FROM, NOTIFICATION)
+                putExtra(REMINDER_ID, event?.creationDate)
             }
             val pendingIntent = PendingIntent.getActivity(
                 context,
@@ -55,18 +53,25 @@ class NotificationController @Inject constructor(
                 intent,
                 PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
             )
-            val builder = NotificationCompat.Builder(it, Constants.CHANNEL_ID)
+            val parsed = event?.startDate?.convertToCalendar()
+            parsed?.let {
+                val pickedDate = Calendar.getInstance().apply {
+                    time = parsed.time
+                }
+                val content = pickedDate.formatDate(TIME_FORMAT) + event.description
+
+                val builder = NotificationCompat.Builder(context, Constants.CHANNEL_ID)
                     .setSmallIcon(R.drawable.ic_baseline_schedule_24)
-                    .setContentTitle(event?.title.orEmpty())
-                    .setContentText("Date")
-                    .setSubText(event?.description.orEmpty())
+                    .setContentTitle(event.title)
+                    .setContentText(content)
                     .setPriority(NotificationCompat.PRIORITY_DEFAULT)
                     .setContentIntent(pendingIntent)
                     .setAutoCancel(true)
 
 
-            with(NotificationManagerCompat.from(it)) {
-                notify(event?.creationDate?.toInt() ?: 0, builder.build())
+                with(NotificationManagerCompat.from(context)) {
+                    notify(event.creationDate.toInt(), builder.build())
+                }
             }
         }
     }

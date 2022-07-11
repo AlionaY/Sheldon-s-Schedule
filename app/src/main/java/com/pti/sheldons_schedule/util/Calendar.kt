@@ -5,7 +5,7 @@ import java.util.*
 
 fun Calendar.formatDate(format: String): String {
     this.firstDayOfWeek = Calendar.MONDAY
-    val formatter = SimpleDateFormat(format, Locale.UK)
+    val formatter = SimpleDateFormat(format, Locale.getDefault())
     return formatter.format(this.time)
 }
 
@@ -27,4 +27,8 @@ fun Calendar.updateDate(
     set(Calendar.YEAR, year)
     set(Calendar.MONTH, month)
     set(Calendar.DAY_OF_MONTH, dayOfMonth)
+}
+
+fun Calendar.addDay() = this.apply {
+    add(Calendar.DAY_OF_MONTH, 1)
 }

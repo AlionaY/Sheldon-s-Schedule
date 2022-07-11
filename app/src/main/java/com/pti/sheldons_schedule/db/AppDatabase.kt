@@ -7,12 +7,13 @@ import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
 import com.pti.sheldons_schedule.data.Event
 
-@Database(entities = [Event::class], version = 6, exportSchema = false)
+@Database(entities = [Event::class], version = 7, exportSchema = false)
 @TypeConverters(OptionsTypeConverter::class)
 abstract class AppDatabase : RoomDatabase() {
 
     abstract fun eventDao(): EventDao
 }
+
 // todo: add migrations
 fun createDatabase(context: Context): AppDatabase {
     return Room.databaseBuilder(

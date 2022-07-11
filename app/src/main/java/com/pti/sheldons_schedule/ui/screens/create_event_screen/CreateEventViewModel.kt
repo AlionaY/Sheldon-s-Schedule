@@ -4,14 +4,12 @@ import android.app.AlarmManager
 import android.app.Application
 import android.app.PendingIntent
 import android.content.Intent
-import android.os.Parcelable
 import androidx.core.content.getSystemService
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.pti.sheldons_schedule.R
 import com.pti.sheldons_schedule.data.*
 import com.pti.sheldons_schedule.data.Options.*
-import com.pti.sheldons_schedule.data.Options.Reminder.*
 import com.pti.sheldons_schedule.db.EventRepository
 import com.pti.sheldons_schedule.service.AlarmBroadcastReceiver
 import com.pti.sheldons_schedule.util.Constants
@@ -146,42 +144,23 @@ class CreateEventViewModel @Inject constructor(
 
     fun onSaveEventClicked() {
         screenState.value.let { state ->
-            val currentDate = Calendar.getInstance().timeInMillis
-            val duration = state.endDate.timeInMillis - state.startDate.timeInMillis
-
-            if (state.title.isNotEmpty()) {
-                val remindTime = getRemindTimeInMillis(state)
-                val remindAt = state.startDate.timeInMillis - remindTime
-
-                saveEvent(
-                    currentDate,
-                    duration,
-                    remindAt
-                )
-            }
+            if (state.title.isNotEmpty()) saveEvent(state)
         }
     }
 
-    private fun getRemindTimeInMillis(state: ScreenState) =
-        when (state.remind) {
-            DontRemind -> DontRemind.value
-            Min10 -> TimeUnit.MINUTES.toMillis(Min10.value)
-            Min15 -> TimeUnit.MINUTES.toMillis(Min15.value)
-            Min30 -> TimeUnit.MINUTES.toMillis(Min30.value)
-            Min60 -> TimeUnit.MINUTES.toMillis(Min60.value)
+    private fun saveEvent(state: ScreenState) = viewModelScope.launch {
+        val currentDate = Calendar.getInstance()
+        val duration = state.endDate.timeInMillis - state.startDate.timeInMillis
+        val remindTime = currentDate.apply {
+            timeInMillis = state.startDate.timeInMillis - TimeUnit.MINUTES.toMillis(state.remind.value)
         }
 
-    private fun saveEvent(
-        currentDate: Long,
-        duration: Long,
-        remind: Long
-    ) = viewModelScope.launch {
-        newEvent.value = screenState.value.toEvent(currentDate, duration)
+        newEvent.value = screenState.value.toEvent(currentDate.timeInMillis, duration)
         newEvent.value?.let {
             repository.saveEvent(it)
         }
 
-        setReminderAlarm(remind)
+        setReminderAlarm(remindTime.timeInMillis)
     }
 
     fun onSelected(options: Options) {
@@ -291,7 +270,6 @@ class CreateEventViewModel @Inject constructor(
         val alarmManager = context.getSystemService<AlarmManager>()
         val reminderIntent = Intent(context, AlarmBroadcastReceiver::class.java).apply {
             putExtra(Constants.REMINDER_ID, id)
-            putExtra(Constants.EVENT, newEvent.value as Parcelable)
         }
         val pendingIntent = PendingIntent.getBroadcast(
             context,
