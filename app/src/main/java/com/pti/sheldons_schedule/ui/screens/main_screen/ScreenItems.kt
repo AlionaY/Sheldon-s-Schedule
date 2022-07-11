@@ -1,25 +1,22 @@
 package com.pti.sheldons_schedule.ui.screens.main_screen
 
 import androidx.compose.foundation.ScrollState
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.Divider
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.layout.positionInRoot
-import androidx.compose.ui.platform.LocalLifecycleOwner
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.LifecycleEventObserver
-import androidx.lifecycle.LifecycleOwner
 import com.pti.sheldons_schedule.data.DayOfWeek
+import com.pti.sheldons_schedule.data.Event
 import com.pti.sheldons_schedule.data.WeekEvents
 import com.pti.sheldons_schedule.ui.theme.Teal200
 import com.pti.sheldons_schedule.util.Constants
@@ -31,9 +28,13 @@ import kotlinx.coroutines.launch
 fun EventsColumn(
     currentWeek: WeekEvents?,
     dayOfWeek: DayOfWeek,
-    currentHour: Int
+    currentHour: Int,
+    onClick: (Event) -> Unit
 ) {
-    Column(modifier = Modifier.fillMaxSize()) {
+    Column(
+        modifier = Modifier.fillMaxSize(),
+        verticalArrangement = Arrangement.Center
+    ) {
         currentWeek?.events?.filter {
             val eventStartDay = it.startDate.convertToCalendar()
                 .formatDate(Constants.DATE_FORMAT)
@@ -42,12 +43,14 @@ fun EventsColumn(
             val eventStartHour = it.startDate.convertToCalendar()
                 .formatDate(Constants.HOUR_FORMAT).toInt()
 
-             eventStartDay == currentDay && eventStartHour == currentHour
+            eventStartDay == currentDay && eventStartHour == currentHour
         }?.forEach { event ->
             Text(
                 text = event.title,
                 fontSize = 11.sp,
-                color = MaterialTheme.colors.onBackground
+                color = MaterialTheme.colors.onBackground,
+                modifier = Modifier.fillMaxWidth().clickable { onClick(event) },
+                textAlign = TextAlign.Center
             )
         }
     }
@@ -84,25 +87,5 @@ fun HourDivider(
                 },
             color = Teal200
         )
-    }
-}
-
-@Composable
-fun OnLifecycleEvent(
-    onEvent: (owner: LifecycleOwner, event: Lifecycle.Event) -> Unit
-) {
-    val eventHandler = rememberUpdatedState(onEvent)
-    val lifecycleOwner = rememberUpdatedState(LocalLifecycleOwner.current)
-
-    DisposableEffect(key1 = lifecycleOwner.value) {
-        val lifecycle = lifecycleOwner.value.lifecycle
-        val observer = LifecycleEventObserver { owner, event ->
-            eventHandler.value(owner, event)
-        }
-
-        lifecycle.addObserver(observer)
-        onDispose {
-            lifecycle.removeObserver(observer)
-        }
     }
 }

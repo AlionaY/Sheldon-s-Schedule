@@ -53,7 +53,7 @@ fun MainScreen(
 
     OnLifecycleEvent { _, event ->
         when (event) {
-            Lifecycle.Event.ON_CREATE -> {
+            Lifecycle.Event.ON_RESUME -> {
                 viewModel.reload()
             }
             else -> {}
@@ -150,7 +150,11 @@ fun MainScreen(
                                             EventsColumn(
                                                 currentWeek = currentWeek,
                                                 dayOfWeek = dayOfWeek,
-                                                currentHour = hourItem
+                                                currentHour = hourItem,
+                                                onClick = {
+                                                    val route = "${NavDestination.EditEventScreen.route}/${it.creationDate}"
+                                                    navController.navigate(route)
+                                                }
                                             )
 
                                             HourDivider(
