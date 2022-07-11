@@ -17,7 +17,7 @@ import com.pti.sheldons_schedule.util.Constants.TIME_FORMAT
 import com.pti.sheldons_schedule.util.convertToCalendar
 import com.pti.sheldons_schedule.util.formatDate
 import dagger.hilt.android.qualifiers.ApplicationContext
-import java.util.Calendar.getInstance
+import java.util.*
 import javax.inject.Inject
 
 class NotificationController @Inject constructor(
@@ -55,7 +55,7 @@ class NotificationController @Inject constructor(
             )
             val parsed = event?.startDate?.convertToCalendar()
             parsed?.let {
-                val pickedDate = getInstance().apply {
+                val pickedDate = Calendar.getInstance().apply {
                     time = parsed.time
                 }
                 val content = pickedDate.formatDate(TIME_FORMAT) + event.description

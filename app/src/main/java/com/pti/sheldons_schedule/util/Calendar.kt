@@ -28,3 +28,7 @@ fun Calendar.updateDate(
     set(Calendar.MONTH, month)
     set(Calendar.DAY_OF_MONTH, dayOfMonth)
 }
+
+fun Calendar.addDay() = this.apply {
+    add(Calendar.DAY_OF_MONTH, 1)
+}

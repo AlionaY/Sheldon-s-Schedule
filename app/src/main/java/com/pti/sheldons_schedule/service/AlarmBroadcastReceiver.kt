@@ -10,6 +10,7 @@ import com.pti.sheldons_schedule.data.Event
 import com.pti.sheldons_schedule.data.Options.Repeat
 import com.pti.sheldons_schedule.db.EventRepository
 import com.pti.sheldons_schedule.util.Constants.REMINDER_ID
+import com.pti.sheldons_schedule.util.addDay
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers.IO
@@ -92,20 +93,15 @@ class AlarmBroadcastReceiver : BroadcastReceiver() {
     }
 
     private fun getWeekdayRepeatTime(pickedDate: Calendar): Calendar {
+        val calendar = pickedDate.clone() as Calendar
         return when (pickedDate.get(DAY_OF_WEEK)) {
-            MONDAY, TUESDAY, WEDNESDAY, THURSDAY, SUNDAY -> (pickedDate.clone() as Calendar).apply {
-                add(DAY_OF_MONTH, 1)
-            }
-            FRIDAY, SATURDAY -> (pickedDate.clone() as Calendar).apply {
+            MONDAY, TUESDAY, WEDNESDAY, THURSDAY, SUNDAY -> calendar.addDay()
+            FRIDAY, SATURDAY -> calendar.apply {
                 add(WEEK_OF_YEAR, 1)
                 firstDayOfWeek = MONDAY
                 set(DAY_OF_WEEK, MONDAY)
             }
-            else -> {
-                (pickedDate.clone() as Calendar).apply {
-                    add(DAY_OF_MONTH, 0)
-                }
-            }
+            else -> calendar
         }
     }
 }
