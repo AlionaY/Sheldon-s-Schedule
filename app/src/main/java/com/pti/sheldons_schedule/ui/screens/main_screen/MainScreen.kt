@@ -12,8 +12,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.layout.onGloballyPositioned
-import androidx.compose.ui.layout.positionInRoot
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -21,6 +19,7 @@ import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.Lifecycle
 import androidx.navigation.NavController
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.google.accompanist.pager.ExperimentalPagerApi
@@ -30,9 +29,7 @@ import com.pti.sheldons_schedule.ui.navigation.NavDestination
 import com.pti.sheldons_schedule.ui.navigation.navigate
 import com.pti.sheldons_schedule.ui.theme.Graphite
 import com.pti.sheldons_schedule.ui.theme.Steel
-import com.pti.sheldons_schedule.ui.theme.Teal200
 import com.pti.sheldons_schedule.util.horizontalPadding
-import kotlinx.coroutines.launch
 import java.util.*
 
 
@@ -50,10 +47,18 @@ fun MainScreen(
     val ticker by viewModel.ticker.collectAsState(initial = 0f)
 
     val pagerState = rememberPagerState()
-    val scope = rememberCoroutineScope()
 
     val calendar = Calendar.getInstance()
     val currentHour = calendar.get(Calendar.HOUR_OF_DAY)
+
+    OnLifecycleEvent { _, event ->
+        when (event) {
+            Lifecycle.Event.ON_RESUME -> {
+                viewModel.reload()
+            }
+            else -> {}
+        }
+    }
 
     BoxWithConstraints(
         modifier = Modifier.fillMaxSize(),
@@ -80,7 +85,7 @@ fun MainScreen(
 
             Column(modifier = Modifier.fillMaxSize()) {
                 CalendarHeader(
-                    currentWeek = currentWeek,
+                    currentWeek = currentWeek?.week,
                     height = CALENDAR_HEADER_HEIGHT.dp
                 )
 
@@ -123,6 +128,7 @@ fun MainScreen(
                                         .padding(start = 60.dp)
                                 ) {
                                     currentWeek?.week?.forEach { dayOfWeek ->
+
                                         BoxWithConstraints(
                                             modifier = Modifier
                                                 .fillMaxHeight()
@@ -141,28 +147,23 @@ fun MainScreen(
                                         ) {
                                             val padding = ticker * this.maxHeight.value
 
-                                            if (dayOfWeek.isCurrent && isCurrentHour) {
-                                                Divider(
-                                                    modifier = Modifier
-                                                        .padding(top = padding.dp)
-                                                        .fillMaxWidth()
-                                                        .height(2.dp)
-                                                        .onGloballyPositioned { coordinates ->
-                                                            if (
-                                                                isCurrentHour &&
-                                                                coordinates.positionInRoot().y != centerOfCalendar &&
-                                                                !scrollState.isScrollInProgress
-                                                            ) {
-                                                                scope.launch {
-                                                                    scrollState.scrollTo(
-                                                                        centerOfCalendar.toInt()
-                                                                    )
-                                                                }
-                                                            }
-                                                        },
-                                                    color = Teal200
-                                                )
-                                            }
+                                            EventsColumn(
+                                                currentWeek = currentWeek,
+                                                dayOfWeek = dayOfWeek,
+                                                currentHour = hourItem,
+                                                onClick = {
+                                                    val route = "${NavDestination.EditEventScreen.route}/${it.creationDate}"
+                                                    navController.navigate(route)
+                                                }
+                                            )
+
+                                            HourDivider(
+                                                isCurrentDay = dayOfWeek.isCurrent,
+                                                isCurrentHour = isCurrentHour,
+                                                padding = padding.dp,
+                                                centerOfCalendar = centerOfCalendar,
+                                                scrollState = scrollState,
+                                            )
                                         }
                                     }
                                 }
