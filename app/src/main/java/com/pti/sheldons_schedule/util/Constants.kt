@@ -5,6 +5,7 @@ object Constants {
     const val TIME_FORMAT = "HH:mm"
     const val DATE_FORMAT_ISO_8601 = "yyyy-MM-dd'T'HH:mm'Z'"
     const val DAY_NAME_FORMAT = "EEEE"
+    const val HOUR_FORMAT = "HH"
 
     const val WEEK_LENGTH = 7
 

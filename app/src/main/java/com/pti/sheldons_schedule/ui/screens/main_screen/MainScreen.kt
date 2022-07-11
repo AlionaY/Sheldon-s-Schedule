@@ -12,8 +12,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.layout.onGloballyPositioned
-import androidx.compose.ui.layout.positionInRoot
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -30,12 +28,7 @@ import com.pti.sheldons_schedule.ui.navigation.NavDestination
 import com.pti.sheldons_schedule.ui.navigation.navigate
 import com.pti.sheldons_schedule.ui.theme.Graphite
 import com.pti.sheldons_schedule.ui.theme.Steel
-import com.pti.sheldons_schedule.ui.theme.Teal200
-import com.pti.sheldons_schedule.util.Constants
-import com.pti.sheldons_schedule.util.convertToCalendar
-import com.pti.sheldons_schedule.util.formatDate
 import com.pti.sheldons_schedule.util.horizontalPadding
-import kotlinx.coroutines.launch
 import java.util.*
 
 
@@ -51,10 +44,8 @@ fun MainScreen(
 ) {
     val weeks = viewModel.weeks.collectAsLazyPagingItems()
     val ticker by viewModel.ticker.collectAsState(initial = 0f)
-    val dayEvent by viewModel.dayEvent.collectAsState()
 
     val pagerState = rememberPagerState()
-    val scope = rememberCoroutineScope()
 
     val calendar = Calendar.getInstance()
     val currentHour = calendar.get(Calendar.HOUR_OF_DAY)
@@ -75,8 +66,6 @@ fun MainScreen(
         ) { page ->
             var currentWeek = weeks.peek(page)
             val scrollState = rememberScrollState()
-
-//            viewModel.onWeekGet(currentWeek)
 
             LaunchedEffect(key1 = pagerState) {
                 snapshotFlow { pagerState.currentPage }.collect {
@@ -129,7 +118,6 @@ fun MainScreen(
                                         .padding(start = 60.dp)
                                 ) {
                                     currentWeek?.week?.forEach { dayOfWeek ->
-//                                        viewModel.onDayParamsGet(dayOfWeek, hourItem)
 
                                         BoxWithConstraints(
                                             modifier = Modifier
@@ -148,45 +136,20 @@ fun MainScreen(
                                                 }
                                         ) {
                                             val padding = ticker * this.maxHeight.value
-                                            Column(modifier = Modifier.fillMaxSize()) {
-                                                currentWeek?.events?.filter {
-                                                    it.startDate.convertToCalendar()
-                                                        .formatDate(Constants.DATE_FORMAT) ==
-                                                            dayOfWeek.day.convertToCalendar()
-                                                                .formatDate(Constants.DATE_FORMAT) &&
-                                                            it.startDate.convertToCalendar().formatDate("HH").toInt() ==
-                                                            hourItem
-                                                }?.forEach { event ->
-                                                    Text(
-                                                        text = event.title,
-                                                        fontSize = 11.sp,
-                                                        color = MaterialTheme.colors.onBackground
-                                                    )
-                                                }
-                                            }
 
-                                            if (dayOfWeek.isCurrent && isCurrentHour) {
-                                                Divider(
-                                                    modifier = Modifier
-                                                        .padding(top = padding.dp)
-                                                        .fillMaxWidth()
-                                                        .height(2.dp)
-                                                        .onGloballyPositioned { coordinates ->
-                                                            if (
-                                                                isCurrentHour &&
-                                                                coordinates.positionInRoot().y != centerOfCalendar &&
-                                                                !scrollState.isScrollInProgress
-                                                            ) {
-                                                                scope.launch {
-                                                                    scrollState.scrollTo(
-                                                                        centerOfCalendar.toInt()
-                                                                    )
-                                                                }
-                                                            }
-                                                        },
-                                                    color = Teal200
-                                                )
-                                            }
+                                            EventsColumn(
+                                                currentWeek = currentWeek,
+                                                dayOfWeek = dayOfWeek,
+                                                currentHour = hourItem
+                                            )
+
+                                            HourDivider(
+                                                isCurrentDay = dayOfWeek.isCurrent,
+                                                isCurrentHour = isCurrentHour,
+                                                padding = padding.dp,
+                                                centerOfCalendar = centerOfCalendar,
+                                                scrollState = scrollState,
+                                            )
                                         }
                                     }
                                 }
