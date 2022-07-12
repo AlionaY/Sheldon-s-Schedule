@@ -15,11 +15,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.LifecycleEventObserver
-import androidx.lifecycle.LifecycleOwner
 import com.pti.sheldons_schedule.data.Event
-import com.pti.sheldons_schedule.data.EventsOfDay
 import com.pti.sheldons_schedule.ui.theme.Teal200
 import com.pti.sheldons_schedule.util.Constants
 import com.pti.sheldons_schedule.util.convertToCalendar
@@ -28,7 +24,7 @@ import kotlinx.coroutines.launch
 
 @Composable
 fun EventsColumn(
-    eventsOfDay: EventsOfDay,
+    eventsOfDay: List<Event>,
     currentHour: Int,
     onClick: (Event) -> Unit
 ) {
@@ -36,7 +32,7 @@ fun EventsColumn(
         modifier = Modifier.fillMaxSize(),
         verticalArrangement = Arrangement.Center
     ) {
-        eventsOfDay.events.filter {
+        eventsOfDay.filter {
             val eventStartHour = it.startDate.convertToCalendar()
                 .formatDate(Constants.HOUR_FORMAT).toInt()
 

@@ -30,6 +30,7 @@ import com.pti.sheldons_schedule.ui.navigation.navigate
 import com.pti.sheldons_schedule.ui.theme.Graphite
 import com.pti.sheldons_schedule.ui.theme.Steel
 import com.pti.sheldons_schedule.util.horizontalPadding
+import com.pti.sheldons_schedule.util.navigateToEditEventScreen
 import java.util.*
 
 
@@ -148,11 +149,10 @@ fun MainScreen(
                                             val padding = ticker * this.maxHeight.value
 
                                             EventsColumn(
-                                                dayOfWeek = dayOfWeek,
+                                                eventsOfDay = dayOfWeek.events,
                                                 currentHour = hourItem,
                                                 onClick = {
-                                                    val route = "${NavDestination.EditEventScreen.route}/${it.creationDate}"
-                                                    navController.navigate(route)
+                                                    it.navigateToEditEventScreen(navController)
                                                 }
                                             )
 

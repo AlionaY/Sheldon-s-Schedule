@@ -18,7 +18,7 @@ import com.pti.sheldons_schedule.R
 import com.pti.sheldons_schedule.ui.common.ModalBottomSheet
 import com.pti.sheldons_schedule.ui.common.ScreenContent
 import com.pti.sheldons_schedule.ui.common.TimePicker
-import com.pti.sheldons_schedule.ui.screens.create_event_screen.CreateEventViewModel
+import com.pti.sheldons_schedule.ui.screens.create_event_screen.CreateOrEditEventViewModel
 import com.pti.sheldons_schedule.util.Constants.FIELD_COUNT
 import com.pti.sheldons_schedule.util.Constants.PADDING_WIDTH_SUM
 import kotlinx.coroutines.launch
@@ -28,9 +28,9 @@ import kotlinx.coroutines.launch
 fun EditEventScreen(
     eventId: Long,
     navController: NavController,
-    viewModel: CreateEventViewModel = hiltViewModel()
+    viewModel: CreateOrEditEventViewModel = hiltViewModel()
 ) {
-    val screenState by viewModel.createEventScreenState.collectAsState(initial = null)
+    val screenState by viewModel.editEventScreenState.collectAsState(initial = null)
     val isPickedTimeValid by viewModel.isPickedTimeValid.collectAsState(initial = true)
 
     val focusManager = LocalFocusManager.current
@@ -120,7 +120,7 @@ fun EditEventScreen(
 
                 ScreenContent(
                     screenState = screenState,
-                    fieldWidth = halfFieldWidth,
+                    fieldWidth = halfFieldWidth.dp,
                     focusRequester = focusRequester,
                     onTitleEdited = { viewModel.onTitleEdited(it) },
                     onFocusChanged = { viewModel.onFocusChanged(it) },

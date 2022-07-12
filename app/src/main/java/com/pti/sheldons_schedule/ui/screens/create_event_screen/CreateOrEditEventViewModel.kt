@@ -27,7 +27,7 @@ import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 @HiltViewModel
-class CreateEventViewModel @Inject constructor(
+class CreateOrEditEventViewModel @Inject constructor(
     private val context: Application,
     private val repository: EventRepository
 ) : ViewModel() {
@@ -70,18 +70,18 @@ class CreateEventViewModel @Inject constructor(
         observeScreenState()
 
         viewModelScope.launch {
-            pickedEvent.filterNotNull().collect {
+            pickedEvent.filterNotNull().collect { event ->
                 editEventScreenState.update {
                     it.copy(
-                        startDate = it.startDate,
-                        endDate = it.endDate,
-                        title = it.title,
-                        description = it.description,
-                        remind = it.remind,
-                        repeat = it.repeat,
-                        priority = it.priority,
-                        pickedStartTime = it.startDate,
-                        pickedEndTime = it.endDate
+                        startDate = event.startDate.convertToCalendar(),
+                        endDate = event.endDate.convertToCalendar(),
+                        title = event.title,
+                        description = event.description,
+                        remind = event.reminder ?: Reminder.DontRemind,
+                        repeat = event.repeat ?: Repeat.DontRepeat,
+                        priority = event.priority,
+                        pickedStartTime = event.startDate.convertToCalendar(),
+                        pickedEndTime = event.endDate.convertToCalendar()
                     )
                 }
             }
