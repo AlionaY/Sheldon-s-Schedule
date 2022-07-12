@@ -19,12 +19,12 @@ import androidx.compose.ui.unit.dp
 import com.google.android.material.timepicker.MaterialTimePicker
 import com.google.android.material.timepicker.TimeFormat
 import com.pti.sheldons_schedule.R
-import com.pti.sheldons_schedule.data.CreateEventScreenState
+import com.pti.sheldons_schedule.data.ScreenState
 import java.util.*
 
 @Composable
 fun TimePickerRow(
-    state: CreateEventScreenState,
+    state: ScreenState?,
     fieldWidth: Dp,
     onTimeStartPicked: (Int, Int) -> Unit,
     onTimeEndPicked: (Int, Int) -> Unit,
@@ -36,8 +36,8 @@ fun TimePickerRow(
         horizontalArrangement = Arrangement.Center
     ) {
         TimePickerField(
-            pickedTime = state.formattedStartTime,
-            calendar = state.startDate,
+            pickedTime = state?.formattedStartTime.orEmpty(),
+            calendar = state?.startDate ?: Calendar.getInstance(),
             onTimePicked = { hour, minutes ->
                 onTimeStartPicked(hour, minutes)
             },
@@ -50,8 +50,8 @@ fun TimePickerRow(
         )
         Spacer(modifier = Modifier.width(30.dp))
         TimePickerField(
-            pickedTime = state.formattedEndTime,
-            calendar = state.endDate,
+            pickedTime = state?.formattedEndTime.orEmpty(),
+            calendar = state?.endDate ?: Calendar.getInstance(),
             onTimePicked = { hour, minutes ->
                 onTimeEndPicked(hour, minutes)
             },

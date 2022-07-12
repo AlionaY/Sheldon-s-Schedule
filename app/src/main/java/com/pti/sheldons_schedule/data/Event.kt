@@ -28,7 +28,7 @@ data class Event(
     val reminder: Reminder? = null
 )
 
-fun CreateEventScreenState.toEvent(creationDate: Long, duration: Long) = Event(
+fun ScreenState.toEvent(creationDate: Long, duration: Long) = Event(
     creationDate = creationDate,
     title = this.title,
     description = this.description,

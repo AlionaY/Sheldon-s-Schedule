@@ -21,7 +21,7 @@ import com.google.android.material.datepicker.CalendarConstraints
 import com.google.android.material.datepicker.DateValidatorPointForward
 import com.google.android.material.datepicker.MaterialDatePicker
 import com.pti.sheldons_schedule.R
-import com.pti.sheldons_schedule.data.CreateEventScreenState
+import com.pti.sheldons_schedule.data.ScreenState
 import com.pti.sheldons_schedule.util.Constants
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
@@ -30,7 +30,7 @@ import java.util.*
 
 @Composable
 fun DatePickerRow(
-    state: CreateEventScreenState,
+    state: ScreenState?,
     fieldWidth: Dp,
     onStartDatePicked: (Calendar) -> Unit,
     onEndDatePicked: (Calendar) -> Unit,
@@ -41,7 +41,7 @@ fun DatePickerRow(
         verticalAlignment = Alignment.CenterVertically,
     ) {
         DatePickerField(
-            pickedDate = state.formattedStartDate,
+            pickedDate = state?.formattedStartDate,
             onPickedDate = { calendar -> calendar?.let{ onStartDatePicked(it) } },
             modifier = Modifier
                 .padding(start = 15.dp)
@@ -52,7 +52,7 @@ fun DatePickerRow(
         )
         Spacer(modifier = Modifier.width(30.dp))
         DatePickerField(
-            pickedDate = state.formattedEndDate,
+            pickedDate = state?.formattedEndDate,
             onPickedDate = { calendar -> calendar?.let { onEndDatePicked(it) }},
             modifier = Modifier
                 .padding(end = 15.dp)
@@ -60,7 +60,7 @@ fun DatePickerRow(
                 .wrapContentHeight(),
             label = { Text(text = stringResource(id = R.string.end_date)) },
             onValueChanged = { },
-            startDate = state.datePickerStartDate
+            startDate = state?.datePickerStartDate
         )
     }
 }

@@ -7,7 +7,7 @@ import com.pti.sheldons_schedule.util.Constants.TIME_FORMAT
 import com.pti.sheldons_schedule.util.formatDate
 import java.util.*
 
-data class CreateEventScreenState(
+data class ScreenState(
     val calendar: Calendar = Calendar.getInstance(),
     val startDate: Calendar,
     val endDate: Calendar,
