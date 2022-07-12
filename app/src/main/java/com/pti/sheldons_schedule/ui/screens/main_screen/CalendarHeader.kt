@@ -13,10 +13,10 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.pti.sheldons_schedule.data.DayOfWeek
+import com.pti.sheldons_schedule.data.EventsOfDay
 
 @Composable
-fun CalendarHeader(currentWeek: List<DayOfWeek>?, height: Dp) {
+fun CalendarHeader(currentWeek: List<EventsOfDay>?, height: Dp) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -32,13 +32,13 @@ fun CalendarHeader(currentWeek: List<DayOfWeek>?, height: Dp) {
         )
 
         currentWeek?.forEach { day ->
-            val textColor = if (day.isCurrent) {
+            val textColor = if (day.day.isCurrent) {
                 MaterialTheme.colors.secondary
             } else {
                 MaterialTheme.colors.onBackground
             }
 
-            val backgroundColor = if (day.isCurrent) {
+            val backgroundColor = if (day.day.isCurrent) {
                 MaterialTheme.colors.secondary
             } else {
                 Color.Transparent
@@ -52,7 +52,7 @@ fun CalendarHeader(currentWeek: List<DayOfWeek>?, height: Dp) {
                 verticalArrangement = Arrangement.Center
             ) {
                 Text(
-                    text = day.weekDayName,
+                    text = day.day.dayName,
                     modifier = Modifier
                         .fillMaxWidth()
                         .weight(0.4f),
@@ -69,7 +69,7 @@ fun CalendarHeader(currentWeek: List<DayOfWeek>?, height: Dp) {
                     contentAlignment = Alignment.Center
                 ) {
                     Text(
-                        text = day.dayOfMonth.toString(),
+                        text = day.day.dayOfMonth.toString(),
                         modifier = Modifier
                             .size(25.dp)
                             .align(Alignment.Center),

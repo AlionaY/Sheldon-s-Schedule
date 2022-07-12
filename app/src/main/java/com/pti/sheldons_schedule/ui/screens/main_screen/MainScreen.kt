@@ -147,14 +147,10 @@ fun MainScreen(
                                         ) {
                                             val padding = ticker * this.maxHeight.value
 
-                                            EventsColumn(
-                                                currentWeek = currentWeek,
-                                                dayOfWeek = dayOfWeek,
-                                                currentHour = hourItem
-                                            )
+                                            EventsColumn(dayOfWeek, hourItem)
 
                                             HourDivider(
-                                                isCurrentDay = dayOfWeek.isCurrent,
+                                                isCurrentDay = dayOfWeek.day.isCurrent,
                                                 isCurrentHour = isCurrentHour,
                                                 padding = padding.dp,
                                                 centerOfCalendar = centerOfCalendar,
