@@ -15,9 +15,11 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.pti.sheldons_schedule.data.DayOfWeek
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleEventObserver
+import androidx.lifecycle.LifecycleOwner
 import com.pti.sheldons_schedule.data.Event
-import com.pti.sheldons_schedule.data.WeekEvents
+import com.pti.sheldons_schedule.data.EventsOfDay
 import com.pti.sheldons_schedule.ui.theme.Teal200
 import com.pti.sheldons_schedule.util.Constants
 import com.pti.sheldons_schedule.util.convertToCalendar
@@ -26,8 +28,7 @@ import kotlinx.coroutines.launch
 
 @Composable
 fun EventsColumn(
-    currentWeek: WeekEvents?,
-    dayOfWeek: DayOfWeek,
+    eventsOfDay: EventsOfDay,
     currentHour: Int,
     onClick: (Event) -> Unit
 ) {
@@ -35,21 +36,19 @@ fun EventsColumn(
         modifier = Modifier.fillMaxSize(),
         verticalArrangement = Arrangement.Center
     ) {
-        currentWeek?.events?.filter {
-            val eventStartDay = it.startDate.convertToCalendar()
-                .formatDate(Constants.DATE_FORMAT)
-            val currentDay = dayOfWeek.day.convertToCalendar()
-                .formatDate(Constants.DATE_FORMAT)
+        eventsOfDay.events.filter {
             val eventStartHour = it.startDate.convertToCalendar()
                 .formatDate(Constants.HOUR_FORMAT).toInt()
 
-            eventStartDay == currentDay && eventStartHour == currentHour
-        }?.forEach { event ->
+            eventStartHour == currentHour
+        }.forEach { event ->
             Text(
                 text = event.title,
                 fontSize = 11.sp,
                 color = MaterialTheme.colors.onBackground,
-                modifier = Modifier.fillMaxWidth().clickable { onClick(event) },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .clickable { onClick(event) },
                 textAlign = TextAlign.Center
             )
         }
