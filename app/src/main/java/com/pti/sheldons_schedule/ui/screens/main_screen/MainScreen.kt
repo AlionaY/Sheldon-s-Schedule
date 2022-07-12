@@ -30,6 +30,7 @@ import com.pti.sheldons_schedule.ui.navigation.navigate
 import com.pti.sheldons_schedule.ui.theme.Graphite
 import com.pti.sheldons_schedule.ui.theme.Steel
 import com.pti.sheldons_schedule.util.horizontalPadding
+import com.pti.sheldons_schedule.util.navigateToEditScreen
 import java.util.*
 
 
@@ -53,7 +54,7 @@ fun MainScreen(
 
     OnLifecycleEvent { _, event ->
         when (event) {
-            Lifecycle.Event.ON_CREATE -> {
+            Lifecycle.Event.ON_RESUME -> {
                 viewModel.reload()
             }
             else -> {}
@@ -147,7 +148,12 @@ fun MainScreen(
                                         ) {
                                             val padding = ticker * this.maxHeight.value
 
-                                            EventsColumn(dayOfWeek, hourItem)
+                                            EventsColumn(
+                                                eventsOfDay = dayOfWeek,
+                                                currentHour = hourItem,
+                                                onClick = {
+                                                    it.navigateToEditScreen(navController)
+                                                })
 
                                             HourDivider(
                                                 isCurrentDay = dayOfWeek.day.isCurrent,

@@ -24,12 +24,15 @@ import kotlinx.coroutines.launch
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun EditEventScreen(
+    eventId: Long,
     navController: NavController,
     viewModel: CreateOrEditEventViewModel = hiltViewModel()
 ) {
 
     val screenState by viewModel.editEventScreenState.collectAsState()
     val focusManager = LocalFocusManager.current
+
+    viewModel.getEvent(eventId)
 
     ModalBottomSheet(
         modifier = Modifier
