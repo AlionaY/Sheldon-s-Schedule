@@ -5,12 +5,13 @@ import androidx.lifecycle.viewModelScope
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.cachedIn
+import com.pti.sheldons_schedule.data.Event
 import com.pti.sheldons_schedule.db.EventRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ObsoleteCoroutinesApi
 import kotlinx.coroutines.channels.ticker
-import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.receiveAsFlow
+import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.launch
 import java.util.*
 import javax.inject.Inject
 
@@ -26,9 +27,11 @@ class MainViewModel @Inject constructor(
         private const val MINUTE_LONG = 60000L
     }
 
-    val weeks = Pager(PagingConfig(1)) {
-        WeekdaysPagingSource()
-    }.flow.cachedIn(viewModelScope)
+    private val allEvents = MutableStateFlow<List<Event>>(emptyList())
+
+    var weeks = Pager(PagingConfig(1)) {
+            WeekdaysPagingSource(allEvents.value)
+        }.flow.cachedIn(viewModelScope)
 
     val ticker = ticker(
         delayMillis = MINUTE_LONG,
@@ -39,5 +42,22 @@ class MainViewModel @Inject constructor(
         val currentMinutes = calendar.get(Calendar.MINUTE)
         val currentMinutesInPercent = (currentMinutes / MINUTES_IN_HOUR_FLOAT)
         currentMinutesInPercent
+    }
+
+
+    init {
+        getEventsList()
+    }
+
+    private fun getEventsList() {
+        viewModelScope.launch {
+            allEvents.value = repository.getAllEvents().sortedBy { it.startDate }
+        }
+    }
+
+    fun reload() {
+        weeks = Pager(PagingConfig(1)) {
+            WeekdaysPagingSource(allEvents.value)
+        }.flow.cachedIn(viewModelScope)
     }
 }

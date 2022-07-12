@@ -1,11 +1,17 @@
 package com.pti.sheldons_schedule.data
 
-data class Week(
-    val week: List<DayOfWeek>
-)
-
 data class DayOfWeek(
     val dayOfMonth: Int,
-    val weekDayName: String,
-    val isCurrent: Boolean = false
+    val dayName: String,
+    val isCurrent: Boolean = false,
+    val day: String
+)
+
+data class EventsOfDay(
+    val day: DayOfWeek,
+    val events: List<Event> = emptyList()
+)
+
+data class Week(
+    val week: List<EventsOfDay>,
 )
