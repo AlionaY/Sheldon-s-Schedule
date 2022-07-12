@@ -38,4 +38,7 @@
 
     <string name="time_picker_error_message">Please, select valid time.</string>
     <string name="snackbar_action">Select time</string>
+
+    <string name="save">Save</string>
+    <string name="delete">Delete</string>
 </resources>

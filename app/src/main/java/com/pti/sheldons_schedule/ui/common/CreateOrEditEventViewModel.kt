@@ -1,4 +1,4 @@
-package com.pti.sheldons_schedule.ui.screens.create_event_screen
+package com.pti.sheldons_schedule.ui.common
 
 import android.app.AlarmManager
 import android.app.Application
@@ -25,13 +25,13 @@ import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 @HiltViewModel
-class CreateEventViewModel @Inject constructor(
+class CreateOrEditEventViewModel @Inject constructor(
     private val context: Application,
     private val repository: EventRepository
 ) : ViewModel() {
 
     val createEventScreenState = MutableStateFlow(
-        CreateEventScreenState(
+        ScreenState(
             startDate = Calendar.getInstance().apply {
                 add(Calendar.MINUTE, 10)
             },
@@ -46,6 +46,8 @@ class CreateEventViewModel @Inject constructor(
             }
         )
     )
+//    todo: make norm screen state
+    val editEventScreenState = MutableStateFlow<ScreenState?>(null)
     val isPickedTimeValid = MutableSharedFlow<Boolean>()
 
     private val newEvent = MutableStateFlow<Event?>(null)
@@ -148,7 +150,7 @@ class CreateEventViewModel @Inject constructor(
     }
 
     private fun saveEvent(
-        state: CreateEventScreenState
+        state: ScreenState
     ) = viewModelScope.launch {
         val currentDate = Calendar.getInstance()
         val duration = state.endDate.timeInMillis - state.startDate.timeInMillis
@@ -213,14 +215,14 @@ class CreateEventViewModel @Inject constructor(
 
     private fun updateDatePickerStartDate(
         calendar: Calendar,
-        state: CreateEventScreenState
+        state: ScreenState
     ) {
         calendar.timeInMillis = state.startDate.timeInMillis
         calendar.add(Calendar.DAY_OF_YEAR, -1)
         createEventScreenState.update { it.copy(datePickerStartDate = calendar.timeInMillis) }
     }
 
-    private fun validatePickedStartTime(state: CreateEventScreenState) {
+    private fun validatePickedStartTime(state: ScreenState) {
         val currentTime = state.calendar
         val isStartTimeValid = state.pickedStartTime > currentTime
         val startDate = if (isStartTimeValid) state.pickedStartTime else state.startDate
@@ -243,7 +245,7 @@ class CreateEventViewModel @Inject constructor(
         }
     }
 
-    private fun validatePickedEndTime(state: CreateEventScreenState) {
+    private fun validatePickedEndTime(state: ScreenState) {
         val isPickedEndTimeValid = state.pickedEndTime > state.calendar &&
                 state.pickedEndTime > state.startDate &&
                 state.pickedStartTime < state.pickedEndTime
