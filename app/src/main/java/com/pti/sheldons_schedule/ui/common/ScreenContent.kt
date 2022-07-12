@@ -1,5 +1,6 @@
 package com.pti.sheldons_schedule.ui.common
 
+import android.util.Log
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentHeight
@@ -37,6 +38,8 @@ fun ScreenContent(
         TitleFieldState.Error -> MaterialTheme.colors.error
         else -> MaterialTheme.colors.onSurface.copy(alpha = ContentAlpha.disabled)
     }
+
+    Log.d("$$$", "screen state ${screenState}")
 
     DefaultTextField(
         value = screenState?.title.orEmpty(),

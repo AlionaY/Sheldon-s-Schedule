@@ -31,7 +31,7 @@ fun CreateEventScreen(
     navController: NavController,
     viewModel: CreateEventViewModel = hiltViewModel()
 ) {
-    val state by viewModel.screenState.collectAsState()
+    val state by viewModel.createEventScreenState.collectAsState()
     val isPickedTimeValid by viewModel.isPickedTimeValid.collectAsState(initial = true)
     val focusManager = LocalFocusManager.current
 

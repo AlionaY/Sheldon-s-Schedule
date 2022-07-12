@@ -15,9 +15,10 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.pti.sheldons_schedule.R
-import com.pti.sheldons_schedule.ui.common.ScreenContent
 import com.pti.sheldons_schedule.ui.common.ModalBottomSheet
+import com.pti.sheldons_schedule.ui.common.ScreenContent
 import com.pti.sheldons_schedule.ui.common.TimePicker
+import com.pti.sheldons_schedule.ui.screens.create_event_screen.CreateEventViewModel
 import com.pti.sheldons_schedule.util.Constants.FIELD_COUNT
 import com.pti.sheldons_schedule.util.Constants.PADDING_WIDTH_SUM
 import kotlinx.coroutines.launch
@@ -25,11 +26,11 @@ import kotlinx.coroutines.launch
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun EditEventScreen(
+    eventId: Long,
     navController: NavController,
-    viewModel: EditEventViewModel = hiltViewModel()
+    viewModel: CreateEventViewModel = hiltViewModel()
 ) {
-    val event by viewModel.pickedEvent.collectAsState(initial = null)
-    val screenState by viewModel.screenState.collectAsState(initial = null)
+    val screenState by viewModel.createEventScreenState.collectAsState(initial = null)
     val isPickedTimeValid by viewModel.isPickedTimeValid.collectAsState(initial = true)
 
     val focusManager = LocalFocusManager.current
@@ -38,6 +39,8 @@ fun EditEventScreen(
     val snackbarAction = stringResource(id = R.string.snackbar_action)
 
     var isSnackbarActionClicked by remember { mutableStateOf(false) }
+
+    viewModel.getEvent(eventId)
 
     if (screenState?.pickedStartTime != screenState?.startDate && isSnackbarActionClicked) {
         TimePicker(
@@ -138,7 +141,10 @@ fun EditEventScreen(
 
             BottomToolbar(
                 onSaveEventClicked = { viewModel.onSaveEventClicked() },
-                onDeleteEventClicked = { viewModel.onDeleteEventClicked() },
+                onDeleteEventClicked = {
+                    viewModel.onDeleteEventClicked()
+                    navController.popBackStack()
+                },
                 modifier = Modifier
                     .height(58.dp)
                     .fillMaxWidth()
