@@ -30,7 +30,6 @@ import com.pti.sheldons_schedule.ui.navigation.navigate
 import com.pti.sheldons_schedule.ui.theme.Graphite
 import com.pti.sheldons_schedule.ui.theme.Steel
 import com.pti.sheldons_schedule.util.horizontalPadding
-import com.pti.sheldons_schedule.util.navigateToEditScreen
 import java.util.*
 
 
@@ -152,7 +151,10 @@ fun MainScreen(
                                                 eventsOfDay = dayOfWeek,
                                                 currentHour = hourItem,
                                                 onClick = {
-                                                    it.navigateToEditScreen(navController)
+                                                    navController.navigate(
+                                                        destination = NavDestination.EditEventScreen,
+                                                        param = it.creationDate.toString()
+                                                    )
                                                 })
 
                                             HourDivider(
