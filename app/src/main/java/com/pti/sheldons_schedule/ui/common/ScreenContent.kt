@@ -79,7 +79,7 @@ fun ScreenContent(
     )
     HeightSpacer()
     DefaultBottomSheetField(
-        string = state?.repeat?.name?.let { stringResource(id = it) },
+        text = state?.repeat?.name?.let { stringResource(id = it) },
         label = stringResource(id = R.string.repeat),
         onClick = { onRepeatFieldClicked() },
         modifier = Modifier
@@ -90,7 +90,7 @@ fun ScreenContent(
     )
     HeightSpacer()
     DefaultBottomSheetField(
-        string = state?.priority?.name?.let { stringResource(id = it) },
+        text = state?.priority?.name?.let { stringResource(id = it) },
         label = stringResource(id = R.string.priority),
         onClick = { onPriorityFieldClicked() },
         modifier = Modifier
@@ -101,7 +101,7 @@ fun ScreenContent(
     )
     HeightSpacer()
     DefaultBottomSheetField(
-        string = state?.remind?.name?.let { stringResource(id = it) },
+        text = state?.remind?.name?.let { stringResource(id = it) },
         label = stringResource(id = R.string.remind),
         onClick = { onRemindFieldClicked() },
         modifier = Modifier
