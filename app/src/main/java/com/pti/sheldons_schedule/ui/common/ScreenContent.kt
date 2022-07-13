@@ -6,6 +6,9 @@ import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.material.ContentAlpha
 import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
@@ -16,6 +19,7 @@ import androidx.compose.ui.unit.dp
 import com.pti.sheldons_schedule.R
 import com.pti.sheldons_schedule.data.ScreenState
 import com.pti.sheldons_schedule.data.TitleFieldState
+import com.pti.sheldons_schedule.util.toTextFieldValue
 import java.util.*
 
 @Composable
@@ -39,9 +43,25 @@ fun ScreenContent(
         else -> MaterialTheme.colors.onSurface.copy(alpha = ContentAlpha.disabled)
     }
 
+    val titleTextFieldValue = remember {
+        mutableStateOf(state?.title.toTextFieldValue())
+    }
+
+    val descriptionTextFieldValue = remember {
+        mutableStateOf(state?.description.toTextFieldValue())
+    }
+
+    LaunchedEffect(key1 = state?.title) {
+        titleTextFieldValue.value = state?.title.toTextFieldValue()
+    }
+
+    LaunchedEffect(key1 = state?.description) {
+        descriptionTextFieldValue.value = state?.description.toTextFieldValue()
+    }
+
     DefaultTextField(
-        value = state?.title.orEmpty(),
-        onValueChanged = { onTitleEdited(it) },
+        value = titleTextFieldValue.value,
+        onValueChanged = { onTitleEdited(it.text) },
         label = stringResource(id = R.string.title),
         modifier = Modifier
             .padding(horizontal = 15.dp)
@@ -52,8 +72,8 @@ fun ScreenContent(
     )
     HeightSpacer()
     DefaultTextField(
-        value = state?.description.orEmpty(),
-        onValueChanged = { onDescriptionEdited(it) },
+        value = descriptionTextFieldValue.value,
+        onValueChanged = { onDescriptionEdited(it.text) },
         label = stringResource(id = R.string.description),
         modifier = Modifier.padding(horizontal = 15.dp),
     )

@@ -60,6 +60,10 @@ fun EditEventScreen(
             }
         }
 
+        LaunchedEffect(key1 = Unit) {
+            focusRequester.requestFocus()
+        }
+
         BoxWithConstraints(modifier = Modifier.fillMaxSize()) {
             val halfFieldWidth = (this.maxWidth.value.toInt() - PADDING_WIDTH_SUM) / FIELD_COUNT
 
