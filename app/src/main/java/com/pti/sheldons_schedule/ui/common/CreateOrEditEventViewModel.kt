@@ -17,11 +17,12 @@ import com.pti.sheldons_schedule.util.toCalendar
 import com.pti.sheldons_schedule.util.updateDate
 import com.pti.sheldons_schedule.util.updateTime
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.*
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
 import java.util.*
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
@@ -64,7 +65,6 @@ class CreateOrEditEventViewModel @Inject constructor(
     val isPickedTimeValid = MutableSharedFlow<Boolean>()
 
     private val newEvent = MutableStateFlow<Event?>(null)
-    private val scope = CoroutineScope(viewModelScope.coroutineContext) + Dispatchers.IO
 
 
     init {
@@ -230,7 +230,7 @@ class CreateOrEditEventViewModel @Inject constructor(
         }
     }
 
-    private fun saveEditedEvent() = viewModelScope.launch {
+    private fun saveEditedEvent() = viewModelScope.launch(Dispatchers.IO) {
         editEventScreenState.value.let { state ->
             val currentTimeInMillis = Calendar.getInstance().timeInMillis
             val creationDate = pickedEvent.value?.creationDate ?: currentTimeInMillis
@@ -239,10 +239,8 @@ class CreateOrEditEventViewModel @Inject constructor(
 
             pickedEvent.value = editEventScreenState.value.toEvent(creationDate, duration)
 
-            withContext(scope.coroutineContext) {
-                pickedEvent.value?.let { event ->
-                    repository.editEvent(event)
-                }
+            pickedEvent.value?.let { event ->
+                repository.editEvent(event)
             }
 
             setReminderAlarm(remindAt.timeInMillis)
@@ -413,11 +411,9 @@ class CreateOrEditEventViewModel @Inject constructor(
         pickedEvent.value = repository.getEvent(eventId)
     }
 
-    fun onDeleteEventClicked() = viewModelScope.launch {
+    fun onDeleteEventClicked() = viewModelScope.launch(Dispatchers.IO) {
         pickedEvent.value?.let {
-            withContext(scope.coroutineContext) {
-                repository.deleteEvent(it)
-            }
+            repository.deleteEvent(it)
         }
     }
 }
