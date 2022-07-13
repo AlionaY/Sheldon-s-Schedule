@@ -44,6 +44,7 @@ fun EditEventScreen(
         header = screenState.options?.first()?.title?.let { stringResource(it) }.orEmpty(),
         nameGetter = { stringResource(id = it.nameId) },
         onClick = {
+            viewModel.onSelected(it, true)
             focusManager.clearFocus()
         }
     ) { sheetState ->
