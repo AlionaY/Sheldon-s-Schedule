@@ -20,14 +20,14 @@ import androidx.compose.ui.unit.sp
 
 @Composable
 fun DefaultBottomSheetField(
-    string: String?,
+    text: String?,
     label: String,
     onClick: () -> Unit,
     onValueChanged: (String) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     OutlinedTextField(
-        value = string.orEmpty(),
+        value = text.orEmpty(),
         label = { Text(label) },
         onValueChange = { onValueChanged(it) },
         modifier = modifier

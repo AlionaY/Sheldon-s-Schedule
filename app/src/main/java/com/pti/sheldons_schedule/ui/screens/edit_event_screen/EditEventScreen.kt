@@ -15,6 +15,8 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.pti.sheldons_schedule.ui.common.CreateOrEditEventViewModel
 import com.pti.sheldons_schedule.ui.common.ScreenContent
+import com.pti.sheldons_schedule.ui.navigation.NavDestination
+import com.pti.sheldons_schedule.ui.navigation.navigate
 import com.pti.sheldons_schedule.ui.screens.create_event_screen.ModalBottomSheet
 import com.pti.sheldons_schedule.util.Constants.FIELD_COUNT
 import com.pti.sheldons_schedule.util.Constants.PADDING_WIDTH_SUM
@@ -38,8 +40,8 @@ fun EditEventScreen(
         modifier = Modifier
             .wrapContentHeight()
             .fillMaxWidth(),
-        data = screenState?.options.orEmpty(),
-        header = screenState?.options?.first()?.title?.let { stringResource(it) }.orEmpty(),
+        data = screenState.options.orEmpty(),
+        header = screenState.options?.first()?.title?.let { stringResource(it) }.orEmpty(),
         nameGetter = { stringResource(id = it.nameId) },
         onClick = {
             focusManager.clearFocus()
@@ -50,14 +52,13 @@ fun EditEventScreen(
         val snackbarHostState = remember { SnackbarHostState() }
         val focusRequester = remember { FocusRequester() }
 
-        LaunchedEffect(key1 = screenState?.options) {
-            if (!screenState?.options.isNullOrEmpty()) {
+        LaunchedEffect(key1 = screenState.options) {
+            if (!screenState.options.isNullOrEmpty()) {
                 scope.launch {
                     sheetState.show()
                 }
             }
         }
-
 
         BoxWithConstraints(modifier = Modifier.fillMaxSize()) {
             val halfFieldWidth = (this.maxWidth.value.toInt() - PADDING_WIDTH_SUM) / FIELD_COUNT
@@ -75,22 +76,32 @@ fun EditEventScreen(
                     state = screenState,
                     fieldWidth = halfFieldWidth.dp,
                     focusRequester = focusRequester,
-                    onTitleEdited = {},
-                    onFocusChanged = {},
-                    onDescriptionEdited = {},
-                    onStartDatePicked = {},
-                    onEndDatePicked = {},
-                    onTimeStartPicked = { hour, minutes -> },
-                    onTimeEndPicked = { hour, minutes -> },
-                    onRepeatFieldClicked = { },
-                    onPriorityFieldClicked = { },
-                    onRemindFieldClicked = {}
+                    onTitleEdited = { viewModel.onTitleEdited(it, true) },
+                    onFocusChanged = { viewModel.onFocusChanged(it, true) },
+                    onDescriptionEdited = { viewModel.onDescriptionEdited(it, true) },
+                    onStartDatePicked = { viewModel.onStartDatePicked(it, true) },
+                    onEndDatePicked = { viewModel.onEndDatePicked(it, true) },
+                    onTimeStartPicked = { hour, minutes ->
+                        viewModel.onTimeStartPicked(hour, minutes, true)
+                    },
+                    onTimeEndPicked = { hour, minutes ->
+                        viewModel.onTimeEndPicked(hour, minutes, true)
+                    },
+                    onRepeatFieldClicked = { viewModel.onRepeatFieldClicked(true) },
+                    onPriorityFieldClicked = { viewModel.onPriorityFieldClicked(true) },
+                    onRemindFieldClicked = { viewModel.onRemindFieldClicked(true) }
                 )
             }
 
             BottomToolbar(
-                onSaveEventClicked = { },
-                onDeleteEventClicked = { },
+                onSaveEventClicked = {
+                    viewModel.onSaveEventClicked(true)
+                    navController.navigate(NavDestination.EntryScreen)
+                },
+                onDeleteEventClicked = {
+                    viewModel.onDeleteEventClicked()
+                    navController.navigate(NavDestination.EntryScreen)
+                },
                 modifier = Modifier
                     .height(58.dp)
                     .fillMaxWidth()
