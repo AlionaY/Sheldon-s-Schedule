@@ -10,10 +10,12 @@ import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import com.google.accompanist.navigation.animation.composable
+import com.pti.sheldons_schedule.data.Event
 
 
-fun NavController.navigate(destination: NavDestination) {
-    navigate(destination.route)
+fun NavController.navigate(destination: NavDestination, event: Event? = null) {
+    val route = "${destination.route}/${event?.creationDate}"
+    if (event == null) navigate(destination.route) else navigate(route)
 }
 
 @ExperimentalAnimationApi
