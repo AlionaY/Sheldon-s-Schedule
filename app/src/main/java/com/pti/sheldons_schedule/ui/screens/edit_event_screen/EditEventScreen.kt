@@ -4,6 +4,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.SnackbarHost
 import androidx.compose.material.SnackbarHostState
+import androidx.compose.material.SnackbarResult
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -13,8 +14,10 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import com.pti.sheldons_schedule.R
 import com.pti.sheldons_schedule.ui.common.CreateOrEditEventViewModel
 import com.pti.sheldons_schedule.ui.common.ScreenContent
+import com.pti.sheldons_schedule.ui.common.TimePicker
 import com.pti.sheldons_schedule.ui.navigation.NavDestination
 import com.pti.sheldons_schedule.ui.navigation.navigate
 import com.pti.sheldons_schedule.ui.screens.create_event_screen.ModalBottomSheet
@@ -32,9 +35,45 @@ fun EditEventScreen(
 ) {
 
     val screenState by viewModel.editEventScreenState.collectAsState()
+    val isPickedTimeValid by viewModel.isPickedTimeValid.collectAsState(initial = true)
     val focusManager = LocalFocusManager.current
 
+    val snackbarMessage = stringResource(R.string.time_picker_error_message)
+    val snackbarAction = stringResource(id = R.string.snackbar_action)
+    var isSnackbarActionClicked by remember { mutableStateOf(false) }
+
     viewModel.getEvent(eventId)
+
+    if (screenState.pickedStartTime != screenState.startDate && isSnackbarActionClicked) {
+        TimePicker(
+            calendar = screenState.startDate,
+            onTimePicked = { hour, minutes ->
+                viewModel.onTimeStartPicked(
+                    hour = hour,
+                    minutes = minutes,
+                    isEditEventScreen = true
+                )
+            }
+        )
+        isSnackbarActionClicked = false
+    }
+
+    if (screenState.pickedEndTime != screenState.endDate &&
+        isSnackbarActionClicked &&
+        screenState.startDate == screenState.pickedStartTime
+    ) {
+        TimePicker(
+            calendar = screenState.endDate,
+            onTimePicked = { hour, minutes ->
+                viewModel.onTimeEndPicked(
+                    hour = hour,
+                    minutes = minutes,
+                    isEditEventScreen = true
+                )
+            }
+        )
+        isSnackbarActionClicked = false
+    }
 
     ModalBottomSheet(
         modifier = Modifier
@@ -57,6 +96,28 @@ fun EditEventScreen(
                 scope.launch {
                     sheetState.show()
                 }
+            }
+        }
+
+        LaunchedEffect(key1 = Unit) {
+            focusRequester.requestFocus()
+        }
+
+        LaunchedEffect(key1 = isPickedTimeValid) {
+            if (!isPickedTimeValid) {
+                scope.launch {
+                    val result = snackbarHostState.showSnackbar(
+                        message = snackbarMessage,
+                        actionLabel = snackbarAction
+                    )
+                    when (result) {
+                        SnackbarResult.ActionPerformed -> {
+                            isSnackbarActionClicked = true
+                        }
+                        SnackbarResult.Dismissed -> {}
+                    }
+                }
+                viewModel.resetTimeValidationValue()
             }
         }
 
