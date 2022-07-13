@@ -1,5 +1,7 @@
 package com.pti.sheldons_schedule.util
 
+import androidx.compose.ui.text.TextRange
+import androidx.compose.ui.text.input.TextFieldValue
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -10,3 +12,8 @@ fun String.toCalendar(): Calendar {
         if (parsedDate != null) time = parsedDate
     }
 }
+
+fun String?.toTextFieldValue() = TextFieldValue(
+    text = this.orEmpty(),
+    selection = TextRange(this.orEmpty().length)
+)
