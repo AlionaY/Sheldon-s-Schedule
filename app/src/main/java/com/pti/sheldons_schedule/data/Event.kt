@@ -25,7 +25,8 @@ data class Event(
     @SerialName("priority")
     val priority: Priority = Priority.Low,
     @SerialName("reminder")
-    val reminder: Reminder? = null
+    val reminder: Reminder? = null,
+    val todoList: List<ToDo> = emptyList()
 )
 
 fun ScreenState.toEvent(creationDate: Long, duration: Long) = Event(
@@ -37,5 +38,6 @@ fun ScreenState.toEvent(creationDate: Long, duration: Long) = Event(
     duration = duration,
     repeat = this.repeat,
     priority = this.priority,
-    reminder = this.remind
+    reminder = this.remind,
+    todoList = this.todoList
 )
