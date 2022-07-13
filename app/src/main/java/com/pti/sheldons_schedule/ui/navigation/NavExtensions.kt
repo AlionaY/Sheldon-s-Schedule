@@ -12,7 +12,7 @@ import androidx.navigation.NavGraphBuilder
 import com.google.accompanist.navigation.animation.composable
 
 
-fun NavController.navigate(destination: NavDestination, param: Any? = null) {
+fun NavController.navigate(destination: NavDestination, param: String? = null) {
     val route = "${destination.route}/$param"
     if (param == null) navigate(destination.route) else navigate(route)
 }

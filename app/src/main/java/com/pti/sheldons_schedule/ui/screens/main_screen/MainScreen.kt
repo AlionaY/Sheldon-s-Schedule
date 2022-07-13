@@ -153,7 +153,7 @@ fun MainScreen(
                                                 onClick = {
                                                     navController.navigate(
                                                         destination = NavDestination.EditEventScreen,
-                                                        param = it.creationDate
+                                                        param = it.creationDate.toString()
                                                     )
                                                 })
 
