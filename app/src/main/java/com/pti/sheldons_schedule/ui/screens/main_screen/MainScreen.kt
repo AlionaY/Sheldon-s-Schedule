@@ -53,7 +53,7 @@ fun MainScreen(
 
     OnLifecycleEvent { _, event ->
         when (event) {
-            Lifecycle.Event.ON_CREATE -> {
+            Lifecycle.Event.ON_RESUME -> {
                 viewModel.reload()
             }
             else -> {}
@@ -147,7 +147,15 @@ fun MainScreen(
                                         ) {
                                             val padding = ticker * this.maxHeight.value
 
-                                            EventsColumn(dayOfWeek, hourItem)
+                                            EventsColumn(
+                                                eventsOfDay = dayOfWeek,
+                                                currentHour = hourItem,
+                                                onClick = {
+                                                    navController.navigate(
+                                                        destination = NavDestination.EditEventScreen,
+                                                        param = it.creationDate.toString()
+                                                    )
+                                                })
 
                                             HourDivider(
                                                 isCurrentDay = dayOfWeek.day.isCurrent,

@@ -14,7 +14,7 @@ import com.pti.sheldons_schedule.data.Event
 import com.pti.sheldons_schedule.util.Constants
 import com.pti.sheldons_schedule.util.Constants.REMINDER_ID
 import com.pti.sheldons_schedule.util.Constants.TIME_FORMAT
-import com.pti.sheldons_schedule.util.convertToCalendar
+import com.pti.sheldons_schedule.util.toCalendar
 import com.pti.sheldons_schedule.util.formatDate
 import dagger.hilt.android.qualifiers.ApplicationContext
 import java.util.*
@@ -53,7 +53,7 @@ class NotificationController @Inject constructor(
                 intent,
                 PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
             )
-            val parsed = event?.startDate?.convertToCalendar()
+            val parsed = event?.startDate?.toCalendar()
             parsed?.let {
                 val pickedDate = Calendar.getInstance().apply {
                     time = parsed.time

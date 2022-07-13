@@ -10,7 +10,7 @@ import com.pti.sheldons_schedule.util.Constants
 import com.pti.sheldons_schedule.util.Constants.DATE_FORMAT
 import com.pti.sheldons_schedule.util.Constants.DATE_FORMAT_ISO_8601
 import com.pti.sheldons_schedule.util.Constants.WEEK_LENGTH
-import com.pti.sheldons_schedule.util.convertToCalendar
+import com.pti.sheldons_schedule.util.toCalendar
 import com.pti.sheldons_schedule.util.formatDate
 import java.util.*
 
@@ -46,7 +46,7 @@ class WeekdaysPagingSource(private val events: List<Event>) : PagingSource<Int, 
                     day = currentCalendar.formatDate(DATE_FORMAT_ISO_8601)
                 ),
                 events = events.filter {
-                    it.startDate.convertToCalendar().formatDate(DATE_FORMAT) ==
+                    it.startDate.toCalendar().formatDate(DATE_FORMAT) ==
                             currentCalendar.formatDate(DATE_FORMAT)
                 }
             )

@@ -4,6 +4,7 @@ import android.app.AlarmManager
 import android.app.Application
 import android.app.PendingIntent
 import android.content.Intent
+import android.util.Log
 import androidx.core.content.getSystemService
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -13,11 +14,13 @@ import com.pti.sheldons_schedule.data.Options.*
 import com.pti.sheldons_schedule.db.EventRepository
 import com.pti.sheldons_schedule.service.AlarmBroadcastReceiver
 import com.pti.sheldons_schedule.util.Constants
+import com.pti.sheldons_schedule.util.toCalendar
 import com.pti.sheldons_schedule.util.updateDate
 import com.pti.sheldons_schedule.util.updateTime
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import java.util.*
@@ -46,15 +49,45 @@ class CreateOrEditEventViewModel @Inject constructor(
             }
         )
     )
-//    todo: make norm screen state
-    val editEventScreenState = MutableStateFlow<ScreenState?>(null)
+
+    val pickedEvent = MutableStateFlow<Event?>(null)
+    val startDate = pickedEvent.value?.startDate?.toCalendar() ?: Calendar.getInstance()
+    val endDate = pickedEvent.value?.endDate?.toCalendar() ?: Calendar.getInstance()
+    val editEventScreenState = MutableStateFlow<ScreenState?>(
+        ScreenState(
+            startDate = startDate,
+            endDate = endDate,
+            pickedStartTime = startDate,
+            pickedEndTime = endDate
+        )
+    )
+
     val isPickedTimeValid = MutableSharedFlow<Boolean>()
 
     private val newEvent = MutableStateFlow<Event?>(null)
 
 
     init {
-        observeScreenState()
+        observeCreateEventScreenState()
+        updateEditEventScreenState()
+    }
+
+    private fun updateEditEventScreenState() {
+        viewModelScope.launch {
+            pickedEvent.filterNotNull().collect { event ->
+                editEventScreenState.update {
+                    it?.copy(
+                        startDate = event.startDate.toCalendar(),
+                        endDate = event.endDate.toCalendar(),
+                        title = event.title,
+                        description = event.description,
+                        priority = event.priority,
+                        remind = event.reminder ?: Reminder.DontRemind,
+                        repeat = event.repeat ?: Repeat.DontRepeat
+                    )
+                }
+            }
+        }
     }
 
     fun onStartDatePicked(pickedDate: Calendar) {
@@ -205,7 +238,7 @@ class CreateOrEditEventViewModel @Inject constructor(
         }
     }
 
-    private fun observeScreenState() = viewModelScope.launch {
+    private fun observeCreateEventScreenState() = viewModelScope.launch {
         val calendar = Calendar.getInstance()
 
         createEventScreenState.collect { state ->
@@ -283,5 +316,9 @@ class CreateOrEditEventViewModel @Inject constructor(
         alarmManager?.setAndAllowWhileIdle(
             AlarmManager.RTC_WAKEUP, remindTime, pendingIntent
         )
+    }
+
+    fun getEvent(eventId: Long) = viewModelScope.launch {
+        pickedEvent.value = repository.getEvent(eventId)
     }
 }
