@@ -14,6 +14,7 @@ import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -48,9 +49,9 @@ fun HeightSpacer(height: Dp = 20.dp) {
 
 @Composable
 fun DefaultTextField(
-    value: String,
+    value: TextFieldValue,
     label: String,
-    onValueChanged: (String) -> Unit,
+    onValueChanged: (TextFieldValue) -> Unit,
     modifier: Modifier = Modifier,
     errorText: String? = null,
     borderColor: Color = MaterialTheme.colors.onSurface.copy(alpha = ContentAlpha.disabled)
