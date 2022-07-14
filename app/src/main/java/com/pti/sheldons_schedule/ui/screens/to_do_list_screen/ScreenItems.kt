@@ -52,7 +52,7 @@ fun TopToolbar(onClick: () -> Unit, modifier: Modifier = Modifier) {
 }
 
 @Composable
-fun AddAnItemRow(modifier: Modifier = Modifier) {
+fun IconedText(modifier: Modifier = Modifier) {
     Row(
         modifier = modifier,
         verticalAlignment = Alignment.CenterVertically
