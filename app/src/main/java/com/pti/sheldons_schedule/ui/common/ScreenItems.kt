@@ -6,18 +6,51 @@ import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Error
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusDirection
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+
+@Composable
+fun IconedText(
+    text: String,
+    textSize: TextUnit,
+    modifier: Modifier = Modifier,
+    icon: ImageVector = Icons.Filled.Add
+) {
+    Row(
+        modifier = modifier,
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Icon(
+            imageVector = icon,
+            contentDescription = null,
+            modifier = Modifier
+                .wrapContentSize()
+                .padding(start = 15.dp),
+            tint = MaterialTheme.colors.onBackground
+        )
+        Text(
+            text = text,
+            fontSize = textSize,
+            modifier = Modifier
+                .padding(start = 15.dp)
+                .wrapContentSize()
+        )
+    }
+}
 
 @Composable
 fun DefaultBottomSheetField(

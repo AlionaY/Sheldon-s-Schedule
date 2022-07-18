@@ -151,7 +151,8 @@ fun EditEventScreen(
                     },
                     onRepeatFieldClicked = { viewModel.onRepeatFieldClicked(true) },
                     onPriorityFieldClicked = { viewModel.onPriorityFieldClicked(true) },
-                    onRemindFieldClicked = { viewModel.onRemindFieldClicked(true) }
+                    onRemindFieldClicked = { viewModel.onRemindFieldClicked(true) },
+                    onIconedTextClicked = { }
                 )
             }
 
