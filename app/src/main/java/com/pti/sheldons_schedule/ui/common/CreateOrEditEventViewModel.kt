@@ -412,6 +412,7 @@ class CreateOrEditEventViewModel @Inject constructor(
     fun onDeleteEventClicked() = viewModelScope.launch(Dispatchers.IO) {
         pickedEvent.value?.let {
             repository.deleteEvent(it.event)
+            repository.deleteReminder(it.remind)
         }
     }
 }
