@@ -7,6 +7,7 @@ import android.content.Context
 import android.content.Intent
 import androidx.core.content.getSystemService
 import com.pti.sheldons_schedule.data.Event
+import com.pti.sheldons_schedule.data.EventWithReminder
 import com.pti.sheldons_schedule.data.Options.Repeat
 import com.pti.sheldons_schedule.db.EventRepository
 import com.pti.sheldons_schedule.util.Constants.REMINDER_ID
@@ -39,12 +40,12 @@ class AlarmBroadcastReceiver : BroadcastReceiver() {
         }
     }
 
-    private fun repeatEvent(event: Event?, context: Context?) {
+    private fun repeatEvent(event: EventWithReminder?, context: Context?) {
         val currentTime = getInstance()
-        val nextEventDate = getNextEventDate(event, currentTime)
+        val nextEventDate = getNextEventDate(event?.event, currentTime)
 
         setAlarmManager(
-            eventId = event?.creationDate,
+            eventId = event?.event?.creationDate,
             remindAt = nextEventDate?.timeInMillis ?: 0,
             context = context
         )

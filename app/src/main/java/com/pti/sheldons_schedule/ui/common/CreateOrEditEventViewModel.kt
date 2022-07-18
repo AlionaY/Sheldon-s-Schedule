@@ -12,10 +12,7 @@ import com.pti.sheldons_schedule.data.*
 import com.pti.sheldons_schedule.data.Options.*
 import com.pti.sheldons_schedule.db.EventRepository
 import com.pti.sheldons_schedule.service.AlarmBroadcastReceiver
-import com.pti.sheldons_schedule.util.Constants
-import com.pti.sheldons_schedule.util.toCalendar
-import com.pti.sheldons_schedule.util.updateDate
-import com.pti.sheldons_schedule.util.updateTime
+import com.pti.sheldons_schedule.util.*
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -50,10 +47,10 @@ class CreateOrEditEventViewModel @Inject constructor(
         )
     )
 
-    val pickedEvent = MutableStateFlow<Event?>(null)
-    val startDate = pickedEvent.value?.startDate?.toCalendar() ?: Calendar.getInstance()
-    val endDate = pickedEvent.value?.endDate?.toCalendar() ?: Calendar.getInstance()
-    val editEventScreenState = MutableStateFlow<ScreenState>(
+    val pickedEvent = MutableStateFlow<EventWithReminder?>(null)
+    val startDate = pickedEvent.value?.event?.startDate?.toCalendar() ?: Calendar.getInstance()
+    val endDate = pickedEvent.value?.event?.endDate?.toCalendar() ?: Calendar.getInstance()
+    val editEventScreenState = MutableStateFlow(
         ScreenState(
             startDate = startDate,
             endDate = endDate,
@@ -64,7 +61,7 @@ class CreateOrEditEventViewModel @Inject constructor(
 
     val isPickedTimeValid = MutableSharedFlow<Boolean>()
 
-    private val newEvent = MutableStateFlow<Event?>(null)
+    private val newEvent = MutableStateFlow<EventWithReminder?>(null)
 
 
     init {
@@ -78,13 +75,13 @@ class CreateOrEditEventViewModel @Inject constructor(
             pickedEvent.filterNotNull().collect { event ->
                 editEventScreenState.update {
                     it.copy(
-                        startDate = event.startDate.toCalendar(),
-                        endDate = event.endDate.toCalendar(),
-                        title = event.title,
-                        description = event.description,
-                        priority = event.priority,
-                        remind = event.reminder ?: Reminder.DontRemind,
-                        repeat = event.repeat ?: Repeat.DontRepeat
+                        startDate = event.event.startDate.toCalendar(),
+                        endDate = event.event.endDate.toCalendar(),
+                        title = event.event.title,
+                        description = event.event.description,
+                        priority = event.event.priority,
+                        repeat = event.event.repeat,
+                        remind = event.remind.toRemind()
                     )
                 }
             }
@@ -205,9 +202,9 @@ class CreateOrEditEventViewModel @Inject constructor(
 
     fun onRemindFieldClicked(isEditEventScreen: Boolean = false) = viewModelScope.launch {
         if (isEditEventScreen) {
-            editEventScreenState.update { it.copy(options = Reminder.values()) }
+            editEventScreenState.update { it.copy(options = Remind.values()) }
         } else {
-            createEventScreenState.update { it.copy(options = Reminder.values()) }
+            createEventScreenState.update { it.copy(options = Remind.values()) }
         }
     }
 
@@ -238,14 +235,16 @@ class CreateOrEditEventViewModel @Inject constructor(
     private fun saveEditedEvent() = viewModelScope.launch(Dispatchers.IO) {
         editEventScreenState.value.let { state ->
             val currentTimeInMillis = Calendar.getInstance().timeInMillis
-            val creationDate = pickedEvent.value?.creationDate ?: currentTimeInMillis
+            val creationDate = pickedEvent.value?.event?.creationDate ?: currentTimeInMillis
             val duration = getEventDuration(state)
             val remindAt = getRemindAtTime(state)
 
-            pickedEvent.value = editEventScreenState.value.toEvent(creationDate, duration)
+            val event = editEventScreenState.value.toEvent(creationDate, duration)
+            pickedEvent.value = event.toEventWithReminder(editEventScreenState.value.remind.alias)
 
-            pickedEvent.value?.let { event ->
-                repository.editEvent(event)
+            pickedEvent.value?.let {
+                repository.editEvent(it.event)
+                repository.editReminder(it.remind)
             }
 
             setReminderAlarm(remindAt.timeInMillis)
@@ -267,12 +266,14 @@ class CreateOrEditEventViewModel @Inject constructor(
             val duration = getEventDuration(state)
             val remindAt = getRemindAtTime(state)
 
-            newEvent.value = createEventScreenState.value.toEvent(
+            val event = createEventScreenState.value.toEvent(
                 currentTimeInMillis,
                 duration
             )
+            newEvent.value = event.toEventWithReminder(createEventScreenState.value.remind.alias)
             newEvent.value?.let {
-                repository.saveEvent(it)
+                repository.saveEvent(it.event)
+                repository.saveReminder(it.remind)
             }
 
             setReminderAlarm(remindAt.timeInMillis)
@@ -295,7 +296,7 @@ class CreateOrEditEventViewModel @Inject constructor(
             is Priority -> state.update {
                 it.copy(priority = options, options = null)
             }
-            is Reminder -> state.update {
+            is Options.Remind -> state.update {
                 it.copy(remind = options, options = null)
             }
         }
@@ -388,7 +389,7 @@ class CreateOrEditEventViewModel @Inject constructor(
     }
 
     private fun setReminderAlarm(remindTime: Long) {
-        val id = newEvent.value?.creationDate
+        val id = newEvent.value?.event?.creationDate
         val alarmManager = context.getSystemService<AlarmManager>()
         val reminderIntent = Intent(context, AlarmBroadcastReceiver::class.java).apply {
             putExtra(Constants.REMINDER_ID, id)
@@ -410,7 +411,7 @@ class CreateOrEditEventViewModel @Inject constructor(
 
     fun onDeleteEventClicked() = viewModelScope.launch(Dispatchers.IO) {
         pickedEvent.value?.let {
-            repository.deleteEvent(it)
+            repository.deleteEvent(it.event)
         }
     }
 }
