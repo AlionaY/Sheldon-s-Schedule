@@ -14,7 +14,7 @@ data class ScreenState(
     val title: String = "",
     val description: String = "",
     val options: List<Options>? = null,
-    val remind: Options.Remind = Options.Remind.DontRemind,
+    val remind: Remind = Remind.DontRemind,
     val repeat: Repeat = Repeat.DontRepeat,
     val priority: Priority = Priority.Low,
     val datePickerStartDate: Long = Calendar.getInstance().timeInMillis,

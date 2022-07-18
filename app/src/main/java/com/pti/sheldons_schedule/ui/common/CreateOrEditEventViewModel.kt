@@ -296,7 +296,7 @@ class CreateOrEditEventViewModel @Inject constructor(
             is Priority -> state.update {
                 it.copy(priority = options, options = null)
             }
-            is Options.Remind -> state.update {
+            is Remind -> state.update {
                 it.copy(remind = options, options = null)
             }
         }
