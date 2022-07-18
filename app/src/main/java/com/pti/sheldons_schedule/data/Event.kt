@@ -24,13 +24,7 @@ data class Event(
     val priority: Priority = Priority.Low
 )
 
-@Serializable
-data class EventWithReminder(
-    @Embedded
-    val event: Event,
-    @Relation(
-        parentColumn = "creationDate",
-        entityColumn = "eventId"
-    )
-    val remind: Reminder
+fun Event.toEventWithReminder(reminder: String) = EventWithReminder(
+    event = this,
+    remind = Reminder(this.creationDate, reminder)
 )
