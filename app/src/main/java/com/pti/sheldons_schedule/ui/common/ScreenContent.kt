@@ -1,6 +1,8 @@
 package com.pti.sheldons_schedule.ui.common
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.material.ContentAlpha
@@ -16,6 +18,7 @@ import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.pti.sheldons_schedule.R
 import com.pti.sheldons_schedule.data.ScreenState
 import com.pti.sheldons_schedule.data.TitleFieldState
@@ -36,7 +39,8 @@ fun ScreenContent(
     onTimeEndPicked: (Int, Int) -> Unit,
     onRepeatFieldClicked: () -> Unit,
     onPriorityFieldClicked: () -> Unit,
-    onRemindFieldClicked: () -> Unit
+    onRemindFieldClicked: () -> Unit,
+    onIconedTextClicked: () -> Unit
 ) {
     val titleBorderColor = when (state?.titleFieldState) {
         TitleFieldState.Error -> MaterialTheme.colors.error
@@ -77,7 +81,14 @@ fun ScreenContent(
         label = stringResource(id = R.string.description),
         modifier = Modifier.padding(horizontal = 15.dp),
     )
-    HeightSpacer()
+    IconedText(
+        text = stringResource(id = R.string.add_to_do_list),
+        textSize = 15.sp,
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(50.dp)
+            .clickable { onIconedTextClicked() }
+    )
     DatePickerRow(
         state = state,
         fieldWidth = fieldWidth,
