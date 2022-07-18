@@ -7,29 +7,21 @@ class EventRepositoryImpl @Inject constructor(private val eventDao: EventDao) : 
 
     override suspend fun getAllEvents() = eventDao.getAllEvents()
 
-    override suspend fun saveEvent(event: Event) {
-        eventDao.insertEvent(event)
-    }
-
-    override suspend fun saveReminder(remind: Reminder) {
-        eventDao.insertReminder(remind)
+    override suspend fun saveEvent(event: EventWithReminder) {
+        eventDao.insertEvent(event.event)
+        eventDao.insertReminder(event.remind)
     }
 
     override suspend fun getEvent(id: Long): EventWithReminder = eventDao.getEvent(id)
 
-    override suspend fun editEvent(event: Event) {
-        eventDao.editEvent(event)
+    override suspend fun editEvent(event: EventWithReminder) {
+        eventDao.editEvent(event.event)
+        eventDao.editReminder(event.remind)
+
     }
 
-    override suspend fun editReminder(reminder: Reminder) {
-        eventDao.editReminder(reminder)
-    }
-
-    override suspend fun deleteEvent(event: Event) {
-        eventDao.deleteEvent(event)
-    }
-
-    override suspend fun deleteReminder(reminder: Reminder) {
-        eventDao.deleteReminder(reminder)
+    override suspend fun deleteEvent(event: EventWithReminder) {
+        eventDao.deleteEvent(event.event)
+        eventDao.deleteReminder(event.remind)
     }
 }

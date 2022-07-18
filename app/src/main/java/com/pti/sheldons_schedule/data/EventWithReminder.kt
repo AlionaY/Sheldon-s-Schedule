@@ -14,3 +14,7 @@ data class EventWithReminder(
     )
     val remind: Reminder
 )
+
+fun EventWithReminder.toReminder() = Options.Remind.values().first { reminder ->
+    reminder.alias == this.remind.remind
+}

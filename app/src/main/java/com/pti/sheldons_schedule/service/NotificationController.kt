@@ -10,13 +10,12 @@ import androidx.core.app.NotificationManagerCompat
 import androidx.core.content.getSystemService
 import com.pti.sheldons_schedule.MainActivity
 import com.pti.sheldons_schedule.R
-import com.pti.sheldons_schedule.data.Event
 import com.pti.sheldons_schedule.data.EventWithReminder
 import com.pti.sheldons_schedule.util.Constants
 import com.pti.sheldons_schedule.util.Constants.REMINDER_ID
 import com.pti.sheldons_schedule.util.Constants.TIME_FORMAT
-import com.pti.sheldons_schedule.util.toCalendar
 import com.pti.sheldons_schedule.util.formatDate
+import com.pti.sheldons_schedule.util.toCalendar
 import dagger.hilt.android.qualifiers.ApplicationContext
 import java.util.*
 import javax.inject.Inject

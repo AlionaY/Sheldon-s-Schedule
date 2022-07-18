@@ -12,7 +12,10 @@ import com.pti.sheldons_schedule.data.*
 import com.pti.sheldons_schedule.data.Options.*
 import com.pti.sheldons_schedule.db.EventRepository
 import com.pti.sheldons_schedule.service.AlarmBroadcastReceiver
-import com.pti.sheldons_schedule.util.*
+import com.pti.sheldons_schedule.util.Constants
+import com.pti.sheldons_schedule.util.toCalendar
+import com.pti.sheldons_schedule.util.updateDate
+import com.pti.sheldons_schedule.util.updateTime
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -81,7 +84,7 @@ class CreateOrEditEventViewModel @Inject constructor(
                         description = event.event.description,
                         priority = event.event.priority,
                         repeat = event.event.repeat,
-                        remind = event.remind.toRemind()
+                        remind = event.toReminder()
                     )
                 }
             }
@@ -243,8 +246,7 @@ class CreateOrEditEventViewModel @Inject constructor(
             pickedEvent.value = event.toEventWithReminder(editEventScreenState.value.remind.alias)
 
             pickedEvent.value?.let {
-                repository.editEvent(it.event)
-                repository.editReminder(it.remind)
+                repository.editEvent(it)
             }
 
             setReminderAlarm(remindAt.timeInMillis)
@@ -272,8 +274,7 @@ class CreateOrEditEventViewModel @Inject constructor(
             )
             newEvent.value = event.toEventWithReminder(createEventScreenState.value.remind.alias)
             newEvent.value?.let {
-                repository.saveEvent(it.event)
-                repository.saveReminder(it.remind)
+                repository.saveEvent(it)
             }
 
             setReminderAlarm(remindAt.timeInMillis)
@@ -411,8 +412,7 @@ class CreateOrEditEventViewModel @Inject constructor(
 
     fun onDeleteEventClicked() = viewModelScope.launch(Dispatchers.IO) {
         pickedEvent.value?.let {
-            repository.deleteEvent(it.event)
-            repository.deleteReminder(it.remind)
+            repository.deleteEvent(it)
         }
     }
 }

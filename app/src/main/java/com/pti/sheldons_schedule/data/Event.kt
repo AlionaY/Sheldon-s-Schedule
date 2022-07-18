@@ -1,6 +1,8 @@
 package com.pti.sheldons_schedule.data
 
-import androidx.room.*
+import androidx.room.Entity
+import androidx.room.PrimaryKey
+import androidx.room.TypeConverters
 import com.pti.sheldons_schedule.data.Options.Priority
 import com.pti.sheldons_schedule.data.Options.Repeat
 import com.pti.sheldons_schedule.db.OptionsTypeConverter
