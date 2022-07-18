@@ -35,7 +35,7 @@ fun ToDoListScreen(
         )
 
         EventTitle(
-            title = event?.title.orEmpty(),
+            title = event?.event?.title.orEmpty(),
             modifier = Modifier
                 .fillMaxWidth()
                 .height(58.dp)
@@ -44,7 +44,7 @@ fun ToDoListScreen(
 
 //        todo: make functionality of adding todo items
         Column(modifier = Modifier.fillMaxSize()) {
-            if (event?.todoList.isNullOrEmpty()) {
+            if (event?.toDoList.isNullOrEmpty()) {
                 IconedText(
                     modifier = Modifier
                         .fillMaxWidth()

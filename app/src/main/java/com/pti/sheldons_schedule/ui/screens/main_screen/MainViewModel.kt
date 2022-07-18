@@ -6,6 +6,7 @@ import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.cachedIn
 import com.pti.sheldons_schedule.data.Event
+import com.pti.sheldons_schedule.data.FullEvent
 import com.pti.sheldons_schedule.db.EventRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ObsoleteCoroutinesApi
@@ -51,7 +52,7 @@ class MainViewModel @Inject constructor(
 
     private fun getEventsList() {
         viewModelScope.launch {
-            allEvents.value = repository.getAllEvents().sortedBy { it.startDate }
+//            allEvents.value = repository.getAllEvents().sortedBy { it.event.startDate }
         }
     }
 

@@ -2,10 +2,7 @@ package com.pti.sheldons_schedule.ui.screens.main_screen
 
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
-import com.pti.sheldons_schedule.data.EventsOfDay
-import com.pti.sheldons_schedule.data.DayOfWeek
-import com.pti.sheldons_schedule.data.Event
-import com.pti.sheldons_schedule.data.Week
+import com.pti.sheldons_schedule.data.*
 import com.pti.sheldons_schedule.util.Constants
 import com.pti.sheldons_schedule.util.Constants.DATE_FORMAT
 import com.pti.sheldons_schedule.util.Constants.DATE_FORMAT_ISO_8601

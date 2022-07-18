@@ -34,8 +34,8 @@ class AlarmBroadcastReceiver : BroadcastReceiver() {
         CoroutineScope(IO).launch {
             val event = eventId?.let { repository.getEvent(it) }
 
-            notificationController.createNotification(event)
-            repeatEvent(event, context)
+            notificationController.createNotification(event?.event)
+            repeatEvent(event?.event, context)
         }
     }
 

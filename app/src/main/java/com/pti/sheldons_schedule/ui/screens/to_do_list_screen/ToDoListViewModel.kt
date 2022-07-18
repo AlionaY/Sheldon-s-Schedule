@@ -3,6 +3,7 @@ package com.pti.sheldons_schedule.ui.screens.to_do_list_screen
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.pti.sheldons_schedule.data.Event
+import com.pti.sheldons_schedule.data.FullEvent
 import com.pti.sheldons_schedule.db.EventRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -15,7 +16,7 @@ class ToDoListViewModel @Inject constructor(
     private val repository: EventRepository
 ) : ViewModel() {
 
-    val event = MutableStateFlow<Event?>(null)
+    val event = MutableStateFlow<FullEvent?>(null)
     val addTextField = MutableSharedFlow<Boolean>()
 
 
@@ -26,5 +27,4 @@ class ToDoListViewModel @Inject constructor(
     fun onAddItemClicked() = viewModelScope.launch {
         addTextField.emit(true)
     }
-
 }
