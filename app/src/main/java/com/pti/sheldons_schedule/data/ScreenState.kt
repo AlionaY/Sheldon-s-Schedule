@@ -32,3 +32,18 @@ data class ScreenState(
     val formattedStartTime: String = startDate.formatDate(TIME_FORMAT)
     val formattedEndTime: String = endDate.formatDate(TIME_FORMAT)
 }
+
+fun ScreenState.toEvent(creationDate: Long, duration: Long) =
+    EventWithToDoList(
+        event = Event(
+            creationDate = creationDate,
+            title = this.title,
+            description = this.description,
+            startDate = this.startDateISO,
+            endDate = this.endDateISO,
+            duration = duration,
+            repeat = this.repeat,
+            priority = this.priority
+        ),
+        toDoList = this.todoList
+    )

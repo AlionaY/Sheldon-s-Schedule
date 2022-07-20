@@ -50,9 +50,9 @@ class CreateOrEditEventViewModel @Inject constructor(
         )
     )
 
-    val pickedEvent = MutableStateFlow<Event?>(null)
-    val startDate = pickedEvent.value?.startDate?.toCalendar() ?: Calendar.getInstance()
-    val endDate = pickedEvent.value?.endDate?.toCalendar() ?: Calendar.getInstance()
+    val pickedEvent = MutableStateFlow<EventWithToDoList?>(null)
+    val startDate = pickedEvent.value?.event?.startDate?.toCalendar() ?: Calendar.getInstance()
+    val endDate = pickedEvent.value?.event?.endDate?.toCalendar() ?: Calendar.getInstance()
     val editEventScreenState = MutableStateFlow(
         ScreenState(
             startDate = startDate,
@@ -64,7 +64,7 @@ class CreateOrEditEventViewModel @Inject constructor(
 
     val isPickedTimeValid = MutableSharedFlow<Boolean>()
 
-    private val newEvent = MutableStateFlow<FullEvent?>(null)
+    private val newEvent = MutableStateFlow<EventWithToDoList?>(null)
 
 
     init {
@@ -78,13 +78,14 @@ class CreateOrEditEventViewModel @Inject constructor(
             pickedEvent.filterNotNull().collect { event ->
                 editEventScreenState.update {
                     it.copy(
-                        startDate = event.startDate.toCalendar(),
-                        endDate = event.endDate.toCalendar(),
-                        title = event.title,
-                        description = event.description,
-                        priority = event.priority,
+                        startDate = event.event.startDate.toCalendar(),
+                        endDate = event.event.endDate.toCalendar(),
+                        title = event.event.title,
+                        description = event.event.description,
+                        priority = event.event.priority,
+                        repeat = event.event.repeat,
 //                        remind = event.reminder ?: Reminder.DontRemind,
-                        repeat = event.repeat ?: Repeat.DontRepeat
+                        todoList = event.toDoList
                     )
                 }
             }
@@ -238,11 +239,11 @@ class CreateOrEditEventViewModel @Inject constructor(
     private fun saveEditedEvent() = viewModelScope.launch(Dispatchers.IO) {
         editEventScreenState.value.let { state ->
             val currentTimeInMillis = Calendar.getInstance().timeInMillis
-            val creationDate = pickedEvent.value?.creationDate ?: currentTimeInMillis
+            val creationDate = pickedEvent.value?.event?.creationDate ?: currentTimeInMillis
             val duration = getEventDuration(state)
             val remindAt = getRemindAtTime(state)
 
-//            pickedEvent.value = editEventScreenState.value.toEvent(creationDate, duration)
+            pickedEvent.value = editEventScreenState.value.toEvent(creationDate, duration)
 
             pickedEvent.value?.let { event ->
                 repository.editEvent(event)
@@ -272,7 +273,7 @@ class CreateOrEditEventViewModel @Inject constructor(
                 duration
             )
             newEvent.value?.let {
-                repository.saveEvent(it.event)
+                repository.saveEvent(it)
             }
 
             setReminderAlarm(remindAt.timeInMillis)
@@ -405,7 +406,7 @@ class CreateOrEditEventViewModel @Inject constructor(
     }
 
     fun getEvent(eventId: Long) = viewModelScope.launch {
-//        pickedEvent.value = repository.getEvent(eventId)
+        pickedEvent.value = repository.getEvent(eventId)
     }
 
     fun onDeleteEventClicked() = viewModelScope.launch(Dispatchers.IO) {

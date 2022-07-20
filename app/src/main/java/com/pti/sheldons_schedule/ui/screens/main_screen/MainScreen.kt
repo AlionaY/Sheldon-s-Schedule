@@ -153,9 +153,10 @@ fun MainScreen(
                                                 onClick = {
                                                     navController.navigate(
                                                         destination = NavDestination.EditEventScreen,
-                                                        param = it.creationDate.toString()
+                                                        param = it.event.creationDate.toString()
                                                     )
-                                                })
+                                                }
+                                            )
 
                                             HourDivider(
                                                 isCurrentDay = dayOfWeek.day.isCurrent,

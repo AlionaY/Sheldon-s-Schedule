@@ -2,7 +2,6 @@ package com.pti.sheldons_schedule.db
 
 import androidx.room.TypeConverter
 import com.pti.sheldons_schedule.data.Options
-import com.pti.sheldons_schedule.data.ToDo
 
 class OptionsTypeConverter {
 

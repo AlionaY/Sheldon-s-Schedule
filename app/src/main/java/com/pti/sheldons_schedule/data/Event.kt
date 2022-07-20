@@ -22,21 +22,7 @@ data class Event(
     val endDate: String,
     val duration: Long? = null,
     @SerialName("repeat")
-    val repeat: Repeat? = null,
+    val repeat: Repeat = Repeat.DontRepeat,
     @SerialName("priority")
     val priority: Priority = Priority.Low
-)
-
-fun ScreenState.toEvent(creationDate: Long, duration: Long) = FullEvent(
-    event = Event(
-        creationDate = creationDate,
-        title = this.title,
-        description = this.description,
-        startDate = this.startDateISO,
-        endDate = this.endDateISO,
-        duration = duration,
-        repeat = this.repeat,
-        priority = this.priority
-    ),
-    toDoList = this.todoList.joinToString(",") { it.title }
 )

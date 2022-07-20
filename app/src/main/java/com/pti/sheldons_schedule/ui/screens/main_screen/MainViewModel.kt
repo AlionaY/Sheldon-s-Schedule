@@ -5,8 +5,7 @@ import androidx.lifecycle.viewModelScope
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.cachedIn
-import com.pti.sheldons_schedule.data.Event
-import com.pti.sheldons_schedule.data.FullEvent
+import com.pti.sheldons_schedule.data.EventWithToDoList
 import com.pti.sheldons_schedule.db.EventRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ObsoleteCoroutinesApi
@@ -28,7 +27,7 @@ class MainViewModel @Inject constructor(
         private const val MINUTE_LONG = 60000L
     }
 
-    private val allEvents = MutableStateFlow<List<Event>>(emptyList())
+    private val allEvents = MutableStateFlow<List<EventWithToDoList>>(emptyList())
 
     var weeks = Pager(PagingConfig(1)) {
             WeekdaysPagingSource(allEvents.value)
@@ -52,7 +51,7 @@ class MainViewModel @Inject constructor(
 
     private fun getEventsList() {
         viewModelScope.launch {
-//            allEvents.value = repository.getAllEvents().sortedBy { it.event.startDate }
+            allEvents.value = repository.getAllEvents().sortedBy { it.event.startDate }
         }
     }
 

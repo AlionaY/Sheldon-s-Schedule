@@ -5,12 +5,12 @@ import androidx.room.Relation
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class FullEvent(
+data class EventWithToDoList(
     @Embedded
     val event: Event,
     @Relation(
         parentColumn = "creationDate",
         entityColumn = "eventId"
     )
-    val toDoList: String
+    val toDoList: List<ToDo>
 )

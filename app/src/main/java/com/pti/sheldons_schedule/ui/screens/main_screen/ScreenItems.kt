@@ -14,8 +14,8 @@ import androidx.compose.ui.layout.positionInRoot
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.pti.sheldons_schedule.data.Event
 import com.pti.sheldons_schedule.data.EventsOfDay
+import com.pti.sheldons_schedule.data.EventWithToDoList
 import com.pti.sheldons_schedule.ui.theme.Teal200
 import com.pti.sheldons_schedule.util.Constants
 import com.pti.sheldons_schedule.util.formatDate
@@ -26,20 +26,20 @@ import kotlinx.coroutines.launch
 fun EventsColumn(
     eventsOfDay: EventsOfDay,
     currentHour: Int,
-    onClick: (Event) -> Unit
+    onClick: (EventWithToDoList) -> Unit
 ) {
     Column(
         modifier = Modifier.fillMaxSize(),
         verticalArrangement = Arrangement.Center
     ) {
         eventsOfDay.events.filter {
-            val eventStartHour = it.startDate.toCalendar()
+            val eventStartHour = it.event.startDate.toCalendar()
                 .formatDate(Constants.HOUR_FORMAT).toInt()
 
             eventStartHour == currentHour
         }.forEach { event ->
             Text(
-                text = event.title,
+                text = event.event.title,
                 fontSize = 11.sp,
                 color = MaterialTheme.colors.onBackground,
                 modifier = Modifier.clickable { onClick(event) }
