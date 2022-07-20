@@ -151,11 +151,18 @@ fun MainScreen(
                                                 eventsOfDay = dayOfWeek,
                                                 currentHour = hourItem,
                                                 onClick = {
+                                                    val destination = if (it.toDoList.isNotEmpty()) {
+                                                        NavDestination.ToDoListScreen
+                                                    } else {
+                                                        NavDestination.EditEventScreen
+                                                    }
+
                                                     navController.navigate(
-                                                        destination = NavDestination.EditEventScreen,
+                                                        destination = destination,
                                                         param = it.creationDate.toString()
                                                     )
-                                                })
+                                                }
+                                            )
 
                                             HourDivider(
                                                 isCurrentDay = dayOfWeek.day.isCurrent,

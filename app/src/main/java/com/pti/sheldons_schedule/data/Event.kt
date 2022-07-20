@@ -23,7 +23,8 @@ data class Event(
     @SerialName("repeat")
     val repeat: Repeat = Repeat.DontRepeat,
     @SerialName("priority")
-    val priority: Priority = Priority.Low
+    val priority: Priority = Priority.Low,
+    val toDoList: List<ToDo> = emptyList()
 )
 
 fun Event.toEventWithReminder(reminder: String) = EventWithReminder(

@@ -1,7 +1,5 @@
 package com.pti.sheldons_schedule.ui.screens.todo_list_screen
 
-import com.pti.sheldons_schedule.ui.common.IconedText
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material.Checkbox
@@ -23,7 +21,6 @@ fun ToDoListScreen(
     viewModel: ToDoListViewModel = hiltViewModel()
 ) {
     val screenState by viewModel.screenState.collectAsState(initial = null)
-    val addTextField by viewModel.addTextField.collectAsState(initial = false)
 
     viewModel.getEvent(eventId)
 
@@ -44,19 +41,8 @@ fun ToDoListScreen(
                 .padding(start = 15.dp)
         )
 
-//        todo: make functionality of adding todo items
         Column(modifier = Modifier.fillMaxSize()) {
-            if (screenState?.toDoList.isNullOrEmpty()) {
-                IconedText(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(FIELD_HEIGHT.dp)
-                        .padding(start = 30.dp)
-                        .clickable { viewModel.onAddItemClicked() }
-                )
-            }
-
-            if (addTextField) {
+            screenState?.toDoList?.forEach { todo ->
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -64,12 +50,12 @@ fun ToDoListScreen(
                         .padding(start = 15.dp, top = 15.dp)
                 ) {
                     Checkbox(
-                        checked = false,
-                        onCheckedChange = {},
+                        checked = todo.completed,
+                        onCheckedChange = { viewModel.onCheckedChange(it, todo) },
                         modifier = Modifier.wrapContentSize()
                     )
                     BasicTextField(
-                        value = "",
+                        value = todo.title,
                         onValueChange = {},
                         modifier = Modifier
                             .fillMaxSize()

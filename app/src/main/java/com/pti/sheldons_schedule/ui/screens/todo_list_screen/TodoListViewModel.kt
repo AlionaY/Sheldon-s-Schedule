@@ -4,11 +4,12 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.pti.sheldons_schedule.data.EventWithReminder
 import com.pti.sheldons_schedule.data.ScreenState
+import com.pti.sheldons_schedule.data.ToDo
 import com.pti.sheldons_schedule.db.EventRepository
 import com.pti.sheldons_schedule.util.toCalendar
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import java.util.*
 import javax.inject.Inject
@@ -30,14 +31,13 @@ class ToDoListViewModel @Inject constructor(
             pickedEndTime = endDate
         )
     )
-    val addTextField = MutableSharedFlow<Boolean>()
 
 
     fun getEvent(eventId: Long) = viewModelScope.launch {
         event.value = repository.getEvent(eventId)
     }
 
-    fun onAddItemClicked() = viewModelScope.launch {
-        addTextField.emit(true)
+    fun onCheckedChange(isChecked: Boolean, todo: ToDo) {
+
     }
 }
