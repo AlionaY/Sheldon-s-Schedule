@@ -14,7 +14,7 @@ data class ScreenState(
     val title: String = "",
     val description: String = "",
     val options: List<Options>? = null,
-    val remind: Reminder = Reminder.DontRemind,
+    val remind: Remind = Remind.DontRemind,
     val repeat: Repeat = Repeat.DontRepeat,
     val priority: Priority = Priority.Low,
     val datePickerStartDate: Long = Calendar.getInstance().timeInMillis,
@@ -31,3 +31,14 @@ data class ScreenState(
     val formattedStartTime: String = startDate.formatDate(TIME_FORMAT)
     val formattedEndTime: String = endDate.formatDate(TIME_FORMAT)
 }
+
+fun ScreenState.toEvent(creationDate: Long, duration: Long) = Event(
+    creationDate = creationDate,
+    title = this.title,
+    description = this.description,
+    startDate = this.startDateISO,
+    endDate = this.endDateISO,
+    duration = duration,
+    repeat = this.repeat,
+    priority = this.priority
+)

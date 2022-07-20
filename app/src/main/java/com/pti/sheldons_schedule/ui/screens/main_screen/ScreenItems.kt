@@ -33,16 +33,16 @@ fun EventsColumn(
         verticalArrangement = Arrangement.Center
     ) {
         eventsOfDay.events.filter {
-            val eventStartHour = it.startDate.toCalendar()
+            val eventStartHour = it.event.startDate.toCalendar()
                 .formatDate(Constants.HOUR_FORMAT).toInt()
 
             eventStartHour == currentHour
         }.forEach { event ->
             Text(
-                text = event.title,
+                text = event.event.title,
                 fontSize = 11.sp,
                 color = MaterialTheme.colors.onBackground,
-                modifier = Modifier.clickable { onClick(event) }
+                modifier = Modifier.clickable { onClick(event.event) }
             )
         }
     }

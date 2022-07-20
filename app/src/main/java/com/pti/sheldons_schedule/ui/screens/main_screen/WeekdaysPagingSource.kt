@@ -2,19 +2,19 @@ package com.pti.sheldons_schedule.ui.screens.main_screen
 
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
-import com.pti.sheldons_schedule.data.EventsOfDay
 import com.pti.sheldons_schedule.data.DayOfWeek
-import com.pti.sheldons_schedule.data.Event
+import com.pti.sheldons_schedule.data.EventWithReminder
+import com.pti.sheldons_schedule.data.EventsOfDay
 import com.pti.sheldons_schedule.data.Week
 import com.pti.sheldons_schedule.util.Constants
 import com.pti.sheldons_schedule.util.Constants.DATE_FORMAT
 import com.pti.sheldons_schedule.util.Constants.DATE_FORMAT_ISO_8601
 import com.pti.sheldons_schedule.util.Constants.WEEK_LENGTH
-import com.pti.sheldons_schedule.util.toCalendar
 import com.pti.sheldons_schedule.util.formatDate
+import com.pti.sheldons_schedule.util.toCalendar
 import java.util.*
 
-class WeekdaysPagingSource(private val events: List<Event>) : PagingSource<Int, Week>() {
+class WeekdaysPagingSource(private val events: List<EventWithReminder>) : PagingSource<Int, Week>() {
 
     private val calendar = Calendar.getInstance().apply {
         set(Calendar.HOUR_OF_DAY, 0)
@@ -31,13 +31,15 @@ class WeekdaysPagingSource(private val events: List<Event>) : PagingSource<Int, 
             set(Calendar.DAY_OF_WEEK, Calendar.MONDAY)
         }
         val eventOfDays = mutableListOf<EventsOfDay>()
-        val isCurrentDay = currentCalendar.get(Calendar.DAY_OF_YEAR) ==
-                calendar.get(Calendar.DAY_OF_YEAR)
         val dayName = currentCalendar.formatDate(Constants.DAY_NAME_FORMAT)
             .substring(0, 3)
+
         currentCalendar.add(Calendar.WEEK_OF_YEAR, page)
 
         for (i in 0 until WEEK_LENGTH) {
+            val isCurrentDay = currentCalendar.get(Calendar.DAY_OF_YEAR) ==
+                    calendar.get(Calendar.DAY_OF_YEAR)
+
             eventOfDays += EventsOfDay(
                 day = DayOfWeek(
                     dayOfMonth = currentCalendar.get(Calendar.DAY_OF_MONTH),
@@ -46,7 +48,7 @@ class WeekdaysPagingSource(private val events: List<Event>) : PagingSource<Int, 
                     day = currentCalendar.formatDate(DATE_FORMAT_ISO_8601)
                 ),
                 events = events.filter {
-                    it.startDate.toCalendar().formatDate(DATE_FORMAT) ==
+                    it.event.startDate.toCalendar().formatDate(DATE_FORMAT) ==
                             currentCalendar.formatDate(DATE_FORMAT)
                 }
             )

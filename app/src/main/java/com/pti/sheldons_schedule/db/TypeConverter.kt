@@ -18,11 +18,4 @@ class OptionsTypeConverter {
     @TypeConverter
     fun toRepeat(alias: String?): Options.Repeat? =
         Options.Repeat.values().firstOrNull { it.alias == alias }
-
-    @TypeConverter
-    fun fromReminder(reminder: Options.Reminder?): String? = reminder?.alias
-
-    @TypeConverter
-    fun toReminder(alias: String?): Options.Reminder? =
-        Options.Reminder.values().firstOrNull { it.alias == alias }
 }
