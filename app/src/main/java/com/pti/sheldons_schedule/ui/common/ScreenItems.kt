@@ -2,6 +2,8 @@ package com.pti.sheldons_schedule.ui.common
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.*
@@ -12,10 +14,13 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusDirection
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.Dp
@@ -24,9 +29,50 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
 @Composable
+fun DefaultCheckboxColumn(
+//    todo: make logic
+    todoItemsCount: Int = 1,
+    focusRequester: FocusRequester,
+    checked: Boolean,
+    text: String,
+    textStyle: TextStyle,
+    onValueChanged: (String) -> Unit,
+    onCheckedChange: (Boolean) -> Unit,
+    modifier: Modifier = Modifier
+) {
+    LazyColumn(modifier = modifier) {
+        items(todoItemsCount) {
+            Row(
+                modifier = Modifier
+                    .height(30.dp)
+                    .fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Checkbox(
+                    checked = checked,
+                    onCheckedChange = { onCheckedChange(it) },
+                    modifier = Modifier.wrapContentSize()
+                )
+                BasicTextField(
+                    value = text,
+                    onValueChange = { onValueChanged(it) },
+                    modifier = Modifier
+                        .padding(horizontal = 10.dp)
+                        .wrapContentHeight()
+                        .fillMaxWidth()
+                        .focusRequester(focusRequester),
+                    textStyle = textStyle
+                )
+            }
+        }
+    }
+}
+
+@Composable
 fun IconedText(
     text: String,
     textSize: TextUnit,
+    onClick: () -> Unit,
     modifier: Modifier = Modifier,
     icon: ImageVector = Icons.Filled.Add
 ) {
@@ -39,7 +85,7 @@ fun IconedText(
             contentDescription = null,
             modifier = Modifier
                 .wrapContentSize()
-                .padding(start = 15.dp),
+                .clickable { onClick() },
             tint = MaterialTheme.colors.onBackground
         )
         Text(
@@ -48,6 +94,7 @@ fun IconedText(
             modifier = Modifier
                 .padding(start = 15.dp)
                 .wrapContentSize()
+                .clickable { onClick() }
         )
     }
 }

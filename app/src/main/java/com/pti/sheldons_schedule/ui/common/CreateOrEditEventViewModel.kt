@@ -63,6 +63,7 @@ class CreateOrEditEventViewModel @Inject constructor(
     )
 
     val isPickedTimeValid = MutableSharedFlow<Boolean>()
+    val isAddToDoListClicked = MutableSharedFlow<Boolean>()
 
     private val newEvent = MutableStateFlow<EventWithReminder?>(null)
 
@@ -414,5 +415,9 @@ class CreateOrEditEventViewModel @Inject constructor(
         pickedEvent.value?.let {
             repository.deleteEvent(it)
         }
+    }
+
+    fun onAddToDoListClicked() = viewModelScope.launch {
+        isAddToDoListClicked.emit(true)
     }
 }
