@@ -53,7 +53,7 @@ class CreateOrEditEventViewModel @Inject constructor(
     val pickedEvent = MutableStateFlow<Event?>(null)
     val startDate = pickedEvent.value?.startDate?.toCalendar() ?: Calendar.getInstance()
     val endDate = pickedEvent.value?.endDate?.toCalendar() ?: Calendar.getInstance()
-    val editEventScreenState = MutableStateFlow<ScreenState>(
+    val editEventScreenState = MutableStateFlow(
         ScreenState(
             startDate = startDate,
             endDate = endDate,
@@ -63,6 +63,7 @@ class CreateOrEditEventViewModel @Inject constructor(
     )
 
     val isPickedTimeValid = MutableSharedFlow<Boolean>()
+    val isAddToDoListClicked = MutableSharedFlow<Boolean>()
 
     private val newEvent = MutableStateFlow<Event?>(null)
 
@@ -412,5 +413,9 @@ class CreateOrEditEventViewModel @Inject constructor(
         pickedEvent.value?.let {
             repository.deleteEvent(it)
         }
+    }
+
+    fun onAddToDoListClicked() = viewModelScope.launch {
+        isAddToDoListClicked.emit(true)
     }
 }

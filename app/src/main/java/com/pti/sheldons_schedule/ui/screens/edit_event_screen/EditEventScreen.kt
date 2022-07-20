@@ -137,7 +137,9 @@ fun EditEventScreen(
                 ScreenContent(
                     state = screenState,
                     fieldWidth = halfFieldWidth.dp,
-                    focusRequester = focusRequester,
+                    textFieldFocusRequester = focusRequester,
+//                    todo: make logic
+                    isAddToDoListClicked = false,
                     onTitleEdited = { viewModel.onTitleEdited(it, true) },
                     onFocusChanged = { viewModel.onFocusChanged(it, true) },
                     onDescriptionEdited = { viewModel.onDescriptionEdited(it, true) },
