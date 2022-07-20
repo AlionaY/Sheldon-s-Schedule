@@ -2,6 +2,7 @@ package com.pti.sheldons_schedule.ui.common
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
@@ -29,6 +30,8 @@ import androidx.compose.ui.unit.sp
 
 @Composable
 fun DefaultCheckboxColumn(
+//    todo: make logic
+    todoItemsCount: Int = 1,
     focusRequester: FocusRequester,
     checked: Boolean,
     text: String,
@@ -37,29 +40,30 @@ fun DefaultCheckboxColumn(
     onCheckedChange: (Boolean) -> Unit,
     modifier: Modifier = Modifier
 ) {
-    Column(modifier = modifier) {
-        Row(
-            modifier = Modifier
-                .height(30.dp)
-                .fillMaxWidth(),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Checkbox(
-                checked = checked,
-                onCheckedChange = { onCheckedChange(it) },
-                modifier = Modifier.wrapContentSize()
-            )
-            BasicTextField(
-                value = text,
-                onValueChange = { onValueChanged(it) },
+    LazyColumn(modifier = modifier) {
+        items(todoItemsCount) {
+            Row(
                 modifier = Modifier
-                    .padding(horizontal = 10.dp)
-                    .wrapContentHeight()
-                    .fillMaxWidth()
-                    .focusRequester(focusRequester),
-                textStyle = textStyle
-            )
-
+                    .height(30.dp)
+                    .fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Checkbox(
+                    checked = checked,
+                    onCheckedChange = { onCheckedChange(it) },
+                    modifier = Modifier.wrapContentSize()
+                )
+                BasicTextField(
+                    value = text,
+                    onValueChange = { onValueChanged(it) },
+                    modifier = Modifier
+                        .padding(horizontal = 10.dp)
+                        .wrapContentHeight()
+                        .fillMaxWidth()
+                        .focusRequester(focusRequester),
+                    textStyle = textStyle
+                )
+            }
         }
     }
 }
