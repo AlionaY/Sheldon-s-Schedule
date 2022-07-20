@@ -34,9 +34,12 @@ interface EventDao {
     @Delete
     fun deleteEvent(event: Event)
 
-    @Delete
-    fun deleteReminder(reminder: Reminder)
+    @Query("DELETE FROM reminder_table WHERE eventId = :eventId")
+    fun deleteReminder(eventId: Long)
+
+    @Query("DELETE FROM todo_list_table WHERE eventId = :eventId")
+    fun deleteToDoList(eventId: Long)
 
     @Delete
-    fun deleteToDoList(list: List<ToDo>)
+    fun deleteToDoItem(item: ToDo)
 }

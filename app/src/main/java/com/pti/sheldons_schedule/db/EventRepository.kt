@@ -1,6 +1,7 @@
 package com.pti.sheldons_schedule.db
 
 import com.pti.sheldons_schedule.data.FullEvent
+import com.pti.sheldons_schedule.data.ToDo
 
 interface EventRepository {
 
@@ -13,4 +14,6 @@ interface EventRepository {
     suspend fun editEvent(event: FullEvent)
 
     suspend fun deleteEvent(event: FullEvent)
+
+    suspend fun deleteToDoItem(item: ToDo)
 }

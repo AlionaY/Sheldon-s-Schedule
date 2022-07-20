@@ -28,8 +28,12 @@ class EventRepositoryImpl @Inject constructor(private val eventDao: EventDao) : 
     override suspend fun deleteEvent(event: FullEvent) {
         eventDao.apply {
             deleteEvent(event.event)
-            deleteReminder(event.reminder)
-            deleteToDoList(event.toDoList)
+            deleteReminder(event.event.creationDate)
+            deleteToDoList(event.event.creationDate)
         }
+    }
+
+    override suspend fun deleteToDoItem(item: ToDo) {
+        eventDao.deleteToDoItem(item)
     }
 }
