@@ -159,7 +159,7 @@ fun MainScreen(
 
                                                     navController.navigate(
                                                         destination = destination,
-                                                        param = it.creationDate.toString()
+                                                        param = it.event.creationDate.toString()
                                                     )
                                                 }
                                             )

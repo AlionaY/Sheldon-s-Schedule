@@ -45,5 +45,5 @@ fun ScreenState.toEvent(creationDate: Long, duration: Long) = FullEvent(
         priority = this.priority
     ),
     reminder = Reminder(creationDate, this.remind.alias),
-    toDoList = this.todoList
+    toDoList = this.toDoList
 )

@@ -14,8 +14,8 @@ import androidx.compose.ui.layout.positionInRoot
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.pti.sheldons_schedule.data.Event
 import com.pti.sheldons_schedule.data.EventsOfDay
+import com.pti.sheldons_schedule.data.FullEvent
 import com.pti.sheldons_schedule.ui.theme.Teal200
 import com.pti.sheldons_schedule.util.Constants
 import com.pti.sheldons_schedule.util.formatDate
@@ -26,7 +26,7 @@ import kotlinx.coroutines.launch
 fun EventsColumn(
     eventsOfDay: EventsOfDay,
     currentHour: Int,
-    onClick: (Event) -> Unit
+    onClick: (FullEvent) -> Unit
 ) {
     Column(
         modifier = Modifier.fillMaxSize(),
@@ -42,7 +42,7 @@ fun EventsColumn(
                 text = event.event.title,
                 fontSize = 11.sp,
                 color = MaterialTheme.colors.onBackground,
-                modifier = Modifier.clickable { onClick(event.event) }
+                modifier = Modifier.clickable { onClick(event) }
             )
         }
     }
