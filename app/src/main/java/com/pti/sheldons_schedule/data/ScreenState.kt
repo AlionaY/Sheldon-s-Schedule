@@ -22,7 +22,8 @@ data class ScreenState(
     val titleFieldState: TitleFieldState = TitleFieldState.Normal,
     val isPickedTimeValid: Boolean = true,
     val pickedStartTime: Calendar,
-    val pickedEndTime: Calendar
+    val pickedEndTime: Calendar,
+    val todoList: List<ToDo> = emptyList()
 ) {
     val startDateISO = startDate.formatDate(DATE_FORMAT_ISO_8601)
     val endDateISO = endDate.formatDate(DATE_FORMAT_ISO_8601)
@@ -32,13 +33,17 @@ data class ScreenState(
     val formattedEndTime: String = endDate.formatDate(TIME_FORMAT)
 }
 
-fun ScreenState.toEvent(creationDate: Long, duration: Long) = Event(
-    creationDate = creationDate,
-    title = this.title,
-    description = this.description,
-    startDate = this.startDateISO,
-    endDate = this.endDateISO,
-    duration = duration,
-    repeat = this.repeat,
-    priority = this.priority
+fun ScreenState.toEvent(creationDate: Long, duration: Long) = FullEvent(
+    event = Event(
+        creationDate = creationDate,
+        title = this.title,
+        description = this.description,
+        startDate = this.startDateISO,
+        endDate = this.endDateISO,
+        duration = duration,
+        repeat = this.repeat,
+        priority = this.priority
+    ),
+    reminder = Reminder(creationDate, this.remind.alias),
+    toDoList = this.todoList
 )

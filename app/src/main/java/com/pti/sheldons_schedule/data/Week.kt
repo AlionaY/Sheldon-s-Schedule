@@ -9,7 +9,7 @@ data class DayOfWeek(
 
 data class EventsOfDay(
     val day: DayOfWeek,
-    val events: List<EventWithReminder> = emptyList()
+    val events: List<FullEvent> = emptyList()
 )
 
 data class Week(

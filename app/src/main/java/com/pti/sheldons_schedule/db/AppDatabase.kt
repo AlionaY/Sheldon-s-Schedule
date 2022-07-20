@@ -7,8 +7,13 @@ import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
 import com.pti.sheldons_schedule.data.Event
 import com.pti.sheldons_schedule.data.Reminder
+import com.pti.sheldons_schedule.data.ToDo
 
-@Database(entities = [Event::class, Reminder::class], version = 9, exportSchema = false)
+@Database(
+    entities = [Event::class, Reminder::class, ToDo::class],
+    version = 10,
+    exportSchema = false
+)
 @TypeConverters(OptionsTypeConverter::class)
 abstract class AppDatabase : RoomDatabase() {
 

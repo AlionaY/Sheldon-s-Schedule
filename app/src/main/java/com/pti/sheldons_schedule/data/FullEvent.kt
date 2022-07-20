@@ -5,16 +5,17 @@ import androidx.room.Relation
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class EventWithReminder(
+data class FullEvent(
     @Embedded
     val event: Event,
     @Relation(
         parentColumn = "creationDate",
         entityColumn = "eventId"
     )
-    val remind: Reminder
+    val reminder: Reminder,
+    @Relation(
+        parentColumn = "creationDate",
+        entityColumn = "eventId"
+    )
+    val toDoList: List<ToDo>
 )
-
-fun EventWithReminder.toReminder() = Options.Remind.values().first { reminder ->
-    reminder.alias == this.remind.remind
-}
