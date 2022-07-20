@@ -22,7 +22,8 @@ data class ScreenState(
     val titleFieldState: TitleFieldState = TitleFieldState.Normal,
     val isPickedTimeValid: Boolean = true,
     val pickedStartTime: Calendar,
-    val pickedEndTime: Calendar
+    val pickedEndTime: Calendar,
+    val toDoList: List<ToDo> = emptyList()
 ) {
     val startDateISO = startDate.formatDate(DATE_FORMAT_ISO_8601)
     val endDateISO = endDate.formatDate(DATE_FORMAT_ISO_8601)
