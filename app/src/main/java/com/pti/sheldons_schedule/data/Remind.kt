@@ -11,3 +11,5 @@ data class Reminder(
     val eventId: Long,
     val remind: String
 )
+
+fun Reminder.toRemind() = Options.Remind.values().first { it.alias == this.remind }

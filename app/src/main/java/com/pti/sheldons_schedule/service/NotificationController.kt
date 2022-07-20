@@ -10,7 +10,7 @@ import androidx.core.app.NotificationManagerCompat
 import androidx.core.content.getSystemService
 import com.pti.sheldons_schedule.MainActivity
 import com.pti.sheldons_schedule.R
-import com.pti.sheldons_schedule.data.EventWithReminder
+import com.pti.sheldons_schedule.data.FullEvent
 import com.pti.sheldons_schedule.util.Constants
 import com.pti.sheldons_schedule.util.Constants.REMINDER_ID
 import com.pti.sheldons_schedule.util.Constants.TIME_FORMAT
@@ -39,7 +39,7 @@ class NotificationController @Inject constructor(
         notificationManager?.createNotificationChannel(channel)
     }
 
-    fun createNotification(event: EventWithReminder?) {
+    fun createNotification(event: FullEvent?) {
         context?.let { context ->
             createNotificationChannel(event?.event?.creationDate ?: 0)
 

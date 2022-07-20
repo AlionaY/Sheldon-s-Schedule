@@ -25,8 +25,3 @@ data class Event(
     @SerialName("priority")
     val priority: Priority = Priority.Low
 )
-
-fun Event.toEventWithReminder(reminder: String) = EventWithReminder(
-    event = this,
-    remind = Reminder(this.creationDate, reminder)
-)

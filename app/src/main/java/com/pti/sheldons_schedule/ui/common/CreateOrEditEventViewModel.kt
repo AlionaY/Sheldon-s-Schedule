@@ -50,7 +50,7 @@ class CreateOrEditEventViewModel @Inject constructor(
         )
     )
 
-    val pickedEvent = MutableStateFlow<EventWithReminder?>(null)
+    val pickedEvent = MutableStateFlow<FullEvent?>(null)
     val startDate = pickedEvent.value?.event?.startDate?.toCalendar() ?: Calendar.getInstance()
     val endDate = pickedEvent.value?.event?.endDate?.toCalendar() ?: Calendar.getInstance()
     val editEventScreenState = MutableStateFlow(
@@ -64,7 +64,7 @@ class CreateOrEditEventViewModel @Inject constructor(
 
     val isPickedTimeValid = MutableSharedFlow<Boolean>()
 
-    private val newEvent = MutableStateFlow<EventWithReminder?>(null)
+    private val newEvent = MutableStateFlow<FullEvent?>(null)
 
 
     init {
@@ -84,7 +84,7 @@ class CreateOrEditEventViewModel @Inject constructor(
                         description = event.event.description,
                         priority = event.event.priority,
                         repeat = event.event.repeat,
-                        remind = event.toReminder()
+                        remind = event.reminder.toRemind()
                     )
                 }
             }
@@ -242,8 +242,7 @@ class CreateOrEditEventViewModel @Inject constructor(
             val duration = getEventDuration(state)
             val remindAt = getRemindAtTime(state)
 
-            val event = editEventScreenState.value.toEvent(creationDate, duration)
-            pickedEvent.value = event.toEventWithReminder(editEventScreenState.value.remind.alias)
+            pickedEvent.value = editEventScreenState.value.toEvent(creationDate, duration)
 
             pickedEvent.value?.let {
                 repository.editEvent(it)
@@ -268,11 +267,10 @@ class CreateOrEditEventViewModel @Inject constructor(
             val duration = getEventDuration(state)
             val remindAt = getRemindAtTime(state)
 
-            val event = createEventScreenState.value.toEvent(
+            newEvent.value = createEventScreenState.value.toEvent(
                 currentTimeInMillis,
                 duration
             )
-            newEvent.value = event.toEventWithReminder(createEventScreenState.value.remind.alias)
             newEvent.value?.let {
                 repository.saveEvent(it)
             }
