@@ -1,6 +1,5 @@
 package com.pti.sheldons_schedule.ui.common
 
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -16,6 +15,8 @@ import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -28,8 +29,9 @@ import java.util.*
 @Composable
 fun ScreenContent(
     state: ScreenState?,
-    focusRequester: FocusRequester,
+    textFieldFocusRequester: FocusRequester,
     fieldWidth: Dp,
+    isAddToDoListClicked: Boolean,
     onTitleEdited: (String) -> Unit,
     onFocusChanged: (Boolean) -> Unit,
     onDescriptionEdited: (String) -> Unit,
@@ -42,6 +44,8 @@ fun ScreenContent(
     onRemindFieldClicked: () -> Unit,
     onIconedTextClicked: () -> Unit
 ) {
+    val todoFieldFocusRequester = remember { FocusRequester() }
+
     val titleBorderColor = when (state?.titleFieldState) {
         TitleFieldState.Error -> MaterialTheme.colors.error
         else -> MaterialTheme.colors.onSurface.copy(alpha = ContentAlpha.disabled)
@@ -63,13 +67,17 @@ fun ScreenContent(
         descriptionTextFieldValue.value = state?.description.toTextFieldValue()
     }
 
+    LaunchedEffect(key1 = isAddToDoListClicked) {
+        if (isAddToDoListClicked) todoFieldFocusRequester.requestFocus()
+    }
+
     DefaultTextField(
         value = titleTextFieldValue.value,
         onValueChanged = { onTitleEdited(it.text) },
         label = stringResource(id = R.string.title),
         modifier = Modifier
             .padding(horizontal = 15.dp)
-            .focusRequester(focusRequester)
+            .focusRequester(textFieldFocusRequester)
             .onFocusChanged { onFocusChanged(it.hasFocus) },
         errorText = state?.titleErrorText.orEmpty(),
         borderColor = titleBorderColor
@@ -81,14 +89,35 @@ fun ScreenContent(
         label = stringResource(id = R.string.description),
         modifier = Modifier.padding(horizontal = 15.dp),
     )
-    IconedText(
-        text = stringResource(id = R.string.add_to_do_list),
-        textSize = 15.sp,
-        modifier = Modifier
-            .fillMaxWidth()
-            .height(50.dp)
-            .clickable { onIconedTextClicked() }
-    )
+    if (!isAddToDoListClicked) {
+        IconedText(
+            text = stringResource(id = R.string.add_to_do_list),
+            textSize = 15.sp,
+            onClick = { onIconedTextClicked() },
+            modifier = Modifier
+                .padding(start = 15.dp)
+                .fillMaxWidth()
+                .height(50.dp)
+        )
+    }
+//    todo: set necessary params
+    if (isAddToDoListClicked) {
+        DefaultCheckboxColumn(
+            focusRequester = todoFieldFocusRequester,
+            text = "Value",
+            checked = false,
+            onValueChanged = { },
+            onCheckedChange = { },
+            textStyle = TextStyle(
+                fontSize = 15.sp,
+                fontWeight = FontWeight.Normal
+            ),
+            modifier = Modifier
+                .padding(start = 15.dp, top = 15.dp)
+                .fillMaxWidth()
+                .height(100.dp)
+        )
+    }
     DatePickerRow(
         state = state,
         fieldWidth = fieldWidth,

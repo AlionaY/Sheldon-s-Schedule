@@ -2,10 +2,7 @@ package com.pti.sheldons_schedule.ui.screens.main_screen
 
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
-import com.pti.sheldons_schedule.data.DayOfWeek
-import com.pti.sheldons_schedule.data.EventWithReminder
-import com.pti.sheldons_schedule.data.EventsOfDay
-import com.pti.sheldons_schedule.data.Week
+import com.pti.sheldons_schedule.data.*
 import com.pti.sheldons_schedule.util.Constants
 import com.pti.sheldons_schedule.util.Constants.DATE_FORMAT
 import com.pti.sheldons_schedule.util.Constants.DATE_FORMAT_ISO_8601
@@ -14,7 +11,7 @@ import com.pti.sheldons_schedule.util.formatDate
 import com.pti.sheldons_schedule.util.toCalendar
 import java.util.*
 
-class WeekdaysPagingSource(private val events: List<EventWithReminder>) : PagingSource<Int, Week>() {
+class WeekdaysPagingSource(private val events: List<FullEvent>) : PagingSource<Int, Week>() {
 
     private val calendar = Calendar.getInstance().apply {
         set(Calendar.HOUR_OF_DAY, 0)

@@ -1,7 +1,12 @@
 package com.pti.sheldons_schedule.ui.screens.create_event_screen
 
 import androidx.compose.foundation.layout.*
-import androidx.compose.material.*
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.ExperimentalMaterialApi
+import androidx.compose.material.SnackbarHost
+import androidx.compose.material.SnackbarHostState
+import androidx.compose.material.SnackbarResult
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -12,7 +17,9 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.pti.sheldons_schedule.R
-import com.pti.sheldons_schedule.ui.common.*
+import com.pti.sheldons_schedule.ui.common.CreateOrEditEventViewModel
+import com.pti.sheldons_schedule.ui.common.ScreenContent
+import com.pti.sheldons_schedule.ui.common.TimePicker
 import com.pti.sheldons_schedule.ui.navigation.NavDestination.EntryScreen
 import com.pti.sheldons_schedule.ui.navigation.navigate
 import com.pti.sheldons_schedule.util.Constants.FIELD_COUNT
@@ -27,6 +34,7 @@ fun CreateEventScreen(
 ) {
     val state by viewModel.createEventScreenState.collectAsState()
     val isPickedTimeValid by viewModel.isPickedTimeValid.collectAsState(initial = true)
+    val isAddToDoListClicked by viewModel.isAddToDoListClicked.collectAsState(initial = false)
     val focusManager = LocalFocusManager.current
 
     val snackbarMessage = stringResource(R.string.time_picker_error_message)
@@ -72,6 +80,7 @@ fun CreateEventScreen(
         val scope = rememberCoroutineScope()
         val focusRequester = remember { FocusRequester() }
         val snackbarHostState = remember { SnackbarHostState() }
+        val scrollState = rememberScrollState()
 
         LaunchedEffect(key1 = state.options) {
             if (!state.options.isNullOrEmpty()) {
@@ -103,10 +112,18 @@ fun CreateEventScreen(
             }
         }
 
+        LaunchedEffect(key1 = isAddToDoListClicked) {
+            if (isAddToDoListClicked) focusManager.clearFocus()
+        }
+
         BoxWithConstraints(modifier = Modifier.fillMaxSize()) {
             val halfFieldWidth = (this.maxWidth.value.toInt() - PADDING_WIDTH_SUM) / FIELD_COUNT
 
-            Column(modifier = Modifier.fillMaxSize()) {
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .verticalScroll(scrollState)
+            ) {
                 TopToolbar(
                     onCloseIconClicked = { navController.popBackStack() },
                     onSaveIconClicked = {
@@ -119,8 +136,9 @@ fun CreateEventScreen(
                 )
                 ScreenContent(
                     state = state,
-                    focusRequester = focusRequester,
+                    textFieldFocusRequester = focusRequester,
                     fieldWidth = halfFieldWidth.dp,
+                    isAddToDoListClicked = isAddToDoListClicked,
                     onTitleEdited = { viewModel.onTitleEdited(it) },
                     onDescriptionEdited = { viewModel.onDescriptionEdited(it) },
                     onFocusChanged = { viewModel.onFocusChanged(it) },
@@ -135,7 +153,7 @@ fun CreateEventScreen(
                     onRepeatFieldClicked = { viewModel.onRepeatFieldClicked() },
                     onPriorityFieldClicked = { viewModel.onPriorityFieldClicked() },
                     onRemindFieldClicked = { viewModel.onRemindFieldClicked() },
-                    onIconedTextClicked = { }
+                    onIconedTextClicked = { viewModel.onAddToDoListClicked() }
                 )
             }
 

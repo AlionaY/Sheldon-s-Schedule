@@ -7,7 +7,7 @@ import android.content.Context
 import android.content.Intent
 import androidx.core.content.getSystemService
 import com.pti.sheldons_schedule.data.Event
-import com.pti.sheldons_schedule.data.EventWithReminder
+import com.pti.sheldons_schedule.data.FullEvent
 import com.pti.sheldons_schedule.data.Options.Repeat
 import com.pti.sheldons_schedule.db.EventRepository
 import com.pti.sheldons_schedule.util.Constants.REMINDER_ID
@@ -40,7 +40,7 @@ class AlarmBroadcastReceiver : BroadcastReceiver() {
         }
     }
 
-    private fun repeatEvent(event: EventWithReminder?, context: Context?) {
+    private fun repeatEvent(event: FullEvent?, context: Context?) {
         val currentTime = getInstance()
         val nextEventDate = getNextEventDate(event?.event, currentTime)
 
