@@ -18,16 +18,16 @@ sealed class Options(val title: Int, val nameId: Int) {
     }
 
     @Serializable
-    sealed class Reminder(val name: Int, val alias: String, val value: Long) :
+    sealed class Remind(val name: Int, val alias: String, val value: Long) :
         Options(R.string.remind, name) {
-        object Min10 : Reminder(R.string.remind_10_minutes, "min_10", 10)
-        object Min15 : Reminder(R.string.remind_15_min_before, "min_15", 15)
-        object Min30 : Reminder(R.string.remind_30_min_before, "min_30", 30)
-        object Min60 : Reminder(R.string.remind_1_hour_before, "min_60", 60)
-        object DontRemind : Reminder(R.string.dont_remind, "dont_remind", 0)
+        object Min10 : Remind(R.string.remind_10_minutes, "min_10", 10)
+        object Min15 : Remind(R.string.remind_15_min_before, "min_15", 15)
+        object Min30 : Remind(R.string.remind_30_min_before, "min_30", 30)
+        object Min60 : Remind(R.string.remind_1_hour_before, "min_60", 60)
+        object DontRemind : Remind(R.string.dont_remind, "dont_remind", 0)
 
         companion object {
-            fun values(): List<Reminder> = listOf(
+            fun values(): List<Remind> = listOf(
                 Min10,
                 Min15,
                 Min30,

@@ -1,23 +1,33 @@
 package com.pti.sheldons_schedule.db
 
 import androidx.room.*
-import com.pti.sheldons_schedule.data.Event
+import com.pti.sheldons_schedule.data.*
 
 @Dao
 interface EventDao {
 
-    @Query("SELECT * FROM EventTable")
-    suspend fun getAllEvents(): List<Event>
+    @Transaction
+    @Query("SELECT * FROM event_table")
+    suspend fun getAllEvents(): List<EventWithReminder>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertEvent(event: Event)
 
-    @Query("SELECT * FROM EventTable WHERE creationDate=:id ")
-    suspend fun getEvent(id: Long): Event
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertReminder(remind: Reminder)
+
+    @Query("SELECT * FROM event_table WHERE creationDate = :id")
+    suspend fun getEvent(id: Long): EventWithReminder
 
     @Update
     fun editEvent(event: Event)
 
+    @Update
+    fun editReminder(remind: Reminder)
+
     @Delete
     fun deleteEvent(event: Event)
+
+    @Delete
+    fun deleteReminder(reminder: Reminder)
 }
