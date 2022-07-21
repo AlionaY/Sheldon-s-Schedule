@@ -1,7 +1,6 @@
 package com.pti.sheldons_schedule.ui.common
 
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.material.ContentAlpha
@@ -15,14 +14,12 @@ import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import com.pti.sheldons_schedule.R
 import com.pti.sheldons_schedule.data.ScreenState
 import com.pti.sheldons_schedule.data.TitleFieldState
+import com.pti.sheldons_schedule.ui.screens.todo_list_screen.ToDoList
 import com.pti.sheldons_schedule.util.horizontalPadding
 import com.pti.sheldons_schedule.util.toTextFieldValue
 import java.util.*
@@ -32,6 +29,7 @@ fun ScreenContent(
     state: ScreenState?,
     textFieldFocusRequester: FocusRequester,
     fieldWidth: Dp,
+    isCreateEventScreen: Boolean,
     isAddToDoListClicked: Boolean,
     onTitleEdited: (String) -> Unit,
     onFocusChanged: (Boolean) -> Unit,
@@ -90,34 +88,16 @@ fun ScreenContent(
         label = stringResource(id = R.string.description),
         modifier = Modifier.padding(horizontal = 15.dp),
     )
-    if (!isAddToDoListClicked) {
-        IconedText(
-            text = stringResource(id = R.string.add_to_do_list),
-            textSize = 15.sp,
-            onClick = { onIconedTextClicked() },
-            modifier = Modifier
-                .padding(start = 15.dp)
-                .fillMaxWidth()
-                .height(50.dp)
-        )
-    }
-//    todo: set necessary params
-    if (isAddToDoListClicked) {
-        DefaultCheckboxColumn(
+    if (isCreateEventScreen) {
+        ToDoList(
+            itemsCount = 1,
+            isAddToDoListClicked = isAddToDoListClicked,
             focusRequester = todoFieldFocusRequester,
-            text = "Value",
-            checked = false,
-            onValueChanged = { },
-            onCheckedChange = { },
-            textStyle = TextStyle(
-                fontSize = 15.sp,
-                fontWeight = FontWeight.Normal
-            ),
-            modifier = Modifier
-                .padding(start = 15.dp, top = 15.dp)
-                .fillMaxWidth()
-                .height(100.dp)
+            onValueChanged = {},
+            onClick = { onIconedTextClicked() }
         )
+    } else {
+        HeightSpacer()
     }
     DatePickerRow(
         state = state,

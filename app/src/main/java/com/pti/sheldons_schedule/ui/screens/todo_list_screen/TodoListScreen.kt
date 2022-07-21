@@ -1,7 +1,10 @@
 package com.pti.sheldons_schedule.ui.screens.todo_list_screen
 
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.BasicTextField
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Checkbox
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -21,10 +24,15 @@ fun ToDoListScreen(
     viewModel: ToDoListViewModel = hiltViewModel()
 ) {
     val event by viewModel.event.collectAsState(initial = null)
+    val scrollState = rememberScrollState()
 
     viewModel.getEvent(eventId)
 
-    Column(modifier = Modifier.fillMaxSize()) {
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .verticalScroll(scrollState)
+    ) {
         TopToolbar(
             onClick = { navController.popBackStack() },
             modifier = Modifier

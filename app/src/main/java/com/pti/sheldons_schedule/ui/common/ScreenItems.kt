@@ -30,8 +30,7 @@ import androidx.compose.ui.unit.sp
 
 @Composable
 fun DefaultCheckboxColumn(
-//    todo: make logic
-    todoItemsCount: Int = 1,
+    todoItemsCount: Int,
     focusRequester: FocusRequester,
     checked: Boolean,
     text: String,

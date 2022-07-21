@@ -34,7 +34,6 @@ fun CreateEventScreen(
 ) {
     val state by viewModel.createEventScreenState.collectAsState()
     val isPickedTimeValid by viewModel.isPickedTimeValid.collectAsState(initial = true)
-    val isAddToDoListClicked by viewModel.isAddToDoListClicked.collectAsState(initial = false)
     val focusManager = LocalFocusManager.current
 
     val snackbarMessage = stringResource(R.string.time_picker_error_message)
@@ -81,6 +80,8 @@ fun CreateEventScreen(
         val focusRequester = remember { FocusRequester() }
         val snackbarHostState = remember { SnackbarHostState() }
         val scrollState = rememberScrollState()
+
+        var isAddToDoListClicked by remember { mutableStateOf(false) }
 
         LaunchedEffect(key1 = state.options) {
             if (!state.options.isNullOrEmpty()) {
@@ -138,6 +139,7 @@ fun CreateEventScreen(
                     state = state,
                     textFieldFocusRequester = focusRequester,
                     fieldWidth = halfFieldWidth.dp,
+                    isCreateEventScreen = true,
                     isAddToDoListClicked = isAddToDoListClicked,
                     onTitleEdited = { viewModel.onTitleEdited(it) },
                     onDescriptionEdited = { viewModel.onDescriptionEdited(it) },
@@ -153,7 +155,7 @@ fun CreateEventScreen(
                     onRepeatFieldClicked = { viewModel.onRepeatFieldClicked() },
                     onPriorityFieldClicked = { viewModel.onPriorityFieldClicked() },
                     onRemindFieldClicked = { viewModel.onRemindFieldClicked() },
-                    onIconedTextClicked = { viewModel.onAddToDoListClicked() }
+                    onIconedTextClicked = { isAddToDoListClicked = true }
                 )
             }
 
