@@ -9,6 +9,7 @@ import com.google.accompanist.navigation.animation.composable
 import com.pti.sheldons_schedule.ui.screens.create_event_screen.CreateEventScreen
 import com.pti.sheldons_schedule.ui.screens.edit_event_screen.EditEventScreen
 import com.pti.sheldons_schedule.ui.screens.main_screen.MainScreen
+import com.pti.sheldons_schedule.ui.screens.todo_list_screen.ToDoListScreen
 
 @ExperimentalAnimationApi
 @Composable
@@ -29,6 +30,11 @@ fun Navigation(navHostController: NavHostController) {
         composable("${NavDestination.EditEventScreen.route}/{$EVENT_ID}") {
             val eventId = it.arguments?.getString(EVENT_ID)?.toLong() ?: 0
             EditEventScreen(eventId = eventId, navController = navHostController)
+        }
+
+        composable("${NavDestination.ToDoListScreen.route}/$EVENT_ID") {
+            val eventId = it.arguments?.getString(EVENT_ID)?.toLong() ?: 0
+            ToDoListScreen(eventId = eventId, navController = navHostController)
         }
     }
 }

@@ -23,7 +23,7 @@ data class ScreenState(
     val isPickedTimeValid: Boolean = true,
     val pickedStartTime: Calendar,
     val pickedEndTime: Calendar,
-    val todoList: List<ToDo> = emptyList()
+    val toDoList: List<ToDo> = emptyList()
 ) {
     val startDateISO = startDate.formatDate(DATE_FORMAT_ISO_8601)
     val endDateISO = endDate.formatDate(DATE_FORMAT_ISO_8601)
@@ -45,5 +45,5 @@ fun ScreenState.toEvent(creationDate: Long, duration: Long) = FullEvent(
         priority = this.priority
     ),
     reminder = Reminder(creationDate, this.remind.alias),
-    toDoList = this.todoList
+    toDoList = this.toDoList
 )

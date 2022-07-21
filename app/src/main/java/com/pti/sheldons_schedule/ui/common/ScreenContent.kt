@@ -23,6 +23,7 @@ import androidx.compose.ui.unit.sp
 import com.pti.sheldons_schedule.R
 import com.pti.sheldons_schedule.data.ScreenState
 import com.pti.sheldons_schedule.data.TitleFieldState
+import com.pti.sheldons_schedule.util.horizontalPadding
 import com.pti.sheldons_schedule.util.toTextFieldValue
 import java.util.*
 
@@ -165,7 +166,7 @@ fun ScreenContent(
         label = stringResource(id = R.string.remind),
         onClick = { onRemindFieldClicked() },
         modifier = Modifier
-            .padding(horizontal = 15.dp)
+            .horizontalPadding(horizontal = 15.dp, bottom = 30.dp)
             .fillMaxWidth()
             .wrapContentHeight(),
         onValueChanged = { }
