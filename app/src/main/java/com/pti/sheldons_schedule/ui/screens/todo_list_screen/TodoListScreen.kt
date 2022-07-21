@@ -20,7 +20,7 @@ fun ToDoListScreen(
     navController: NavController,
     viewModel: ToDoListViewModel = hiltViewModel()
 ) {
-    val screenState by viewModel.screenState.collectAsState(initial = null)
+    val event by viewModel.event.collectAsState(initial = null)
 
     viewModel.getEvent(eventId)
 
@@ -34,7 +34,7 @@ fun ToDoListScreen(
         )
 
         EventTitle(
-            title = screenState?.title.orEmpty(),
+            title = event?.event?.title.orEmpty(),
             modifier = Modifier
                 .fillMaxWidth()
                 .height(58.dp)
@@ -42,7 +42,7 @@ fun ToDoListScreen(
         )
 
         Column(modifier = Modifier.fillMaxSize()) {
-            screenState?.toDoList?.forEach { todo ->
+            event?.toDoList?.forEach { todo ->
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
