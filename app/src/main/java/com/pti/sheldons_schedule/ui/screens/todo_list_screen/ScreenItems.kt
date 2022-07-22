@@ -54,8 +54,7 @@ fun ToDoList(
                 .fillMaxWidth()
                 .height(50.dp)
         )
-    }
-    if (isAddToDoListClicked) {
+    } else {
         DefaultCheckboxColumn(
             todoItemsCount = 1,
             focusRequester = focusRequester,
