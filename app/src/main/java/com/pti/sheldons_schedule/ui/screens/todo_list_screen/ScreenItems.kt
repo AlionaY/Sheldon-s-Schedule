@@ -13,6 +13,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.pti.sheldons_schedule.R
 import com.pti.sheldons_schedule.ui.common.DefaultCheckboxColumn
+import com.pti.sheldons_schedule.ui.common.HeightSpacer
 import com.pti.sheldons_schedule.ui.common.IconedText
 
 private const val FIELD_HEIGHT = 40
@@ -42,8 +43,6 @@ fun ToDoList(
     onValueChanged: (String) -> Unit,
     onClick: () -> Unit
 ) {
-    val contentHeight = (itemsCount * FIELD_HEIGHT).dp
-
     if (!isAddToDoListClicked) {
         IconedText(
             text = stringResource(id = R.string.add_to_do_list),
@@ -55,8 +54,9 @@ fun ToDoList(
                 .height(50.dp)
         )
     } else {
+        HeightSpacer(5.dp)
         DefaultCheckboxColumn(
-            todoItemsCount = 1,
+            todoItemsCount = itemsCount,
             focusRequester = focusRequester,
             text = text,
             checked = checked,
@@ -67,9 +67,9 @@ fun ToDoList(
                 fontWeight = FontWeight.Normal
             ),
             modifier = Modifier
-                .padding(start = 15.dp, top = 15.dp)
+                .padding(start = 15.dp)
                 .fillMaxWidth()
-                .height(contentHeight)
+                .height(FIELD_HEIGHT.dp)
         )
     }
 }

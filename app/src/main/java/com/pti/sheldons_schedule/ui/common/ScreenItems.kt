@@ -2,7 +2,6 @@ package com.pti.sheldons_schedule.ui.common
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
@@ -39,30 +38,26 @@ fun DefaultCheckboxColumn(
     onCheckedChange: (Boolean) -> Unit,
     modifier: Modifier = Modifier
 ) {
-    LazyColumn(modifier = modifier) {
-        items(todoItemsCount) {
-            Row(
+    (0 until todoItemsCount).forEach { _ ->
+        Row(
+            modifier = modifier,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Checkbox(
+                checked = checked,
+                onCheckedChange = { onCheckedChange(it) },
+                modifier = Modifier.wrapContentSize()
+            )
+            BasicTextField(
+                value = text,
+                onValueChange = { onValueChanged(it) },
                 modifier = Modifier
-                    .height(30.dp)
-                    .fillMaxWidth(),
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Checkbox(
-                    checked = checked,
-                    onCheckedChange = { onCheckedChange(it) },
-                    modifier = Modifier.wrapContentSize()
-                )
-                BasicTextField(
-                    value = text,
-                    onValueChange = { onValueChanged(it) },
-                    modifier = Modifier
-                        .padding(horizontal = 10.dp)
-                        .wrapContentHeight()
-                        .fillMaxWidth()
-                        .focusRequester(focusRequester),
-                    textStyle = textStyle
-                )
-            }
+                    .padding(horizontal = 10.dp)
+                    .wrapContentHeight()
+                    .fillMaxWidth()
+                    .focusRequester(focusRequester),
+                textStyle = textStyle
+            )
         }
     }
 }

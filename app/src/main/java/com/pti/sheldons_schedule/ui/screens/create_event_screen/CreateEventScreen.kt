@@ -1,8 +1,7 @@
 package com.pti.sheldons_schedule.ui.screens.create_event_screen
 
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.SnackbarHost
 import androidx.compose.material.SnackbarHostState
@@ -79,7 +78,6 @@ fun CreateEventScreen(
         val scope = rememberCoroutineScope()
         val focusRequester = remember { FocusRequester() }
         val snackbarHostState = remember { SnackbarHostState() }
-        val scrollState = rememberScrollState()
 
         var isAddToDoListClicked by remember { mutableStateOf(false) }
 
@@ -120,43 +118,48 @@ fun CreateEventScreen(
         BoxWithConstraints(modifier = Modifier.fillMaxSize()) {
             val halfFieldWidth = (this.maxWidth.value.toInt() - PADDING_WIDTH_SUM) / FIELD_COUNT
 
-            Column(
+            LazyColumn(
                 modifier = Modifier
                     .fillMaxSize()
-                    .verticalScroll(scrollState)
             ) {
-                TopToolbar(
-                    onCloseIconClicked = { navController.popBackStack() },
-                    onSaveIconClicked = {
-                        viewModel.onSaveEventClicked()
-                        navController.navigate(EntryScreen)
-                    },
-                    modifier = Modifier
-                        .height(58.dp)
-                        .fillMaxWidth()
-                )
-                ScreenContent(
-                    state = state,
-                    textFieldFocusRequester = focusRequester,
-                    fieldWidth = halfFieldWidth.dp,
-                    isCreateEventScreen = true,
-                    isAddToDoListClicked = isAddToDoListClicked,
-                    onTitleEdited = { viewModel.onTitleEdited(it) },
-                    onDescriptionEdited = { viewModel.onDescriptionEdited(it) },
-                    onFocusChanged = { viewModel.onFocusChanged(it) },
-                    onStartDatePicked = { viewModel.onStartDatePicked(it) },
-                    onEndDatePicked = { viewModel.onEndDatePicked(it) },
-                    onTimeStartPicked = { hour, minutes ->
-                        viewModel.onTimeStartPicked(hour, minutes)
-                    },
-                    onTimeEndPicked = { hour, minutes ->
-                        viewModel.onTimeEndPicked(hour, minutes)
-                    },
-                    onRepeatFieldClicked = { viewModel.onRepeatFieldClicked() },
-                    onPriorityFieldClicked = { viewModel.onPriorityFieldClicked() },
-                    onRemindFieldClicked = { viewModel.onRemindFieldClicked() },
-                    onIconedTextClicked = { isAddToDoListClicked = true }
-                )
+                item {
+                    TopToolbar(
+                        onCloseIconClicked = { navController.popBackStack() },
+                        onSaveIconClicked = {
+                            viewModel.onSaveEventClicked()
+                            navController.navigate(EntryScreen)
+                        },
+                        modifier = Modifier
+                            .height(58.dp)
+                            .fillMaxWidth()
+                    )
+                }
+                item {
+                    Column {
+                        ScreenContent(
+                            state = state,
+                            textFieldFocusRequester = focusRequester,
+                            fieldWidth = halfFieldWidth.dp,
+                            isCreateEventScreen = true,
+                            isAddToDoListClicked = isAddToDoListClicked,
+                            onTitleEdited = { viewModel.onTitleEdited(it) },
+                            onDescriptionEdited = { viewModel.onDescriptionEdited(it) },
+                            onFocusChanged = { viewModel.onFocusChanged(it) },
+                            onStartDatePicked = { viewModel.onStartDatePicked(it) },
+                            onEndDatePicked = { viewModel.onEndDatePicked(it) },
+                            onTimeStartPicked = { hour, minutes ->
+                                viewModel.onTimeStartPicked(hour, minutes)
+                            },
+                            onTimeEndPicked = { hour, minutes ->
+                                viewModel.onTimeEndPicked(hour, minutes)
+                            },
+                            onRepeatFieldClicked = { viewModel.onRepeatFieldClicked() },
+                            onPriorityFieldClicked = { viewModel.onPriorityFieldClicked() },
+                            onRemindFieldClicked = { viewModel.onRemindFieldClicked() },
+                            onIconedTextClicked = { isAddToDoListClicked = true }
+                        )
+                    }
+                }
             }
 
             SnackbarHost(
