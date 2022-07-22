@@ -33,7 +33,11 @@ data class ScreenState(
     val formattedEndTime: String = endDate.formatDate(TIME_FORMAT)
 }
 
-fun ScreenState.toEvent(creationDate: Long, duration: Long) = FullEvent(
+fun ScreenState.toEvent(
+    creationDate: Long,
+    duration: Long,
+    reminder: Reminder
+) = FullEvent(
     event = Event(
         creationDate = creationDate,
         title = this.title,
@@ -44,6 +48,6 @@ fun ScreenState.toEvent(creationDate: Long, duration: Long) = FullEvent(
         repeat = this.repeat,
         priority = this.priority
     ),
-    reminder = Reminder(creationDate, this.remind.alias),
+    reminder = reminder,
     toDoList = this.toDoList
 )
