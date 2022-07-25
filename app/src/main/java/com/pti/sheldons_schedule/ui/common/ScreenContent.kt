@@ -86,8 +86,8 @@ fun ScreenContent(
     )
     if (isCreateEventScreen) {
         ToDoList(
-            itemsCount = state?.toDoList?.size ?: 1,
-            text = todoItemTitle,
+            todoItemText = todoItemTitle,
+            todoList = state?.toDoList ?: emptyList(),
             onValueChanged = { onValueChanged(it) },
             onAddTodoListClicked = { onAddTodoListClicked() },
             onAddTodoItemClicked = { onAddTodoItemClicked() }

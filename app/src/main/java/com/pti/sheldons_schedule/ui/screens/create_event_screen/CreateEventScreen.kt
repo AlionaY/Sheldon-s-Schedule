@@ -31,7 +31,7 @@ fun CreateEventScreen(
     viewModel: CreateOrEditEventViewModel = hiltViewModel()
 ) {
     val state by viewModel.createEventScreenState.collectAsState()
-    val todoItemTitle by viewModel.todoItemTitle.collectAsState(initial = "")
+    val todoItemTitle by viewModel.todoItem.collectAsState(initial = "")
     val isPickedTimeValid by viewModel.isPickedTimeValid.collectAsState(initial = true)
     val focusManager = LocalFocusManager.current
 

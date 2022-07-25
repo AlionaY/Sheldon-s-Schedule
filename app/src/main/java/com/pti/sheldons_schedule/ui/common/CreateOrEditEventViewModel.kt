@@ -46,7 +46,6 @@ class CreateOrEditEventViewModel @Inject constructor(
             }
         )
     )
-    val todoItemTitle = MutableStateFlow("")
 
     val pickedEvent = MutableStateFlow<FullEvent?>(null)
     val startDate = pickedEvent.value?.event?.startDate?.toCalendar() ?: Calendar.getInstance()
@@ -63,12 +62,26 @@ class CreateOrEditEventViewModel @Inject constructor(
     val isPickedTimeValid = MutableSharedFlow<Boolean>()
 
     private val newEvent = MutableStateFlow<FullEvent?>(null)
-
+    val todoItem = MutableStateFlow("")
+    private val isAddTodoItemClicked = MutableSharedFlow<Boolean>()
 
     init {
         observeScreenState(createEventScreenState)
         observeScreenState(editEventScreenState)
         updateEditEventScreenState()
+        observeIsAddTodoItemClicked()
+    }
+
+    private fun observeIsAddTodoItemClicked() {
+        viewModelScope.launch {
+            isAddTodoItemClicked.collect {
+                val list = createEventScreenState.value.toDoList + todoItem.value.toToDo(
+                    createEventScreenState.value
+                )
+                createEventScreenState.update { it.copy(toDoList = list) }
+                todoItem.value = ""
+            }
+        }
     }
 
     private fun updateEditEventScreenState() {
@@ -420,13 +433,10 @@ class CreateOrEditEventViewModel @Inject constructor(
     }
 
     fun onTodoTitleChanged(title: String) {
-        todoItemTitle.value = title
+        todoItem.value = title
     }
 
-    fun onAddTodoItemClicked() {
-        val list = createEventScreenState.value.toDoList + todoItemTitle.value.toToDo(
-            createEventScreenState.value
-        )
-        createEventScreenState.update { it.copy(toDoList = list) }
+    fun onAddTodoItemClicked()= viewModelScope.launch{
+        isAddTodoItemClicked.emit(true)
     }
 }

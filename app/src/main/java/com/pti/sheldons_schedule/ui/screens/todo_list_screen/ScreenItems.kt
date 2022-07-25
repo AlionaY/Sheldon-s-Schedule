@@ -11,6 +11,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.pti.sheldons_schedule.R
+import com.pti.sheldons_schedule.data.ToDo
 import com.pti.sheldons_schedule.ui.common.DefaultCheckboxRow
 import com.pti.sheldons_schedule.ui.common.HeightSpacer
 import com.pti.sheldons_schedule.ui.common.IconedText
@@ -34,8 +35,8 @@ fun EventTitle(title: String, modifier: Modifier = Modifier) {
 
 @Composable
 fun ToDoList(
-    itemsCount: Int,
-    text: String,
+    todoItemText: String,
+    todoList: List<ToDo>,
     checked: Boolean = false,
     onValueChanged: (String) -> Unit,
     onAddTodoListClicked: () -> Unit,
@@ -57,10 +58,11 @@ fun ToDoList(
                 .height(50.dp)
         )
     } else {
-        (0 until itemsCount).forEach { _ ->
+        (todoList.indices).forEach { index ->
             HeightSpacer(5.dp)
             DefaultCheckboxRow(
-                text = text,
+                text = todoList[index].title,
+                todoItemText = todoItemText,
                 checked = checked,
                 isClicked = isAddToDoListClicked,
                 onValueChanged = { onValueChanged(it) },

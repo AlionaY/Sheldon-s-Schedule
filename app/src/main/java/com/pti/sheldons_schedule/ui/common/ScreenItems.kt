@@ -1,5 +1,6 @@
 package com.pti.sheldons_schedule.ui.common
 
+import android.util.Log
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.BasicTextField
@@ -9,9 +10,7 @@ import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Error
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusDirection
@@ -33,14 +32,17 @@ import androidx.compose.ui.unit.sp
 fun DefaultCheckboxRow(
     checked: Boolean,
     text: String,
+    todoItemText: String,
     textStyle: TextStyle,
     isClicked: Boolean,
     onValueChanged: (String) -> Unit,
     onCheckedChange: (Boolean) -> Unit,
     modifier: Modifier = Modifier
 ) {
+    Log.d("###", "checkbox row $text")
     val focusRequester = remember {FocusRequester()}
     val focusManager = LocalFocusManager.current
+    var hasFocus by remember { mutableStateOf(false) }
 
     LaunchedEffect(key1 = isClicked) {
         if (isClicked) {
@@ -59,13 +61,14 @@ fun DefaultCheckboxRow(
             modifier = Modifier.wrapContentSize()
         )
         BasicTextField(
-            value = text,
+            value = if (hasFocus) todoItemText else text,
             onValueChange = { onValueChanged(it) },
             modifier = Modifier
                 .padding(horizontal = 10.dp)
                 .wrapContentHeight()
                 .fillMaxWidth()
-                .focusRequester(focusRequester),
+                .focusRequester(focusRequester)
+                .onFocusChanged { hasFocus = it.hasFocus },
             textStyle = textStyle
         )
     }
