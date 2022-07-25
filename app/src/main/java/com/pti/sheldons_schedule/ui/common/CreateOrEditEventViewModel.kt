@@ -282,17 +282,35 @@ class CreateOrEditEventViewModel @Inject constructor(
             val remindAt = getRemindAtTime(state)
             val reminder = Reminder(creationDate, state.remind.alias)
 
+            updateCreationDateAtTodoList(creationDate)
+
             newEvent.value = createEventScreenState.value.toEvent(
                 creationDate,
                 duration,
                 reminder
             )
+
             newEvent.value?.let {
                 repository.saveEvent(it)
             }
 
             setReminderAlarm(remindAt.timeInMillis)
         }
+    }
+
+    private fun updateCreationDateAtTodoList(creationDate: Long) {
+        val todoList = mutableListOf<ToDo>()
+        createEventScreenState.value.let { state ->
+            state.toDoList.forEachIndexed { index, _ ->
+                todoList += ToDo(
+                    title = state.toDoList[index].title,
+                    completed = state.toDoList[index].completed,
+                    eventId = creationDate
+                )
+            }
+        }
+
+        createEventScreenState.update { it.copy(toDoList = todoList) }
     }
 
     private fun getEventDuration(state: ScreenState) =
