@@ -31,7 +31,6 @@ fun CreateEventScreen(
     viewModel: CreateOrEditEventViewModel = hiltViewModel()
 ) {
     val state by viewModel.createEventScreenState.collectAsState()
-    val todoItemTitle by viewModel.todoItem.collectAsState(initial = "")
     val isPickedTimeValid by viewModel.isPickedTimeValid.collectAsState(initial = true)
     val focusManager = LocalFocusManager.current
 
@@ -133,7 +132,6 @@ fun CreateEventScreen(
                 ) {
                     ScreenContent(
                         state = state,
-                        todoItemTitle = todoItemTitle,
                         textFieldFocusRequester = focusRequester,
                         fieldWidth = halfFieldWidth.dp,
                         isCreateEventScreen = true,
@@ -152,8 +150,10 @@ fun CreateEventScreen(
                         onPriorityFieldClicked = { viewModel.onPriorityFieldClicked() },
                         onRemindFieldClicked = { viewModel.onRemindFieldClicked() },
                         onAddTodoListClicked = { viewModel.onAddTodoItemClicked() },
-                        onValueChanged = { viewModel.onTodoTitleChanged(it)},
-                        onAddTodoItemClicked = { viewModel.onAddTodoItemClicked()}
+                        onValueChanged = { title, index ->
+                            viewModel.onTodoTitleChanged(title, index)
+                        },
+                        onAddTodoItemClicked = { viewModel.onAddTodoItemClicked() }
                     )
                 }
             }

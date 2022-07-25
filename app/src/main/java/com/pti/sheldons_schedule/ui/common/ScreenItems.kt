@@ -1,6 +1,5 @@
 package com.pti.sheldons_schedule.ui.common
 
-import android.util.Log
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.BasicTextField
@@ -32,17 +31,14 @@ import androidx.compose.ui.unit.sp
 fun DefaultCheckboxRow(
     checked: Boolean,
     text: String,
-    todoItemText: String,
     textStyle: TextStyle,
     isClicked: Boolean,
     onValueChanged: (String) -> Unit,
     onCheckedChange: (Boolean) -> Unit,
     modifier: Modifier = Modifier
 ) {
-    Log.d("###", "checkbox row $text")
     val focusRequester = remember {FocusRequester()}
     val focusManager = LocalFocusManager.current
-    var hasFocus by remember { mutableStateOf(false) }
 
     LaunchedEffect(key1 = isClicked) {
         if (isClicked) {
@@ -61,14 +57,13 @@ fun DefaultCheckboxRow(
             modifier = Modifier.wrapContentSize()
         )
         BasicTextField(
-            value = if (hasFocus) todoItemText else text,
+            value = text,
             onValueChange = { onValueChanged(it) },
             modifier = Modifier
                 .padding(horizontal = 10.dp)
                 .wrapContentHeight()
                 .fillMaxWidth()
-                .focusRequester(focusRequester)
-                .onFocusChanged { hasFocus = it.hasFocus },
+                .focusRequester(focusRequester),
             textStyle = textStyle
         )
     }

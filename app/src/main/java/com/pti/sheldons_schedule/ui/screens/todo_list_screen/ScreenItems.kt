@@ -35,10 +35,9 @@ fun EventTitle(title: String, modifier: Modifier = Modifier) {
 
 @Composable
 fun ToDoList(
-    todoItemText: String,
     todoList: List<ToDo>,
     checked: Boolean = false,
-    onValueChanged: (String) -> Unit,
+    onValueChanged: (String, Int) -> Unit,
     onAddTodoListClicked: () -> Unit,
     onAddTodoItemClicked: () -> Unit
 ) {
@@ -58,14 +57,13 @@ fun ToDoList(
                 .height(50.dp)
         )
     } else {
-        (todoList.indices).forEach { index ->
+        (todoList).forEachIndexed { index, _ ->
             HeightSpacer(5.dp)
             DefaultCheckboxRow(
                 text = todoList[index].title,
-                todoItemText = todoItemText,
                 checked = checked,
                 isClicked = isAddToDoListClicked,
-                onValueChanged = { onValueChanged(it) },
+                onValueChanged = { onValueChanged(it, index) },
                 onCheckedChange = { },
                 textStyle = TextStyle(
                     fontSize = 15.sp,

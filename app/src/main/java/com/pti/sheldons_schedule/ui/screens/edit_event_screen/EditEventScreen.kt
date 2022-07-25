@@ -155,7 +155,7 @@ fun EditEventScreen(
                     onRemindFieldClicked = { viewModel.onRemindFieldClicked(true) },
                     onAddTodoListClicked = {},
                     onAddTodoItemClicked = {},
-                    onValueChanged = {}
+                    onValueChanged = { title, index -> }
                 )
             }
 

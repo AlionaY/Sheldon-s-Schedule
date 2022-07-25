@@ -27,7 +27,6 @@ import java.util.*
 @Composable
 fun ScreenContent(
     state: ScreenState?,
-    todoItemTitle: String = "",
     textFieldFocusRequester: FocusRequester,
     fieldWidth: Dp,
     isCreateEventScreen: Boolean,
@@ -42,7 +41,7 @@ fun ScreenContent(
     onPriorityFieldClicked: () -> Unit,
     onRemindFieldClicked: () -> Unit,
     onAddTodoListClicked: () -> Unit,
-    onValueChanged: (String) -> Unit,
+    onValueChanged: (String, Int) -> Unit,
     onAddTodoItemClicked: () -> Unit
 ) {
     val titleBorderColor = when (state?.titleFieldState) {
@@ -86,9 +85,10 @@ fun ScreenContent(
     )
     if (isCreateEventScreen) {
         ToDoList(
-            todoItemText = todoItemTitle,
             todoList = state?.toDoList ?: emptyList(),
-            onValueChanged = { onValueChanged(it) },
+            onValueChanged = { title, index ->
+                onValueChanged(title, index)
+            },
             onAddTodoListClicked = { onAddTodoListClicked() },
             onAddTodoItemClicked = { onAddTodoItemClicked() }
         )
