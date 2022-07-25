@@ -2,7 +2,10 @@ package com.pti.sheldons_schedule.ui.screens.main_screen
 
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
-import com.pti.sheldons_schedule.data.*
+import com.pti.sheldons_schedule.data.DayOfWeek
+import com.pti.sheldons_schedule.data.EventsOfDay
+import com.pti.sheldons_schedule.data.FullEvent
+import com.pti.sheldons_schedule.data.Week
 import com.pti.sheldons_schedule.util.Constants
 import com.pti.sheldons_schedule.util.Constants.DATE_FORMAT
 import com.pti.sheldons_schedule.util.Constants.DATE_FORMAT_ISO_8601
@@ -25,17 +28,18 @@ class WeekdaysPagingSource(private val events: List<FullEvent>) : PagingSource<I
     override suspend fun load(params: LoadParams<Int>): LoadResult<Int, Week> {
         val page = params.key ?: 0
         val currentCalendar = (calendar.clone() as Calendar).apply {
+            firstDayOfWeek = Calendar.MONDAY
             set(Calendar.DAY_OF_WEEK, Calendar.MONDAY)
         }
         val eventOfDays = mutableListOf<EventsOfDay>()
-        val dayName = currentCalendar.formatDate(Constants.DAY_NAME_FORMAT)
-            .substring(0, 3)
 
         currentCalendar.add(Calendar.WEEK_OF_YEAR, page)
 
         for (i in 0 until WEEK_LENGTH) {
             val isCurrentDay = currentCalendar.get(Calendar.DAY_OF_YEAR) ==
                     calendar.get(Calendar.DAY_OF_YEAR)
+            val dayName = currentCalendar.formatDate(Constants.DAY_NAME_FORMAT)
+                .substring(0, 3)
 
             eventOfDays += EventsOfDay(
                 day = DayOfWeek(

@@ -1,12 +1,10 @@
 package com.pti.sheldons_schedule.ui.screens.create_event_screen
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.ExperimentalMaterialApi
-import androidx.compose.material.SnackbarHost
-import androidx.compose.material.SnackbarHostState
-import androidx.compose.material.SnackbarResult
+import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -34,7 +32,6 @@ fun CreateEventScreen(
 ) {
     val state by viewModel.createEventScreenState.collectAsState()
     val isPickedTimeValid by viewModel.isPickedTimeValid.collectAsState(initial = true)
-    val isAddToDoListClicked by viewModel.isAddToDoListClicked.collectAsState(initial = false)
     val focusManager = LocalFocusManager.current
 
     val snackbarMessage = stringResource(R.string.time_picker_error_message)
@@ -78,9 +75,11 @@ fun CreateEventScreen(
     ) { sheetState ->
 
         val scope = rememberCoroutineScope()
+        val scrollState = rememberScrollState()
         val focusRequester = remember { FocusRequester() }
         val snackbarHostState = remember { SnackbarHostState() }
-        val scrollState = rememberScrollState()
+
+        var isAddToDoListClicked by remember { mutableStateOf(false) }
 
         LaunchedEffect(key1 = state.options) {
             if (!state.options.isNullOrEmpty()) {
@@ -119,11 +118,7 @@ fun CreateEventScreen(
         BoxWithConstraints(modifier = Modifier.fillMaxSize()) {
             val halfFieldWidth = (this.maxWidth.value.toInt() - PADDING_WIDTH_SUM) / FIELD_COUNT
 
-            Column(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .verticalScroll(scrollState)
-            ) {
+            Column(modifier = Modifier.fillMaxSize()) {
                 TopToolbar(
                     onCloseIconClicked = { navController.popBackStack() },
                     onSaveIconClicked = {
@@ -133,28 +128,37 @@ fun CreateEventScreen(
                     modifier = Modifier
                         .height(58.dp)
                         .fillMaxWidth()
+                        .background(MaterialTheme.colors.background)
                 )
-                ScreenContent(
-                    state = state,
-                    textFieldFocusRequester = focusRequester,
-                    fieldWidth = halfFieldWidth.dp,
-                    isAddToDoListClicked = isAddToDoListClicked,
-                    onTitleEdited = { viewModel.onTitleEdited(it) },
-                    onDescriptionEdited = { viewModel.onDescriptionEdited(it) },
-                    onFocusChanged = { viewModel.onFocusChanged(it) },
-                    onStartDatePicked = { viewModel.onStartDatePicked(it) },
-                    onEndDatePicked = { viewModel.onEndDatePicked(it) },
-                    onTimeStartPicked = { hour, minutes ->
-                        viewModel.onTimeStartPicked(hour, minutes)
-                    },
-                    onTimeEndPicked = { hour, minutes ->
-                        viewModel.onTimeEndPicked(hour, minutes)
-                    },
-                    onRepeatFieldClicked = { viewModel.onRepeatFieldClicked() },
-                    onPriorityFieldClicked = { viewModel.onPriorityFieldClicked() },
-                    onRemindFieldClicked = { viewModel.onRemindFieldClicked() },
-                    onIconedTextClicked = { viewModel.onAddToDoListClicked() }
-                )
+
+                Column(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .verticalScroll(scrollState)
+                ) {
+                    ScreenContent(
+                        state = state,
+                        textFieldFocusRequester = focusRequester,
+                        fieldWidth = halfFieldWidth.dp,
+                        isCreateEventScreen = true,
+                        isAddToDoListClicked = isAddToDoListClicked,
+                        onTitleEdited = { viewModel.onTitleEdited(it) },
+                        onDescriptionEdited = { viewModel.onDescriptionEdited(it) },
+                        onFocusChanged = { viewModel.onFocusChanged(it) },
+                        onStartDatePicked = { viewModel.onStartDatePicked(it) },
+                        onEndDatePicked = { viewModel.onEndDatePicked(it) },
+                        onTimeStartPicked = { hour, minutes ->
+                            viewModel.onTimeStartPicked(hour, minutes)
+                        },
+                        onTimeEndPicked = { hour, minutes ->
+                            viewModel.onTimeEndPicked(hour, minutes)
+                        },
+                        onRepeatFieldClicked = { viewModel.onRepeatFieldClicked() },
+                        onPriorityFieldClicked = { viewModel.onPriorityFieldClicked() },
+                        onRemindFieldClicked = { viewModel.onRemindFieldClicked() },
+                        onIconedTextClicked = { isAddToDoListClicked = true }
+                    )
+                }
             }
 
             SnackbarHost(

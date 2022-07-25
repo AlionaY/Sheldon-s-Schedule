@@ -63,7 +63,6 @@ class CreateOrEditEventViewModel @Inject constructor(
     )
 
     val isPickedTimeValid = MutableSharedFlow<Boolean>()
-    val isAddToDoListClicked = MutableSharedFlow<Boolean>()
 
     private val newEvent = MutableStateFlow<FullEvent?>(null)
 
@@ -242,8 +241,13 @@ class CreateOrEditEventViewModel @Inject constructor(
             val creationDate = pickedEvent.value?.event?.creationDate ?: currentTimeInMillis
             val duration = getEventDuration(state)
             val remindAt = getRemindAtTime(state)
+            val reminder = Reminder(creationDate, state.remind.alias)
 
-            pickedEvent.value = editEventScreenState.value.toEvent(creationDate, duration)
+            pickedEvent.value = editEventScreenState.value.toEvent(
+                creationDate,
+                duration,
+                reminder
+            )
 
             pickedEvent.value?.let {
                 repository.editEvent(it)
@@ -264,13 +268,15 @@ class CreateOrEditEventViewModel @Inject constructor(
 
     private fun saveNewEvent() = viewModelScope.launch {
         createEventScreenState.value.let { state ->
-            val currentTimeInMillis = Calendar.getInstance().timeInMillis
+            val creationDate = Calendar.getInstance().timeInMillis
             val duration = getEventDuration(state)
             val remindAt = getRemindAtTime(state)
+            val reminder = Reminder(creationDate, state.remind.alias)
 
             newEvent.value = createEventScreenState.value.toEvent(
-                currentTimeInMillis,
-                duration
+                creationDate,
+                duration,
+                reminder
             )
             newEvent.value?.let {
                 repository.saveEvent(it)
@@ -413,9 +419,5 @@ class CreateOrEditEventViewModel @Inject constructor(
         pickedEvent.value?.let {
             repository.deleteEvent(it)
         }
-    }
-
-    fun onAddToDoListClicked() = viewModelScope.launch {
-        isAddToDoListClicked.emit(true)
     }
 }
