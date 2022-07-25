@@ -2,10 +2,9 @@ package com.pti.sheldons_schedule.ui.screens.todo_list_screen
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.Text
-import androidx.compose.runtime.Composable
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -36,31 +35,34 @@ fun EventTitle(title: String, modifier: Modifier = Modifier) {
 @Composable
 fun ToDoList(
     itemsCount: Int,
-    text: String = "",
-    isAddToDoListClicked: Boolean,
+    text: String,
     checked: Boolean = false,
-    focusRequester: FocusRequester,
     onValueChanged: (String) -> Unit,
-    onClick: () -> Unit
+    onAddTodoListClicked: () -> Unit,
+    onAddTodoItemClicked: () -> Unit
 ) {
+    var isAddToDoListClicked by remember { mutableStateOf(false) }
+
     if (!isAddToDoListClicked) {
         IconedText(
             text = stringResource(id = R.string.add_to_do_list),
             textSize = 15.sp,
-            onClick = { onClick() },
+            onClick = {
+                onAddTodoListClicked()
+                isAddToDoListClicked = true
+            },
             modifier = Modifier
                 .padding(start = 15.dp)
                 .fillMaxWidth()
                 .height(50.dp)
         )
     } else {
-        HeightSpacer(5.dp)
-
         (0 until itemsCount).forEach { _ ->
+            HeightSpacer(5.dp)
             DefaultCheckboxRow(
-                focusRequester = focusRequester,
                 text = text,
                 checked = checked,
+                isClicked = isAddToDoListClicked,
                 onValueChanged = { onValueChanged(it) },
                 onCheckedChange = { },
                 textStyle = TextStyle(
@@ -68,11 +70,20 @@ fun ToDoList(
                     fontWeight = FontWeight.Normal
                 ),
                 modifier = Modifier
-                    .padding(start = 15.dp)
+                    .padding(start = 10.dp)
                     .fillMaxWidth()
                     .height(FIELD_HEIGHT.dp)
             )
-            HeightSpacer(5.dp)
         }
+
+        IconedText(
+            text = stringResource(id = R.string.add_todo_item),
+            textSize = 15.sp,
+            onClick = { onAddTodoItemClicked() },
+            modifier = Modifier
+                .padding(start = 30.dp)
+                .fillMaxWidth()
+                .height(FIELD_HEIGHT.dp)
+        )
     }
 }

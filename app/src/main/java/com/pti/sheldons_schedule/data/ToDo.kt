@@ -16,7 +16,7 @@ import kotlinx.serialization.Serializable
 )
 data class ToDo(
     @PrimaryKey(autoGenerate = true)
-    val itemId: Int,
+    val itemId: Int = 0,
     val eventId: Long,
     val title: String,
     val completed: Boolean = false

@@ -27,10 +27,10 @@ import java.util.*
 @Composable
 fun ScreenContent(
     state: ScreenState?,
+    todoItemTitle: String = "",
     textFieldFocusRequester: FocusRequester,
     fieldWidth: Dp,
     isCreateEventScreen: Boolean,
-    isAddToDoListClicked: Boolean,
     onTitleEdited: (String) -> Unit,
     onFocusChanged: (Boolean) -> Unit,
     onDescriptionEdited: (String) -> Unit,
@@ -41,10 +41,10 @@ fun ScreenContent(
     onRepeatFieldClicked: () -> Unit,
     onPriorityFieldClicked: () -> Unit,
     onRemindFieldClicked: () -> Unit,
-    onIconedTextClicked: () -> Unit
+    onAddTodoListClicked: () -> Unit,
+    onValueChanged: (String) -> Unit,
+    onAddTodoItemClicked: () -> Unit
 ) {
-    val todoFieldFocusRequester = remember { FocusRequester() }
-
     val titleBorderColor = when (state?.titleFieldState) {
         TitleFieldState.Error -> MaterialTheme.colors.error
         else -> MaterialTheme.colors.onSurface.copy(alpha = ContentAlpha.disabled)
@@ -64,10 +64,6 @@ fun ScreenContent(
 
     LaunchedEffect(key1 = state?.description) {
         descriptionTextFieldValue.value = state?.description.toTextFieldValue()
-    }
-
-    LaunchedEffect(key1 = isAddToDoListClicked) {
-        if (isAddToDoListClicked) todoFieldFocusRequester.requestFocus()
     }
 
     DefaultTextField(
@@ -90,11 +86,11 @@ fun ScreenContent(
     )
     if (isCreateEventScreen) {
         ToDoList(
-            itemsCount = 1,
-            isAddToDoListClicked = isAddToDoListClicked,
-            focusRequester = todoFieldFocusRequester,
-            onValueChanged = {},
-            onClick = { onIconedTextClicked() }
+            itemsCount = state?.toDoList?.size ?: 1,
+            text = todoItemTitle,
+            onValueChanged = { onValueChanged(it) },
+            onAddTodoListClicked = { onAddTodoListClicked() },
+            onAddTodoItemClicked = { onAddTodoItemClicked() }
         )
     } else {
         HeightSpacer()

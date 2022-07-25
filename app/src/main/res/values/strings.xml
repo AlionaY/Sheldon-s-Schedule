@@ -12,6 +12,7 @@
     <string name="start_date">Start date</string>
     <string name="end_date">End date</string>
     <string name="add_to_do_list">Add to do list</string>
+    <string name="add_todo_item">Add an item</string>
 
     <string name="repeat">Repeat</string>
     <string name="repeat_none">None</string>

@@ -12,10 +12,7 @@ import com.pti.sheldons_schedule.data.*
 import com.pti.sheldons_schedule.data.Options.*
 import com.pti.sheldons_schedule.db.EventRepository
 import com.pti.sheldons_schedule.service.AlarmBroadcastReceiver
-import com.pti.sheldons_schedule.util.Constants
-import com.pti.sheldons_schedule.util.toCalendar
-import com.pti.sheldons_schedule.util.updateDate
-import com.pti.sheldons_schedule.util.updateTime
+import com.pti.sheldons_schedule.util.*
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -49,6 +46,7 @@ class CreateOrEditEventViewModel @Inject constructor(
             }
         )
     )
+    val todoItemTitle = MutableStateFlow("")
 
     val pickedEvent = MutableStateFlow<FullEvent?>(null)
     val startDate = pickedEvent.value?.event?.startDate?.toCalendar() ?: Calendar.getInstance()
@@ -419,5 +417,16 @@ class CreateOrEditEventViewModel @Inject constructor(
         pickedEvent.value?.let {
             repository.deleteEvent(it)
         }
+    }
+
+    fun onTodoTitleChanged(title: String) {
+        todoItemTitle.value = title
+    }
+
+    fun onAddTodoItemClicked() {
+        val list = createEventScreenState.value.toDoList + todoItemTitle.value.toToDo(
+            createEventScreenState.value
+        )
+        createEventScreenState.update { it.copy(toDoList = list) }
     }
 }

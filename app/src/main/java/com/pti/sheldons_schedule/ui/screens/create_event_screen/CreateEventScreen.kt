@@ -31,6 +31,7 @@ fun CreateEventScreen(
     viewModel: CreateOrEditEventViewModel = hiltViewModel()
 ) {
     val state by viewModel.createEventScreenState.collectAsState()
+    val todoItemTitle by viewModel.todoItemTitle.collectAsState(initial = "")
     val isPickedTimeValid by viewModel.isPickedTimeValid.collectAsState(initial = true)
     val focusManager = LocalFocusManager.current
 
@@ -79,8 +80,6 @@ fun CreateEventScreen(
         val focusRequester = remember { FocusRequester() }
         val snackbarHostState = remember { SnackbarHostState() }
 
-        var isAddToDoListClicked by remember { mutableStateOf(false) }
-
         LaunchedEffect(key1 = state.options) {
             if (!state.options.isNullOrEmpty()) {
                 scope.launch {
@@ -111,10 +110,6 @@ fun CreateEventScreen(
             }
         }
 
-        LaunchedEffect(key1 = isAddToDoListClicked) {
-            if (isAddToDoListClicked) focusManager.clearFocus()
-        }
-
         BoxWithConstraints(modifier = Modifier.fillMaxSize()) {
             val halfFieldWidth = (this.maxWidth.value.toInt() - PADDING_WIDTH_SUM) / FIELD_COUNT
 
@@ -138,10 +133,10 @@ fun CreateEventScreen(
                 ) {
                     ScreenContent(
                         state = state,
+                        todoItemTitle = todoItemTitle,
                         textFieldFocusRequester = focusRequester,
                         fieldWidth = halfFieldWidth.dp,
                         isCreateEventScreen = true,
-                        isAddToDoListClicked = isAddToDoListClicked,
                         onTitleEdited = { viewModel.onTitleEdited(it) },
                         onDescriptionEdited = { viewModel.onDescriptionEdited(it) },
                         onFocusChanged = { viewModel.onFocusChanged(it) },
@@ -156,7 +151,9 @@ fun CreateEventScreen(
                         onRepeatFieldClicked = { viewModel.onRepeatFieldClicked() },
                         onPriorityFieldClicked = { viewModel.onPriorityFieldClicked() },
                         onRemindFieldClicked = { viewModel.onRemindFieldClicked() },
-                        onIconedTextClicked = { isAddToDoListClicked = true }
+                        onAddTodoListClicked = { viewModel.onAddTodoItemClicked() },
+                        onValueChanged = { viewModel.onTodoTitleChanged(it)},
+                        onAddTodoItemClicked = { viewModel.onAddTodoItemClicked()}
                     )
                 }
             }
