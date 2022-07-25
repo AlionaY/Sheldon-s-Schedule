@@ -20,7 +20,6 @@ fun String?.toTextFieldValue() = TextFieldValue(
     selection = TextRange(this.orEmpty().length)
 )
 
-//todo: update creation date before save to db
 fun String.toToDo(screenState: ScreenState, completed: Boolean = false) = ToDo(
     title = this,
     completed = completed,
