@@ -28,8 +28,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
 @Composable
-fun DefaultCheckboxColumn(
-    todoItemsCount: Int,
+fun DefaultCheckboxRow(
     focusRequester: FocusRequester,
     checked: Boolean,
     text: String,
@@ -38,27 +37,25 @@ fun DefaultCheckboxColumn(
     onCheckedChange: (Boolean) -> Unit,
     modifier: Modifier = Modifier
 ) {
-    (0 until todoItemsCount).forEach { _ ->
-        Row(
-            modifier = modifier,
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Checkbox(
-                checked = checked,
-                onCheckedChange = { onCheckedChange(it) },
-                modifier = Modifier.wrapContentSize()
-            )
-            BasicTextField(
-                value = text,
-                onValueChange = { onValueChanged(it) },
-                modifier = Modifier
-                    .padding(horizontal = 10.dp)
-                    .wrapContentHeight()
-                    .fillMaxWidth()
-                    .focusRequester(focusRequester),
-                textStyle = textStyle
-            )
-        }
+    Row(
+        modifier = modifier,
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Checkbox(
+            checked = checked,
+            onCheckedChange = { onCheckedChange(it) },
+            modifier = Modifier.wrapContentSize()
+        )
+        BasicTextField(
+            value = text,
+            onValueChange = { onValueChanged(it) },
+            modifier = Modifier
+                .padding(horizontal = 10.dp)
+                .wrapContentHeight()
+                .fillMaxWidth()
+                .focusRequester(focusRequester),
+            textStyle = textStyle
+        )
     }
 }
 

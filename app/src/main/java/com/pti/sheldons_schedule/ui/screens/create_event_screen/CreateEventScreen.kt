@@ -1,11 +1,10 @@
 package com.pti.sheldons_schedule.ui.screens.create_event_screen
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.material.ExperimentalMaterialApi
-import androidx.compose.material.SnackbarHost
-import androidx.compose.material.SnackbarHostState
-import androidx.compose.material.SnackbarResult
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -76,6 +75,7 @@ fun CreateEventScreen(
     ) { sheetState ->
 
         val scope = rememberCoroutineScope()
+        val scrollState = rememberScrollState()
         val focusRequester = remember { FocusRequester() }
         val snackbarHostState = remember { SnackbarHostState() }
 
@@ -118,47 +118,46 @@ fun CreateEventScreen(
         BoxWithConstraints(modifier = Modifier.fillMaxSize()) {
             val halfFieldWidth = (this.maxWidth.value.toInt() - PADDING_WIDTH_SUM) / FIELD_COUNT
 
-            LazyColumn(
-                modifier = Modifier
-                    .fillMaxSize()
-            ) {
-                item {
-                    TopToolbar(
-                        onCloseIconClicked = { navController.popBackStack() },
-                        onSaveIconClicked = {
-                            viewModel.onSaveEventClicked()
-                            navController.navigate(EntryScreen)
+            Column(modifier = Modifier.fillMaxSize()) {
+                TopToolbar(
+                    onCloseIconClicked = { navController.popBackStack() },
+                    onSaveIconClicked = {
+                        viewModel.onSaveEventClicked()
+                        navController.navigate(EntryScreen)
+                    },
+                    modifier = Modifier
+                        .height(58.dp)
+                        .fillMaxWidth()
+                        .background(MaterialTheme.colors.background)
+                )
+
+                Column(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .verticalScroll(scrollState)
+                ) {
+                    ScreenContent(
+                        state = state,
+                        textFieldFocusRequester = focusRequester,
+                        fieldWidth = halfFieldWidth.dp,
+                        isCreateEventScreen = true,
+                        isAddToDoListClicked = isAddToDoListClicked,
+                        onTitleEdited = { viewModel.onTitleEdited(it) },
+                        onDescriptionEdited = { viewModel.onDescriptionEdited(it) },
+                        onFocusChanged = { viewModel.onFocusChanged(it) },
+                        onStartDatePicked = { viewModel.onStartDatePicked(it) },
+                        onEndDatePicked = { viewModel.onEndDatePicked(it) },
+                        onTimeStartPicked = { hour, minutes ->
+                            viewModel.onTimeStartPicked(hour, minutes)
                         },
-                        modifier = Modifier
-                            .height(58.dp)
-                            .fillMaxWidth()
+                        onTimeEndPicked = { hour, minutes ->
+                            viewModel.onTimeEndPicked(hour, minutes)
+                        },
+                        onRepeatFieldClicked = { viewModel.onRepeatFieldClicked() },
+                        onPriorityFieldClicked = { viewModel.onPriorityFieldClicked() },
+                        onRemindFieldClicked = { viewModel.onRemindFieldClicked() },
+                        onIconedTextClicked = { isAddToDoListClicked = true }
                     )
-                }
-                item {
-                    Column {
-                        ScreenContent(
-                            state = state,
-                            textFieldFocusRequester = focusRequester,
-                            fieldWidth = halfFieldWidth.dp,
-                            isCreateEventScreen = true,
-                            isAddToDoListClicked = isAddToDoListClicked,
-                            onTitleEdited = { viewModel.onTitleEdited(it) },
-                            onDescriptionEdited = { viewModel.onDescriptionEdited(it) },
-                            onFocusChanged = { viewModel.onFocusChanged(it) },
-                            onStartDatePicked = { viewModel.onStartDatePicked(it) },
-                            onEndDatePicked = { viewModel.onEndDatePicked(it) },
-                            onTimeStartPicked = { hour, minutes ->
-                                viewModel.onTimeStartPicked(hour, minutes)
-                            },
-                            onTimeEndPicked = { hour, minutes ->
-                                viewModel.onTimeEndPicked(hour, minutes)
-                            },
-                            onRepeatFieldClicked = { viewModel.onRepeatFieldClicked() },
-                            onPriorityFieldClicked = { viewModel.onPriorityFieldClicked() },
-                            onRemindFieldClicked = { viewModel.onRemindFieldClicked() },
-                            onIconedTextClicked = { isAddToDoListClicked = true }
-                        )
-                    }
                 }
             }
 

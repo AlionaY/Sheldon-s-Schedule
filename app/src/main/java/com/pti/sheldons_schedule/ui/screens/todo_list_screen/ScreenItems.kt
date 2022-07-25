@@ -12,7 +12,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.pti.sheldons_schedule.R
-import com.pti.sheldons_schedule.ui.common.DefaultCheckboxColumn
+import com.pti.sheldons_schedule.ui.common.DefaultCheckboxRow
 import com.pti.sheldons_schedule.ui.common.HeightSpacer
 import com.pti.sheldons_schedule.ui.common.IconedText
 
@@ -55,21 +55,24 @@ fun ToDoList(
         )
     } else {
         HeightSpacer(5.dp)
-        DefaultCheckboxColumn(
-            todoItemsCount = itemsCount,
-            focusRequester = focusRequester,
-            text = text,
-            checked = checked,
-            onValueChanged = { onValueChanged(it) },
-            onCheckedChange = { },
-            textStyle = TextStyle(
-                fontSize = 15.sp,
-                fontWeight = FontWeight.Normal
-            ),
-            modifier = Modifier
-                .padding(start = 15.dp)
-                .fillMaxWidth()
-                .height(FIELD_HEIGHT.dp)
-        )
+
+        (0 until itemsCount).forEach { _ ->
+            DefaultCheckboxRow(
+                focusRequester = focusRequester,
+                text = text,
+                checked = checked,
+                onValueChanged = { onValueChanged(it) },
+                onCheckedChange = { },
+                textStyle = TextStyle(
+                    fontSize = 15.sp,
+                    fontWeight = FontWeight.Normal
+                ),
+                modifier = Modifier
+                    .padding(start = 15.dp)
+                    .fillMaxWidth()
+                    .height(FIELD_HEIGHT.dp)
+            )
+            HeightSpacer(5.dp)
+        }
     }
 }
