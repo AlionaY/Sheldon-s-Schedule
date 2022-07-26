@@ -74,7 +74,7 @@ fun ToDoList(
     isAddToDoListClicked: Boolean,
     checked: Boolean,
     focusRequester: FocusRequester,
-    onValueChanged: (String) -> Unit,
+    onValueChanged: (String, Int) -> Unit,
     onClick: () -> Unit
 ) {
     if (!isAddToDoListClicked) {
@@ -90,11 +90,11 @@ fun ToDoList(
     } else {
         HeightSpacer(5.dp)
 
-        (0 until itemsCount).forEach { _ ->
+        (0 until itemsCount).forEach { index ->
             DefaultCheckboxRow(
                 text = text,
                 checked = checked,
-                onValueChanged = { onValueChanged(it) },
+                onValueChanged = { onValueChanged(it, index) },
                 onCheckedChange = { },
                 textStyle = TextStyle(
                     fontSize = 15.sp,

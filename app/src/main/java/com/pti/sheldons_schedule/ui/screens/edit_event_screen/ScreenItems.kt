@@ -22,7 +22,7 @@ import com.pti.sheldons_schedule.util.Constants
 @Composable
 fun CheckboxContent(
     state: ScreenState?,
-    onTodoItemChanged: (String) -> Unit,
+    onTodoItemChanged: (String, Int) -> Unit,
     onCheckedChange: (Boolean, Int) -> Unit
 ) {
     HeightSpacer(5.dp)
@@ -32,7 +32,7 @@ fun CheckboxContent(
             DefaultCheckboxRow(
                 text = state.toDoList[index].title,
                 checked = state.toDoList[index].completed,
-                onValueChanged = { onTodoItemChanged(it) },
+                onValueChanged = { onTodoItemChanged(it, index) },
                 onCheckedChange = { onCheckedChange(it, index) },
                 textStyle = TextStyle(
                     fontSize = 15.sp,

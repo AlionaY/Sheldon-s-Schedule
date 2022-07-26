@@ -421,4 +421,39 @@ class CreateOrEditEventViewModel @Inject constructor(
             repository.deleteEvent(it)
         }
     }
+
+    fun onCheckedChange(isChecked: Boolean, index: Int) {
+        updateTodoList(index, isChecked)
+        saveUpdatedEvent()
+    }
+
+    private fun updateTodoList(index: Int, isChecked: Boolean) {
+        val list = editEventScreenState.value.toDoList.toMutableList()
+        list[index] = ToDo(
+            title = list[index].title,
+            completed = isChecked,
+            itemId = list[index].itemId,
+            eventId = list[index].eventId
+        )
+
+        editEventScreenState.update { it.copy(toDoList = list.toList()) }
+    }
+
+    private fun saveUpdatedEvent() = viewModelScope.launch {
+        pickedEvent.value?.let { repository.saveEvent(it) }
+    }
+
+    fun onTodoItemChanged(title: String, index: Int) = viewModelScope.launch {
+        val list = pickedEvent.value?.toDoList?.toMutableList()
+        list?.set(
+            index,
+            ToDo(
+                title = title,
+                eventId = list[index].eventId,
+                completed = list[index].completed,
+                itemId = list[index].itemId
+            )
+        )
+        editEventScreenState.update { it.copy(toDoList = list?.toList() ?: emptyList()) }
+    }
 }
