@@ -29,13 +29,14 @@ import androidx.compose.ui.unit.sp
 
 @Composable
 fun DefaultCheckboxRow(
-    focusRequester: FocusRequester,
     checked: Boolean,
     text: String,
-    textStyle: TextStyle,
     onValueChanged: (String) -> Unit,
     onCheckedChange: (Boolean) -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    textFieldModifier: Modifier = Modifier,
+    textStyle: TextStyle = MaterialTheme.typography.h5,
+    readOnly: Boolean = false
 ) {
     Row(
         modifier = modifier,
@@ -49,12 +50,9 @@ fun DefaultCheckboxRow(
         BasicTextField(
             value = text,
             onValueChange = { onValueChanged(it) },
-            modifier = Modifier
-                .padding(horizontal = 10.dp)
-                .wrapContentHeight()
-                .fillMaxWidth()
-                .focusRequester(focusRequester),
-            textStyle = textStyle
+            modifier = textFieldModifier,
+            textStyle = textStyle,
+            readOnly = readOnly
         )
     }
 }

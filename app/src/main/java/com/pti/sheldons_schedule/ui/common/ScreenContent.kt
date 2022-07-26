@@ -19,6 +19,7 @@ import androidx.compose.ui.unit.dp
 import com.pti.sheldons_schedule.R
 import com.pti.sheldons_schedule.data.ScreenState
 import com.pti.sheldons_schedule.data.TitleFieldState
+import com.pti.sheldons_schedule.ui.screens.edit_event_screen.CheckboxContent
 import com.pti.sheldons_schedule.ui.screens.todo_list_screen.ToDoList
 import com.pti.sheldons_schedule.util.horizontalPadding
 import com.pti.sheldons_schedule.util.toTextFieldValue
@@ -41,7 +42,9 @@ fun ScreenContent(
     onRepeatFieldClicked: () -> Unit,
     onPriorityFieldClicked: () -> Unit,
     onRemindFieldClicked: () -> Unit,
-    onIconedTextClicked: () -> Unit
+    onIconedTextClicked: () -> Unit,
+    onTodoItemChanged: (String, Int) -> Unit,
+    onCheckedChange: (Boolean, Int) -> Unit
 ) {
     val todoFieldFocusRequester = remember { FocusRequester() }
 
@@ -90,11 +93,20 @@ fun ScreenContent(
     )
     if (isCreateEventScreen) {
         ToDoList(
-            itemsCount = 1,
+            itemsCount = state?.toDoList?.size ?: 1,
+            checked = false,
             isAddToDoListClicked = isAddToDoListClicked,
             focusRequester = todoFieldFocusRequester,
-            onValueChanged = {},
+            onValueChanged = { title, index -> },
             onClick = { onIconedTextClicked() }
+        )
+    } else if (!isCreateEventScreen && !state?.toDoList.isNullOrEmpty()) {
+        CheckboxContent(
+            state = state,
+            onTodoItemChanged = { title, index ->
+                onTodoItemChanged(title, index)
+            },
+            onCheckedChange = onCheckedChange
         )
     } else {
         HeightSpacer()
@@ -146,7 +158,7 @@ fun ScreenContent(
         label = stringResource(id = R.string.remind),
         onClick = { onRemindFieldClicked() },
         modifier = Modifier
-            .horizontalPadding(horizontal = 15.dp, bottom = 30.dp)
+            .horizontalPadding(horizontal = 15.dp, bottom = 70.dp)
             .fillMaxWidth()
             .wrapContentHeight(),
         onValueChanged = { }

@@ -1,10 +1,10 @@
 package com.pti.sheldons_schedule.ui.screens.edit_event_screen
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
-import androidx.compose.material.ExperimentalMaterialApi
-import androidx.compose.material.SnackbarHost
-import androidx.compose.material.SnackbarHostState
-import androidx.compose.material.SnackbarResult
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -18,6 +18,7 @@ import com.pti.sheldons_schedule.R
 import com.pti.sheldons_schedule.ui.common.CreateOrEditEventViewModel
 import com.pti.sheldons_schedule.ui.common.ScreenContent
 import com.pti.sheldons_schedule.ui.common.TimePicker
+import com.pti.sheldons_schedule.ui.common.TopToolbar
 import com.pti.sheldons_schedule.ui.navigation.NavDestination
 import com.pti.sheldons_schedule.ui.navigation.navigate
 import com.pti.sheldons_schedule.ui.screens.create_event_screen.ModalBottomSheet
@@ -89,6 +90,7 @@ fun EditEventScreen(
     ) { sheetState ->
 
         val scope = rememberCoroutineScope()
+        val scrollState = rememberScrollState()
         val snackbarHostState = remember { SnackbarHostState() }
         val focusRequester = remember { FocusRequester() }
 
@@ -134,28 +136,39 @@ fun EditEventScreen(
                         .padding(start = 15.dp)
                 )
 
-                ScreenContent(
-                    state = screenState,
-                    fieldWidth = halfFieldWidth.dp,
-                    textFieldFocusRequester = focusRequester,
-                    isCreateEventScreen = false,
-                    isAddToDoListClicked = false,
-                    onTitleEdited = { viewModel.onTitleEdited(it, true) },
-                    onFocusChanged = { viewModel.onFocusChanged(it, true) },
-                    onDescriptionEdited = { viewModel.onDescriptionEdited(it, true) },
-                    onStartDatePicked = { viewModel.onStartDatePicked(it, true) },
-                    onEndDatePicked = { viewModel.onEndDatePicked(it, true) },
-                    onTimeStartPicked = { hour, minutes ->
-                        viewModel.onTimeStartPicked(hour, minutes, true)
-                    },
-                    onTimeEndPicked = { hour, minutes ->
-                        viewModel.onTimeEndPicked(hour, minutes, true)
-                    },
-                    onRepeatFieldClicked = { viewModel.onRepeatFieldClicked(true) },
-                    onPriorityFieldClicked = { viewModel.onPriorityFieldClicked(true) },
-                    onRemindFieldClicked = { viewModel.onRemindFieldClicked(true) },
-                    onIconedTextClicked = { }
-                )
+                Column(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .verticalScroll(scrollState)
+                ) {
+                    ScreenContent(
+                        state = screenState,
+                        fieldWidth = halfFieldWidth.dp,
+                        textFieldFocusRequester = focusRequester,
+                        isCreateEventScreen = false,
+                        isAddToDoListClicked = false,
+                        onTitleEdited = { viewModel.onTitleEdited(it, true) },
+                        onFocusChanged = { viewModel.onFocusChanged(it, true) },
+                        onDescriptionEdited = { viewModel.onDescriptionEdited(it, true) },
+                        onStartDatePicked = { viewModel.onStartDatePicked(it, true) },
+                        onEndDatePicked = { viewModel.onEndDatePicked(it, true) },
+                        onTimeStartPicked = { hour, minutes ->
+                            viewModel.onTimeStartPicked(hour, minutes, true)
+                        },
+                        onTimeEndPicked = { hour, minutes ->
+                            viewModel.onTimeEndPicked(hour, minutes, true)
+                        },
+                        onRepeatFieldClicked = { viewModel.onRepeatFieldClicked(true) },
+                        onPriorityFieldClicked = { viewModel.onPriorityFieldClicked(true) },
+                        onRemindFieldClicked = { viewModel.onRemindFieldClicked(true) },
+                        onIconedTextClicked = { },
+                        onCheckedChange = { isChecked, index ->
+                            viewModel.onCheckedChange(isChecked, index)
+                        },
+                        onTodoItemChanged = { title, index ->
+                            viewModel.onTodoItemChanged(title, index)}
+                    )
+                }
             }
 
             BottomToolbar(
@@ -171,6 +184,7 @@ fun EditEventScreen(
                     .height(58.dp)
                     .fillMaxWidth()
                     .align(Alignment.BottomCenter)
+                    .background(MaterialTheme.colors.background)
             )
 
             SnackbarHost(

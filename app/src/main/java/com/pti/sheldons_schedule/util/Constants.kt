@@ -15,4 +15,5 @@ object Constants {
 
     const val PADDING_WIDTH_SUM = 60
     const val FIELD_COUNT = 2
+    const val FIELD_HEIGHT = 40
 }

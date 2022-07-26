@@ -32,7 +32,7 @@ fun Navigation(navHostController: NavHostController) {
             EditEventScreen(eventId = eventId, navController = navHostController)
         }
 
-        composable("${NavDestination.ToDoListScreen.route}/$EVENT_ID") {
+        composable("${NavDestination.ToDoListScreen.route}/{$EVENT_ID}") {
             val eventId = it.arguments?.getString(EVENT_ID)?.toLong() ?: 0
             ToDoListScreen(eventId = eventId, navController = navHostController)
         }
