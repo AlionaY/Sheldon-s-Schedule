@@ -1,11 +1,9 @@
 package com.pti.sheldons_schedule.ui.screens.todo_list_screen
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.Checkbox
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -13,9 +11,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import com.pti.sheldons_schedule.ui.common.DefaultCheckboxRow
 import com.pti.sheldons_schedule.ui.screens.edit_event_screen.TopToolbar
-
-private const val FIELD_HEIGHT = 25
+import com.pti.sheldons_schedule.util.Constants.FIELD_HEIGHT
 
 @Composable
 fun ToDoListScreen(
@@ -28,11 +26,7 @@ fun ToDoListScreen(
 
     viewModel.getEvent(eventId)
 
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .verticalScroll(scrollState)
-    ) {
+    Column(modifier = Modifier.fillMaxSize()) {
         TopToolbar(
             onClick = { navController.popBackStack() },
             modifier = Modifier
@@ -45,31 +39,32 @@ fun ToDoListScreen(
             title = event?.event?.title.orEmpty(),
             modifier = Modifier
                 .fillMaxWidth()
-                .height(58.dp)
+                .height(50.dp)
                 .padding(start = 15.dp)
         )
-
-        Column(modifier = Modifier.fillMaxSize()) {
-            event?.toDoList?.forEach { todo ->
-                Row(
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .verticalScroll(scrollState)
+        ) {
+            event?.toDoList?.forEachIndexed { index, _ ->
+                DefaultCheckboxRow(
+                    checked = event?.toDoList?.get(index)?.completed ?: false,
+                    text = event?.toDoList?.get(index)?.title.orEmpty(),
+                    onValueChanged = { },
+                    onCheckedChange = { viewModel.onCheckedChange(it, index) },
                     modifier = Modifier
+                        .padding(start = 15.dp)
                         .fillMaxWidth()
-                        .height(FIELD_HEIGHT.dp)
-                        .padding(start = 15.dp, top = 15.dp)
-                ) {
-                    Checkbox(
-                        checked = todo.completed,
-                        onCheckedChange = { viewModel.onCheckedChange(it, todo) },
-                        modifier = Modifier.wrapContentSize()
-                    )
-                    BasicTextField(
-                        value = todo.title,
-                        onValueChange = {},
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .padding(start = 10.dp)
-                    )
-                }
+                        .height(FIELD_HEIGHT.dp),
+                    textFieldModifier = Modifier
+                        .padding(horizontal = 10.dp)
+                        .wrapContentSize()
+                        .clickable {
+                            //todo: show dialog
+                        },
+                    readOnly = true
+                )
             }
         }
     }

@@ -91,6 +91,7 @@ fun ScreenContent(
     if (isCreateEventScreen) {
         ToDoList(
             itemsCount = 1,
+            checked = false,
             isAddToDoListClicked = isAddToDoListClicked,
             focusRequester = todoFieldFocusRequester,
             onValueChanged = {},
