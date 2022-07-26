@@ -1,6 +1,8 @@
 package com.pti.sheldons_schedule.ui.common
 
+import android.util.Log
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.material.ContentAlpha
@@ -14,12 +16,17 @@ import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.pti.sheldons_schedule.R
 import com.pti.sheldons_schedule.data.ScreenState
 import com.pti.sheldons_schedule.data.TitleFieldState
+import com.pti.sheldons_schedule.ui.screens.edit_event_screen.CheckboxContent
 import com.pti.sheldons_schedule.ui.screens.todo_list_screen.ToDoList
+import com.pti.sheldons_schedule.util.Constants
 import com.pti.sheldons_schedule.util.horizontalPadding
 import com.pti.sheldons_schedule.util.toTextFieldValue
 import java.util.*
@@ -41,7 +48,9 @@ fun ScreenContent(
     onRepeatFieldClicked: () -> Unit,
     onPriorityFieldClicked: () -> Unit,
     onRemindFieldClicked: () -> Unit,
-    onIconedTextClicked: () -> Unit
+    onIconedTextClicked: () -> Unit,
+    onTodoItemChanged: (String) -> Unit,
+    onCheckedChange: (Boolean, Int) -> Unit
 ) {
     val todoFieldFocusRequester = remember { FocusRequester() }
 
@@ -90,12 +99,18 @@ fun ScreenContent(
     )
     if (isCreateEventScreen) {
         ToDoList(
-            itemsCount = 1,
+            itemsCount = state?.toDoList?.size ?: 1,
             checked = false,
             isAddToDoListClicked = isAddToDoListClicked,
             focusRequester = todoFieldFocusRequester,
             onValueChanged = {},
             onClick = { onIconedTextClicked() }
+        )
+    } else if (!isCreateEventScreen && !state?.toDoList.isNullOrEmpty()) {
+        CheckboxContent(
+            state = state,
+            onTodoItemChanged = onTodoItemChanged,
+            onCheckedChange = onCheckedChange
         )
     } else {
         HeightSpacer()
@@ -147,7 +162,7 @@ fun ScreenContent(
         label = stringResource(id = R.string.remind),
         onClick = { onRemindFieldClicked() },
         modifier = Modifier
-            .horizontalPadding(horizontal = 15.dp, bottom = 30.dp)
+            .horizontalPadding(horizontal = 15.dp, bottom = 70.dp)
             .fillMaxWidth()
             .wrapContentHeight(),
         onValueChanged = { }

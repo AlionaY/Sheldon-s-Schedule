@@ -84,7 +84,8 @@ class CreateOrEditEventViewModel @Inject constructor(
                         description = event.event.description,
                         priority = event.event.priority,
                         repeat = event.event.repeat,
-                        remind = event.reminder.toRemind()
+                        remind = event.reminder.toRemind(),
+                        toDoList = event.toDoList
                     )
                 }
             }
