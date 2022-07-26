@@ -1,7 +1,13 @@
 package com.pti.sheldons_schedule.ui.screens.todo_list_screen
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.material.Icon
+import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBackIos
+import androidx.compose.material.icons.filled.Edit
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -18,6 +24,33 @@ import com.pti.sheldons_schedule.ui.common.HeightSpacer
 import com.pti.sheldons_schedule.ui.common.IconedText
 import com.pti.sheldons_schedule.util.Constants.FIELD_HEIGHT
 
+
+@Composable
+fun TopToolbar(
+    onBackClicked: () -> Unit,
+    onEditEventClicked: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    Row(
+        modifier = modifier,
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.SpaceBetween
+    ) {
+        Icon(
+            imageVector = Icons.Filled.ArrowBackIos,
+            contentDescription = "back",
+            modifier = Modifier.clickable { onBackClicked() },
+            tint = MaterialTheme.colors.onBackground
+        )
+
+        Icon(
+            imageVector = Icons.Filled.Edit,
+            contentDescription = "edit",
+            modifier = Modifier.clickable { onEditEventClicked() },
+            tint = MaterialTheme.colors.onBackground
+        )
+    }
+}
 
 @Composable
 fun EventTitle(title: String, modifier: Modifier = Modifier) {

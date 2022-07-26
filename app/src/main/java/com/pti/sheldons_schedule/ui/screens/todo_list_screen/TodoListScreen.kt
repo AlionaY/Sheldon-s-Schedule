@@ -12,7 +12,8 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.pti.sheldons_schedule.ui.common.DefaultCheckboxRow
-import com.pti.sheldons_schedule.ui.screens.edit_event_screen.TopToolbar
+import com.pti.sheldons_schedule.ui.navigation.NavDestination
+import com.pti.sheldons_schedule.ui.navigation.navigate
 import com.pti.sheldons_schedule.util.Constants.FIELD_HEIGHT
 
 @Composable
@@ -28,11 +29,17 @@ fun ToDoListScreen(
 
     Column(modifier = Modifier.fillMaxSize()) {
         TopToolbar(
-            onClick = { navController.popBackStack() },
+            onBackClicked = { navController.popBackStack() },
+            onEditEventClicked = {
+                navController.navigate(
+                    NavDestination.EditEventScreen,
+                    event?.event?.creationDate.toString()
+                )
+            },
             modifier = Modifier
                 .fillMaxWidth()
                 .height(58.dp)
-                .padding(start = 15.dp)
+                .padding(horizontal = 15.dp)
         )
 
         EventTitle(
