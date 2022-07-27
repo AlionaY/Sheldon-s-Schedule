@@ -72,12 +72,12 @@ fun EventTitle(title: String, modifier: Modifier = Modifier) {
 fun ToDoList(
     todoList: List<ToDo>,
     checked: Boolean = false,
-    focusRequester: FocusRequester,
     onValueChanged: (String, Int) -> Unit,
     onAddTodoListClicked: () -> Unit,
     onAddTodoItemClicked: () -> Unit
 ) {
     var isAddToDoListClicked by remember { mutableStateOf(false) }
+    val focusRequester = remember { FocusRequester() }
 
     if (!isAddToDoListClicked) {
         IconedText(
@@ -98,7 +98,6 @@ fun ToDoList(
             DefaultCheckboxRow(
                 text = todoList[index].title,
                 checked = checked,
-                isClicked = isAddToDoListClicked,
                 onValueChanged = { onValueChanged(it, index) },
                 onCheckedChange = { },
                 textStyle = TextStyle(

@@ -31,8 +31,6 @@ import androidx.compose.ui.unit.sp
 fun DefaultCheckboxRow(
     checked: Boolean,
     text: String,
-    textStyle: TextStyle,
-    isClicked: Boolean,
     onValueChanged: (String) -> Unit,
     onCheckedChange: (Boolean) -> Unit,
     modifier: Modifier = Modifier,
@@ -40,16 +38,6 @@ fun DefaultCheckboxRow(
     textStyle: TextStyle = MaterialTheme.typography.h5,
     readOnly: Boolean = false
 ) {
-    val focusRequester = remember {FocusRequester()}
-    val focusManager = LocalFocusManager.current
-
-    LaunchedEffect(key1 = isClicked) {
-        if (isClicked) {
-            focusManager.clearFocus()
-            focusRequester.requestFocus()
-        }
-    }
-
     Row(
         modifier = modifier,
         verticalAlignment = Alignment.CenterVertically
