@@ -79,8 +79,6 @@ fun CreateEventScreen(
         val focusRequester = remember { FocusRequester() }
         val snackbarHostState = remember { SnackbarHostState() }
 
-        var isAddToDoListClicked by remember { mutableStateOf(false) }
-
         LaunchedEffect(key1 = state.options) {
             if (!state.options.isNullOrEmpty()) {
                 scope.launch {
@@ -111,10 +109,6 @@ fun CreateEventScreen(
             }
         }
 
-        LaunchedEffect(key1 = isAddToDoListClicked) {
-            if (isAddToDoListClicked) focusManager.clearFocus()
-        }
-
         BoxWithConstraints(modifier = Modifier.fillMaxSize()) {
             val halfFieldWidth = (this.maxWidth.value.toInt() - PADDING_WIDTH_SUM) / FIELD_COUNT
 
@@ -141,7 +135,6 @@ fun CreateEventScreen(
                         textFieldFocusRequester = focusRequester,
                         fieldWidth = halfFieldWidth.dp,
                         isCreateEventScreen = true,
-                        isAddToDoListClicked = isAddToDoListClicked,
                         onTitleEdited = { viewModel.onTitleEdited(it) },
                         onDescriptionEdited = { viewModel.onDescriptionEdited(it) },
                         onFocusChanged = { viewModel.onFocusChanged(it) },
@@ -156,7 +149,11 @@ fun CreateEventScreen(
                         onRepeatFieldClicked = { viewModel.onRepeatFieldClicked() },
                         onPriorityFieldClicked = { viewModel.onPriorityFieldClicked() },
                         onRemindFieldClicked = { viewModel.onRemindFieldClicked() },
-                        onIconedTextClicked = { isAddToDoListClicked = true }
+                        onAddTodoListClicked = { viewModel.onAddTodoItemClicked() },
+                        onValueChanged = { title, index ->
+                            viewModel.onTodoTitleChanged(title, index)
+                        },
+                        onAddTodoItemClicked = { viewModel.onAddTodoItemClicked() }
                     )
                 }
             }

@@ -9,7 +9,7 @@ import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Error
-import androidx.compose.runtime.Composable
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusDirection
@@ -31,6 +31,8 @@ import androidx.compose.ui.unit.sp
 fun DefaultCheckboxRow(
     checked: Boolean,
     text: String,
+    textStyle: TextStyle,
+    isClicked: Boolean,
     onValueChanged: (String) -> Unit,
     onCheckedChange: (Boolean) -> Unit,
     modifier: Modifier = Modifier,
@@ -38,6 +40,16 @@ fun DefaultCheckboxRow(
     textStyle: TextStyle = MaterialTheme.typography.h5,
     readOnly: Boolean = false
 ) {
+    val focusRequester = remember {FocusRequester()}
+    val focusManager = LocalFocusManager.current
+
+    LaunchedEffect(key1 = isClicked) {
+        if (isClicked) {
+            focusManager.clearFocus()
+            focusRequester.requestFocus()
+        }
+    }
+
     Row(
         modifier = modifier,
         verticalAlignment = Alignment.CenterVertically

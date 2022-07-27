@@ -8,7 +8,7 @@ import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBackIos
 import androidx.compose.material.icons.filled.Edit
-import androidx.compose.runtime.Composable
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
@@ -19,6 +19,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.pti.sheldons_schedule.R
+import com.pti.sheldons_schedule.data.ToDo
 import com.pti.sheldons_schedule.ui.common.DefaultCheckboxRow
 import com.pti.sheldons_schedule.ui.common.HeightSpacer
 import com.pti.sheldons_schedule.ui.common.IconedText
@@ -69,39 +70,43 @@ fun EventTitle(title: String, modifier: Modifier = Modifier) {
 
 @Composable
 fun ToDoList(
-    itemsCount: Int,
-    text: String = "",
-    isAddToDoListClicked: Boolean,
-    checked: Boolean,
+    todoList: List<ToDo>,
+    checked: Boolean = false,
     focusRequester: FocusRequester,
-    onValueChanged: (String) -> Unit,
-    onClick: () -> Unit
+    onValueChanged: (String, Int) -> Unit,
+    onAddTodoListClicked: () -> Unit,
+    onAddTodoItemClicked: () -> Unit
 ) {
+    var isAddToDoListClicked by remember { mutableStateOf(false) }
+
     if (!isAddToDoListClicked) {
         IconedText(
             text = stringResource(id = R.string.add_to_do_list),
             textSize = 15.sp,
-            onClick = { onClick() },
+            onClick = {
+                onAddTodoListClicked()
+                isAddToDoListClicked = true
+            },
             modifier = Modifier
                 .padding(start = 15.dp)
                 .fillMaxWidth()
                 .height(50.dp)
         )
     } else {
-        HeightSpacer(5.dp)
-
-        (0 until itemsCount).forEach { _ ->
+        (todoList).forEachIndexed { index, _ ->
+            HeightSpacer(5.dp)
             DefaultCheckboxRow(
-                text = text,
+                text = todoList[index].title,
                 checked = checked,
-                onValueChanged = { onValueChanged(it) },
+                isClicked = isAddToDoListClicked,
+                onValueChanged = { onValueChanged(it, index) },
                 onCheckedChange = { },
                 textStyle = TextStyle(
                     fontSize = 15.sp,
                     fontWeight = FontWeight.Normal
                 ),
                 modifier = Modifier
-                    .padding(start = 15.dp)
+                    .padding(start = 10.dp)
                     .fillMaxWidth()
                     .height(FIELD_HEIGHT.dp),
                 textFieldModifier = Modifier
@@ -110,7 +115,16 @@ fun ToDoList(
                     .fillMaxWidth()
                     .focusRequester(focusRequester),
             )
-            HeightSpacer(5.dp)
         }
+
+        IconedText(
+            text = stringResource(id = R.string.add_todo_item),
+            textSize = 15.sp,
+            onClick = { onAddTodoItemClicked() },
+            modifier = Modifier
+                .padding(start = 30.dp)
+                .fillMaxWidth()
+                .height(FIELD_HEIGHT.dp)
+        )
     }
 }

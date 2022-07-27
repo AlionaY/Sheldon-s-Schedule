@@ -140,7 +140,6 @@ fun EditEventScreen(
                     fieldWidth = halfFieldWidth.dp,
                     textFieldFocusRequester = focusRequester,
                     isCreateEventScreen = false,
-                    isAddToDoListClicked = false,
                     onTitleEdited = { viewModel.onTitleEdited(it, true) },
                     onFocusChanged = { viewModel.onFocusChanged(it, true) },
                     onDescriptionEdited = { viewModel.onDescriptionEdited(it, true) },
@@ -155,7 +154,9 @@ fun EditEventScreen(
                     onRepeatFieldClicked = { viewModel.onRepeatFieldClicked(true) },
                     onPriorityFieldClicked = { viewModel.onPriorityFieldClicked(true) },
                     onRemindFieldClicked = { viewModel.onRemindFieldClicked(true) },
-                    onIconedTextClicked = { }
+                    onAddTodoListClicked = {},
+                    onAddTodoItemClicked = {},
+                    onValueChanged = { title, index -> }
                 )
             }
 
