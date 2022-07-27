@@ -1,8 +1,9 @@
-package com.pti.sheldons_schedule.ui.screens.edit_event_screen
+package com.pti.sheldons_schedule.ui.common
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Row
 import androidx.compose.material.Icon
+import androidx.compose.material.MaterialTheme
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBackIos
 import androidx.compose.runtime.Composable
@@ -23,7 +24,7 @@ fun TopToolbar(
             imageVector = Icons.Filled.ArrowBackIos,
             contentDescription = "back",
             modifier = Modifier.clickable { onClick() },
-            tint = Black
+            tint = MaterialTheme.colors.onBackground
         )
     }
 }
