@@ -12,10 +12,7 @@ import com.pti.sheldons_schedule.data.*
 import com.pti.sheldons_schedule.data.Options.*
 import com.pti.sheldons_schedule.db.EventRepository
 import com.pti.sheldons_schedule.service.AlarmBroadcastReceiver
-import com.pti.sheldons_schedule.util.Constants
-import com.pti.sheldons_schedule.util.toCalendar
-import com.pti.sheldons_schedule.util.updateDate
-import com.pti.sheldons_schedule.util.updateTime
+import com.pti.sheldons_schedule.util.*
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -65,12 +62,24 @@ class CreateOrEditEventViewModel @Inject constructor(
     val isPickedTimeValid = MutableSharedFlow<Boolean>()
 
     private val newEvent = MutableStateFlow<FullEvent?>(null)
-
+    private val isAddTodoItemClicked = MutableSharedFlow<Boolean>()
 
     init {
         observeScreenState(createEventScreenState)
         observeScreenState(editEventScreenState)
         updateEditEventScreenState()
+        observeIsAddTodoItemClicked()
+    }
+
+    private fun observeIsAddTodoItemClicked() {
+        viewModelScope.launch {
+            isAddTodoItemClicked.collect {
+                val list = createEventScreenState.value.toDoList + "".toToDo(
+                    createEventScreenState.value
+                )
+                createEventScreenState.update { it.copy(toDoList = list) }
+            }
+        }
     }
 
     private fun updateEditEventScreenState() {
@@ -273,17 +282,35 @@ class CreateOrEditEventViewModel @Inject constructor(
             val remindAt = getRemindAtTime(state)
             val reminder = Reminder(creationDate, state.remind.alias)
 
+            updateCreationDateAtTodoList(creationDate)
+
             newEvent.value = createEventScreenState.value.toEvent(
                 creationDate,
                 duration,
                 reminder
             )
+
             newEvent.value?.let {
                 repository.saveEvent(it)
             }
 
             setReminderAlarm(remindAt.timeInMillis)
         }
+    }
+
+    private fun updateCreationDateAtTodoList(creationDate: Long) {
+        val todoList = mutableListOf<ToDo>()
+        createEventScreenState.value.let { state ->
+            state.toDoList.forEachIndexed { index, _ ->
+                todoList += ToDo(
+                    title = state.toDoList[index].title,
+                    completed = state.toDoList[index].completed,
+                    eventId = creationDate
+                )
+            }
+        }
+
+        createEventScreenState.update { it.copy(toDoList = todoList) }
     }
 
     private fun getEventDuration(state: ScreenState) =
@@ -419,5 +446,15 @@ class CreateOrEditEventViewModel @Inject constructor(
         pickedEvent.value?.let {
             repository.deleteEvent(it)
         }
+    }
+
+    fun onTodoTitleChanged(title: String, index: Int) {
+        val list = createEventScreenState.value.toDoList.toMutableList()
+        list[index] = title.toToDo(createEventScreenState.value)
+        createEventScreenState.update { it.copy(toDoList = list) }
+    }
+
+    fun onAddTodoItemClicked() = viewModelScope.launch {
+        isAddTodoItemClicked.emit(true)
     }
 }

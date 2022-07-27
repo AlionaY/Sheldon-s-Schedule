@@ -2,6 +2,8 @@ package com.pti.sheldons_schedule.util
 
 import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.input.TextFieldValue
+import com.pti.sheldons_schedule.data.ScreenState
+import com.pti.sheldons_schedule.data.ToDo
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -16,4 +18,10 @@ fun String.toCalendar(): Calendar {
 fun String?.toTextFieldValue() = TextFieldValue(
     text = this.orEmpty(),
     selection = TextRange(this.orEmpty().length)
+)
+
+fun String.toToDo(screenState: ScreenState, completed: Boolean = false) = ToDo(
+    title = this,
+    completed = completed,
+    eventId = screenState.calendar.timeInMillis
 )
