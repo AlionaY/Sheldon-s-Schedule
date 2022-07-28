@@ -161,7 +161,7 @@ fun EditEventScreen(
                         onPriorityFieldClicked = { viewModel.onPriorityFieldClicked(true) },
                         onRemindFieldClicked = { viewModel.onRemindFieldClicked(true) },
                         onAddTodoListClicked = {},
-                        onAddTodoItemClicked = {},
+                        onAddTodoItemClicked = { viewModel.onAddTodoItemClicked(true) },
                         onValueChanged = { title, index -> },
                         onCheckedChange = { isChecked, index -> },
                         onTodoItemChanged = {}

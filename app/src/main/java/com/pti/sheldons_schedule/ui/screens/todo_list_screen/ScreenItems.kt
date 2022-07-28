@@ -91,7 +91,6 @@ fun ToDoList(
     if (!isAddToDoListClicked) {
         IconedText(
             text = stringResource(id = R.string.add_to_do_list),
-            textSize = 15.sp,
             onClick = {
                 onAddTodoListClicked()
                 isAddToDoListClicked = true
@@ -127,7 +126,6 @@ fun ToDoList(
 
         IconedText(
             text = stringResource(id = R.string.add_todo_item),
-            textSize = 15.sp,
             onClick = { onAddTodoItemClicked() },
             modifier = Modifier
                 .padding(start = 30.dp)

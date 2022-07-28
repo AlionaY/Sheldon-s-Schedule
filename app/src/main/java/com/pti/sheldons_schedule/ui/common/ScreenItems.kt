@@ -60,10 +60,10 @@ fun DefaultCheckboxRow(
 @Composable
 fun IconedText(
     text: String,
-    textSize: TextUnit,
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
-    icon: ImageVector = Icons.Filled.Add
+    icon: ImageVector = Icons.Filled.Add,
+    textSize : TextUnit = 15.sp
 ) {
     Row(
         modifier = modifier,

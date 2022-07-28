@@ -9,21 +9,25 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.pti.sheldons_schedule.R
 import com.pti.sheldons_schedule.data.ScreenState
 import com.pti.sheldons_schedule.ui.common.DefaultCheckboxRow
 import com.pti.sheldons_schedule.ui.common.HeightSpacer
+import com.pti.sheldons_schedule.ui.common.IconedText
 import com.pti.sheldons_schedule.util.Constants
 
 @Composable
 fun CheckboxContent(
     state: ScreenState?,
     onTodoItemChanged: (String) -> Unit,
-    onCheckedChange: (Boolean, Int) -> Unit
+    onCheckedChange: (Boolean, Int) -> Unit,
+    onAddTodoItemClicked: () -> Unit
 ) {
     HeightSpacer(5.dp)
 
@@ -50,6 +54,16 @@ fun CheckboxContent(
             HeightSpacer(5.dp)
         }
     }
+
+    IconedText(
+        text = stringResource(id = R.string.add_todo_item),
+        onClick = { onAddTodoItemClicked() },
+        modifier = Modifier
+            .padding(start = 30.dp)
+            .fillMaxWidth()
+            .wrapContentHeight()
+    )
+    HeightSpacer(5.dp)
 }
 
 @Composable

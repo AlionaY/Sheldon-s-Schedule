@@ -63,6 +63,7 @@ class CreateOrEditEventViewModel @Inject constructor(
 
     private val newEvent = MutableStateFlow<FullEvent?>(null)
     private val isAddTodoItemClicked = MutableSharedFlow<Boolean>()
+    private val isCreateEventScreen = MutableStateFlow(false)
 
     init {
         observeScreenState(createEventScreenState)
@@ -74,12 +75,17 @@ class CreateOrEditEventViewModel @Inject constructor(
     private fun observeIsAddTodoItemClicked() {
         viewModelScope.launch {
             isAddTodoItemClicked.collect {
-                val list = createEventScreenState.value.toDoList + "".toToDo(
-                    createEventScreenState.value
-                )
-                createEventScreenState.update { it.copy(toDoList = list) }
+                val state = if (isCreateEventScreen.value) createEventScreenState else editEventScreenState
+                addAnEmptyTodoItem(state)
             }
         }
+    }
+
+    private fun addAnEmptyTodoItem(state: MutableStateFlow<ScreenState>) {
+        val list = state.value.toDoList + "".toToDo(
+            state.value
+        )
+        state.update { it.copy(toDoList = list) }
     }
 
     private fun updateEditEventScreenState() {
@@ -455,7 +461,8 @@ class CreateOrEditEventViewModel @Inject constructor(
         createEventScreenState.update { it.copy(toDoList = list) }
     }
 
-    fun onAddTodoItemClicked() = viewModelScope.launch {
+    fun onAddTodoItemClicked(isEditEventScreen: Boolean) = viewModelScope.launch {
         isAddTodoItemClicked.emit(true)
+        isCreateEventScreen.value = !isEditEventScreen
     }
 }

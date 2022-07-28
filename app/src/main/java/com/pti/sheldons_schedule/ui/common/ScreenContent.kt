@@ -101,7 +101,8 @@ fun ScreenContent(
         CheckboxContent(
             state = state,
             onTodoItemChanged = onTodoItemChanged,
-            onCheckedChange = onCheckedChange
+            onCheckedChange = onCheckedChange,
+            onAddTodoItemClicked = { onAddTodoItemClicked() }
         )
     } else {
         HeightSpacer()
