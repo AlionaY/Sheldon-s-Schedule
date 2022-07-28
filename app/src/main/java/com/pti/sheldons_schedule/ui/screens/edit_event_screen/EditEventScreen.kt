@@ -163,8 +163,11 @@ fun EditEventScreen(
                         onAddTodoListClicked = {},
                         onAddTodoItemClicked = { viewModel.onAddTodoItemClicked(true) },
                         onValueChanged = { title, index -> },
-                        onCheckedChange = { isChecked, index -> },
-                        onTodoItemChanged = {}
+                        onCheckedChange = { isChecked, index ->
+                            viewModel.onCheckedChange(isChecked, index)
+                        },
+                        onTodoItemChanged = { title, index ->
+                            viewModel.onTodoItemChanged(title, index)}
                     )
                 }
             }

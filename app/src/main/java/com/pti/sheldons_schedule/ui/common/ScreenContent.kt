@@ -19,7 +19,7 @@ import androidx.compose.ui.unit.dp
 import com.pti.sheldons_schedule.R
 import com.pti.sheldons_schedule.data.ScreenState
 import com.pti.sheldons_schedule.data.TitleFieldState
-import com.pti.sheldons_schedule.ui.screens.edit_event_screen.CheckboxContent
+import com.pti.sheldons_schedule.ui.screens.todo_list_screen.CheckboxContent
 import com.pti.sheldons_schedule.ui.screens.todo_list_screen.ToDoList
 import com.pti.sheldons_schedule.util.horizontalPadding
 import com.pti.sheldons_schedule.util.toTextFieldValue
@@ -44,7 +44,7 @@ fun ScreenContent(
     onAddTodoListClicked: () -> Unit,
     onValueChanged: (String, Int) -> Unit,
     onAddTodoItemClicked: () -> Unit,
-    onTodoItemChanged: (String) -> Unit,
+    onTodoItemChanged: (String, Int) -> Unit,
     onCheckedChange: (Boolean, Int) -> Unit
 ) {
     val titleBorderColor = when (state?.titleFieldState) {
@@ -100,7 +100,9 @@ fun ScreenContent(
     } else if (!isCreateEventScreen && !state?.toDoList.isNullOrEmpty()) {
         CheckboxContent(
             state = state,
-            onTodoItemChanged = onTodoItemChanged,
+            onTodoItemChanged = { title, index ->
+                onTodoItemChanged(title, index)
+            },
             onCheckedChange = onCheckedChange,
             onAddTodoItemClicked = { onAddTodoItemClicked() }
         )

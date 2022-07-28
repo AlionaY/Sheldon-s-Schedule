@@ -154,7 +154,7 @@ fun CreateEventScreen(
                             viewModel.onTodoTitleChanged(title, index)
                         },
                         onAddTodoItemClicked = { viewModel.onAddTodoItemClicked(false) },
-                        onTodoItemChanged = {},
+                        onTodoItemChanged = { title, index -> },
                         onCheckedChange = { isChecked, index -> }
                     )
                 }

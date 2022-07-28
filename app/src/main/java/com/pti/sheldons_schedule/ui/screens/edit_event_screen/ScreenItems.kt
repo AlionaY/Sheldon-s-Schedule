@@ -23,50 +23,6 @@ import com.pti.sheldons_schedule.ui.common.IconedText
 import com.pti.sheldons_schedule.util.Constants
 
 @Composable
-fun CheckboxContent(
-    state: ScreenState?,
-    onTodoItemChanged: (String) -> Unit,
-    onCheckedChange: (Boolean, Int) -> Unit,
-    onAddTodoItemClicked: () -> Unit
-) {
-    HeightSpacer(5.dp)
-
-    state?.toDoList?.let {
-        (0 until state.toDoList.size).forEachIndexed { index, todo ->
-            DefaultCheckboxRow(
-                text = state.toDoList[index].title,
-                checked = state.toDoList[index].completed,
-                onValueChanged = { onTodoItemChanged(it) },
-                onCheckedChange = { onCheckedChange(it, index) },
-                textStyle = TextStyle(
-                    fontSize = 15.sp,
-                    fontWeight = FontWeight.Normal
-                ),
-                modifier = Modifier
-                    .padding(start = 15.dp)
-                    .fillMaxWidth()
-                    .height(Constants.FIELD_HEIGHT.dp),
-                textFieldModifier = Modifier
-                    .padding(horizontal = 10.dp)
-                    .wrapContentHeight()
-                    .fillMaxWidth()
-            )
-            HeightSpacer(5.dp)
-        }
-    }
-
-    IconedText(
-        text = stringResource(id = R.string.add_todo_item),
-        onClick = { onAddTodoItemClicked() },
-        modifier = Modifier
-            .padding(start = 30.dp)
-            .fillMaxWidth()
-            .wrapContentHeight()
-    )
-    HeightSpacer(5.dp)
-}
-
-@Composable
 fun IconTextButton(
     icon: ImageVector,
     text: String,
