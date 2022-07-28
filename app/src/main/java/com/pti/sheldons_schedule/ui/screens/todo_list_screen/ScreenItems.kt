@@ -13,6 +13,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -77,7 +78,15 @@ fun ToDoList(
     onAddTodoItemClicked: () -> Unit
 ) {
     var isAddToDoListClicked by remember { mutableStateOf(false) }
+    val focusManager = LocalFocusManager.current
     val focusRequester = remember { FocusRequester() }
+
+    LaunchedEffect(key1 = isAddToDoListClicked) {
+        if (isAddToDoListClicked) {
+            focusManager.clearFocus()
+            focusRequester.requestFocus()
+        }
+    }
 
     if (!isAddToDoListClicked) {
         IconedText(

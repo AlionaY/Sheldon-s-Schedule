@@ -19,6 +19,7 @@ import androidx.compose.ui.unit.dp
 import com.pti.sheldons_schedule.R
 import com.pti.sheldons_schedule.data.ScreenState
 import com.pti.sheldons_schedule.data.TitleFieldState
+import com.pti.sheldons_schedule.ui.screens.edit_event_screen.CheckboxContent
 import com.pti.sheldons_schedule.ui.screens.todo_list_screen.ToDoList
 import com.pti.sheldons_schedule.util.horizontalPadding
 import com.pti.sheldons_schedule.util.toTextFieldValue
@@ -42,12 +43,16 @@ fun ScreenContent(
     onRemindFieldClicked: () -> Unit,
     onAddTodoListClicked: () -> Unit,
     onValueChanged: (String, Int) -> Unit,
-    onAddTodoItemClicked: () -> Unit
+    onAddTodoItemClicked: () -> Unit,
+    onTodoItemChanged: (String) -> Unit,
+    onCheckedChange: (Boolean, Int) -> Unit
 ) {
     val titleBorderColor = when (state?.titleFieldState) {
         TitleFieldState.Error -> MaterialTheme.colors.error
         else -> MaterialTheme.colors.onSurface.copy(alpha = ContentAlpha.disabled)
     }
+
+    val bottomPadding = (if (isCreateEventScreen) 30 else 70).dp
 
     val titleTextFieldValue = remember {
         mutableStateOf(state?.title.toTextFieldValue())
@@ -91,6 +96,12 @@ fun ScreenContent(
             },
             onAddTodoListClicked = { onAddTodoListClicked() },
             onAddTodoItemClicked = { onAddTodoItemClicked() }
+        )
+    } else if (!isCreateEventScreen && !state?.toDoList.isNullOrEmpty()) {
+        CheckboxContent(
+            state = state,
+            onTodoItemChanged = onTodoItemChanged,
+            onCheckedChange = onCheckedChange
         )
     } else {
         HeightSpacer()
@@ -142,7 +153,7 @@ fun ScreenContent(
         label = stringResource(id = R.string.remind),
         onClick = { onRemindFieldClicked() },
         modifier = Modifier
-            .horizontalPadding(horizontal = 15.dp, bottom = 30.dp)
+            .horizontalPadding(horizontal = 15.dp, bottom = bottomPadding)
             .fillMaxWidth()
             .wrapContentHeight(),
         onValueChanged = { }
