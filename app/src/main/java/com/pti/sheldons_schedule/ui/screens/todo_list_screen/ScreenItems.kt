@@ -15,8 +15,6 @@ import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.pti.sheldons_schedule.R
@@ -25,7 +23,6 @@ import com.pti.sheldons_schedule.data.ToDo
 import com.pti.sheldons_schedule.ui.common.DefaultCheckboxRow
 import com.pti.sheldons_schedule.ui.common.HeightSpacer
 import com.pti.sheldons_schedule.ui.common.IconedText
-import com.pti.sheldons_schedule.util.Constants
 import com.pti.sheldons_schedule.util.Constants.FIELD_HEIGHT
 
 
@@ -45,10 +42,6 @@ fun CheckboxContent(
                 checked = state.toDoList[index].completed,
                 onValueChanged = { onTodoItemChanged(it, index) },
                 onCheckedChange = { onCheckedChange(it, index) },
-                textStyle = TextStyle(
-                    fontSize = 15.sp,
-                    fontWeight = FontWeight.Normal
-                ),
                 modifier = Modifier
                     .padding(start = 15.dp)
                     .fillMaxWidth()
@@ -154,10 +147,6 @@ fun ToDoList(
                 checked = checked,
                 onValueChanged = { onValueChanged(it, index) },
                 onCheckedChange = { },
-                textStyle = TextStyle(
-                    fontSize = 15.sp,
-                    fontWeight = FontWeight.Normal
-                ),
                 modifier = Modifier
                     .padding(start = 10.dp)
                     .fillMaxWidth()

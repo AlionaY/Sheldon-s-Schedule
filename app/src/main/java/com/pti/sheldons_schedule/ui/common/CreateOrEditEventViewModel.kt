@@ -12,7 +12,10 @@ import com.pti.sheldons_schedule.data.*
 import com.pti.sheldons_schedule.data.Options.*
 import com.pti.sheldons_schedule.db.EventRepository
 import com.pti.sheldons_schedule.service.AlarmBroadcastReceiver
-import com.pti.sheldons_schedule.util.*
+import com.pti.sheldons_schedule.util.Constants
+import com.pti.sheldons_schedule.util.toCalendar
+import com.pti.sheldons_schedule.util.updateDate
+import com.pti.sheldons_schedule.util.updateTime
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -82,8 +85,9 @@ class CreateOrEditEventViewModel @Inject constructor(
     }
 
     private fun addAnEmptyTodoItem(state: MutableStateFlow<ScreenState>) {
-        val list = state.value.toDoList + "".toToDo(
-            state.value
+        val list = state.value.toDoList + ToDo(
+            title = "",
+            eventId = state.value.calendar.timeInMillis
         )
         state.update { it.copy(toDoList = list) }
     }
@@ -457,7 +461,10 @@ class CreateOrEditEventViewModel @Inject constructor(
 
     fun onTodoTitleChanged(title: String, index: Int) {
         val list = createEventScreenState.value.toDoList.toMutableList()
-        list[index] = title.toToDo(createEventScreenState.value)
+        list[index] = ToDo(
+            title = title,
+            eventId = createEventScreenState.value.calendar.timeInMillis
+        )
         createEventScreenState.update { it.copy(toDoList = list) }
     }
 
