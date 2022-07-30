@@ -149,11 +149,13 @@ fun CreateEventScreen(
                         onRepeatFieldClicked = { viewModel.onRepeatFieldClicked() },
                         onPriorityFieldClicked = { viewModel.onPriorityFieldClicked() },
                         onRemindFieldClicked = { viewModel.onRemindFieldClicked() },
-                        onAddTodoListClicked = { viewModel.onAddTodoItemClicked() },
+                        onAddTodoListClicked = { viewModel.onAddTodoItemClicked(false) },
                         onValueChanged = { title, index ->
                             viewModel.onTodoTitleChanged(title, index)
                         },
-                        onAddTodoItemClicked = { viewModel.onAddTodoItemClicked() }
+                        onAddTodoItemClicked = { viewModel.onAddTodoItemClicked(false) },
+                        onTodoItemChanged = { title, index -> },
+                        onCheckedChange = { isChecked, index -> }
                     )
                 }
             }

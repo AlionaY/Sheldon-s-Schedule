@@ -12,7 +12,10 @@ import com.pti.sheldons_schedule.data.*
 import com.pti.sheldons_schedule.data.Options.*
 import com.pti.sheldons_schedule.db.EventRepository
 import com.pti.sheldons_schedule.service.AlarmBroadcastReceiver
-import com.pti.sheldons_schedule.util.*
+import com.pti.sheldons_schedule.util.Constants
+import com.pti.sheldons_schedule.util.toCalendar
+import com.pti.sheldons_schedule.util.updateDate
+import com.pti.sheldons_schedule.util.updateTime
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -63,6 +66,7 @@ class CreateOrEditEventViewModel @Inject constructor(
 
     private val newEvent = MutableStateFlow<FullEvent?>(null)
     private val isAddTodoItemClicked = MutableSharedFlow<Boolean>()
+    private val isCreateEventScreen = MutableStateFlow(false)
 
     init {
         observeScreenState(createEventScreenState)
@@ -74,12 +78,18 @@ class CreateOrEditEventViewModel @Inject constructor(
     private fun observeIsAddTodoItemClicked() {
         viewModelScope.launch {
             isAddTodoItemClicked.collect {
-                val list = createEventScreenState.value.toDoList + "".toToDo(
-                    createEventScreenState.value
-                )
-                createEventScreenState.update { it.copy(toDoList = list) }
+                val state = if (isCreateEventScreen.value) createEventScreenState else editEventScreenState
+                addAnEmptyTodoItem(state)
             }
         }
+    }
+
+    private fun addAnEmptyTodoItem(state: MutableStateFlow<ScreenState>) {
+        val list = state.value.toDoList + ToDo(
+            title = "",
+            eventId = state.value.calendar.timeInMillis
+        )
+        state.update { it.copy(toDoList = list) }
     }
 
     private fun updateEditEventScreenState() {
@@ -93,7 +103,8 @@ class CreateOrEditEventViewModel @Inject constructor(
                         description = event.event.description,
                         priority = event.event.priority,
                         repeat = event.event.repeat,
-                        remind = event.reminder.toRemind()
+                        remind = event.reminder.toRemind(),
+                        toDoList = event.toDoList
                     )
                 }
             }
@@ -450,11 +461,50 @@ class CreateOrEditEventViewModel @Inject constructor(
 
     fun onTodoTitleChanged(title: String, index: Int) {
         val list = createEventScreenState.value.toDoList.toMutableList()
-        list[index] = title.toToDo(createEventScreenState.value)
+        list[index] = ToDo(
+            title = title,
+            eventId = createEventScreenState.value.calendar.timeInMillis
+        )
         createEventScreenState.update { it.copy(toDoList = list) }
     }
 
-    fun onAddTodoItemClicked() = viewModelScope.launch {
+    fun onAddTodoItemClicked(isEditEventScreen: Boolean) = viewModelScope.launch {
         isAddTodoItemClicked.emit(true)
+        isCreateEventScreen.value = !isEditEventScreen
+    }
+
+    fun onCheckedChange(isChecked: Boolean, index: Int) {
+        updateTodoList(index, isChecked)
+        saveUpdatedEvent()
+    }
+
+    private fun updateTodoList(index: Int, isChecked: Boolean) {
+        val list = editEventScreenState.value.toDoList.toMutableList()
+        list[index] = ToDo(
+            title = list[index].title,
+            completed = isChecked,
+            itemId = list[index].itemId,
+            eventId = list[index].eventId
+        )
+
+        editEventScreenState.update { it.copy(toDoList = list.toList()) }
+    }
+
+    private fun saveUpdatedEvent() = viewModelScope.launch {
+        pickedEvent.value?.let { repository.saveEvent(it) }
+    }
+
+    fun onTodoItemChanged(title: String, index: Int) = viewModelScope.launch {
+        val list = pickedEvent.value?.toDoList?.toMutableList()
+        list?.set(
+            index,
+            ToDo(
+                title = title,
+                eventId = list[index].eventId,
+                completed = list[index].completed,
+                itemId = list[index].itemId
+            )
+        )
+        editEventScreenState.update { it.copy(toDoList = list?.toList() ?: emptyList()) }
     }
 }
